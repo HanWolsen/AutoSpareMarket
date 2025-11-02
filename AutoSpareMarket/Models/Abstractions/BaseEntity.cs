@@ -1,4 +1,4 @@
-﻿namespace AutoSpareMarket.Domain.Abstractions
+﻿namespace AutoSpareMarket.Domain.Models.Abstractions
 {
     public abstract class BaseEntity
     {

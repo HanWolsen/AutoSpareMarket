@@ -1,11 +1,6 @@
-﻿using AutoSpareMarket.Domain.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoSpareMarket.Domain.Models.Abstractions;
 
-namespace AutoSpareMarket.Domain.Entities
+namespace AutoSpareMarket.Domain.Models.Entities
 {
     public class Order : BaseEntity
     {
@@ -18,6 +13,6 @@ namespace AutoSpareMarket.Domain.Entities
         public int? ManagerId { get; set; }
         public Manager? Manager { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderItem>? OrderItems { get; set; }
     }
 }

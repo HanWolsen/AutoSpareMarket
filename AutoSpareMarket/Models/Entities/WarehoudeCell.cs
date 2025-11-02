@@ -1,6 +1,6 @@
-﻿using AutoSpareMarket.Domain.Abstractions;
+﻿using AutoSpareMarket.Domain.Models.Abstractions;
 
-namespace AutoSpareMarket.Domain.Entities
+namespace AutoSpareMarket.Domain.Models.Entities
 {
     public class WarehoudeCell : BaseEntity
     {

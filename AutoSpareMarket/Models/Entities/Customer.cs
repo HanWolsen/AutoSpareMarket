@@ -1,11 +1,6 @@
-﻿using AutoSpareMarket.Domain.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoSpareMarket.Domain.Models.Abstractions;
 
-namespace AutoSpareMarket.Domain.Entities
+namespace AutoSpareMarket.Domain.Models.Entities
 {
     public class Customer : BaseEntity
     {
@@ -14,5 +9,7 @@ namespace AutoSpareMarket.Domain.Entities
         public string Email { get; set; }
         public string Phone { get; set; }
         public DateTime CreateAt { get; set; }
+
+        public ICollection<Sale>? Sales { get; set; }
     }
 }
