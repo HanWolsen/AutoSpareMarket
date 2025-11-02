@@ -6,7 +6,7 @@ namespace AutoSpareMarket.Domain.Models.Entities
     {
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
-        public decimal UniyCost { get; set; }
+        public decimal UnitCost { get; set; }
 
         public int? ProductId { get; set; }
         public Product? Product { get; set; }

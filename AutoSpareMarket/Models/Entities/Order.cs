@@ -1,11 +1,12 @@
 ﻿using AutoSpareMarket.Domain.Models.Abstractions;
+using AutoSpareMarket.Domain.Models.Enums;
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
     public class Order : BaseEntity
     {
         public int TotalAmount { get; set; }
-        public string Status { get; set; }
+        public OrderStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public int? SuplierId { get; set; }
