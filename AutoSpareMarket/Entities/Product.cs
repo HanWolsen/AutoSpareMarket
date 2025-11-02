@@ -11,5 +11,9 @@ namespace AutoSpareMarket.Domain.Entities
         
         public int? WarehouseCellId { get; set; }
         public WarehoudeCell? WarehouseCell { get; set; }
+
+        public ICollection<Promotion> Promotions { get; set; }
+        public ICollection<SupplierProduct> SupplierProducts { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
 }
