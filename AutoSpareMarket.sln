@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.36212.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoSpareMarket.Domain", "AutoSpareMarket\AutoSpareMarket.Domain.csproj", "{B701D9CF-BE9D-4382-B5FE-DC8B08E26174}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DATA", "DATA", "{852FA537-8F28-40AA-B6F5-4105B0AECA80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{A4EFD912-AF3D-45FA-B333-FCB5BD1E2E36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +22,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B701D9CF-BE9D-4382-B5FE-DC8B08E26174} = {A4EFD912-AF3D-45FA-B333-FCB5BD1E2E36}
+		{A4EFD912-AF3D-45FA-B333-FCB5BD1E2E36} = {852FA537-8F28-40AA-B6F5-4105B0AECA80}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE241909-E3B8-47DA-84FA-3A20C4A5362E}
