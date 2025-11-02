@@ -12,7 +12,7 @@ namespace AutoSpareMarket.Domain.Models.Entities
 
         public int? SaleId { get; set; }
         public Sale? Sale { get; set; }
-        public int? CahsRegisterId { get; set; }
+        public int? CashRegisterId { get; set; }
         public CashRegister? CashRegister { get; set; }
     }
 }
