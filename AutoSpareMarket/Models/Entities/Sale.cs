@@ -14,5 +14,6 @@ namespace AutoSpareMarket.Domain.Models.Entities
         public CashRegister? CashRegister { get; set; }
 
         public ICollection<Transaction>? Transactions { get; set; }
+        public ICollection<SaleItem>? SaleItems { get; set; }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using AutoSpareMarket.Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using AutoSpareMarket.Domain.Models.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AutoSpareMarket.DAL.SqlServer.Configuration
 {

@@ -12,6 +12,6 @@ namespace AutoSpareMarket.Domain.Models.Entities
 
         public ICollection<SupplierProduct>? SupplierProducts { get; set; }
         public ICollection<Order>? Orders { get; set; }
-        public ICollection<SellItem>? SellItems { get; set; }
+        public ICollection<SaleItem>? SellItems { get; set; }
     }
 }
