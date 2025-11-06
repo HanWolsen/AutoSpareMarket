@@ -25,6 +25,10 @@ namespace AutoSpareMarket.DAL.SqlServer.Configuration
                 .WithOne(t => t.Product)
                 .HasForeignKey(t => t.ProductId);
 
+            builder.HasOne(p => p.WarehouseCell)
+                .WithMany(wh => wh.Products)
+                .HasForeignKey(p => p.WarehouseCellId);
+
             //builder.HasMany(cr => cr.SaleItems)
             //.WithOne(t => t.Product)
             //.HasForeignKey(t => t.ProductId);
