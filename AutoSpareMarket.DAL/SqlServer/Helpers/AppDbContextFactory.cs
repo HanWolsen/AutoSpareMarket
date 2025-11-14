@@ -17,7 +17,7 @@ namespace AutoSpareMarket.DAL.SqlServer.Helpers
             var connectionString = configuration.GetConnectionString("ConnectionString");
 
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder.UseSqlServer(connectionString);
 
             return new AppDbContext(optionsBuilder.Options);
         }
