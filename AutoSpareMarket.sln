@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Validation", "Validation", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoSpareMarket.Validation", "AutoSpareMarket.Validation\AutoSpareMarket.Validation.csproj", "{641FE1DA-52CB-4CE0-8D35-237E864E3303}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{051CB6B0-D678-4B00-AD11-C01E396821CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoSpareMarket.Service", "AutoSpareMarket.Service\AutoSpareMarket.Service.csproj", "{82304F43-500E-47BB-B8D5-05C275F910D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,10 @@ Global
 		{641FE1DA-52CB-4CE0-8D35-237E864E3303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{641FE1DA-52CB-4CE0-8D35-237E864E3303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{641FE1DA-52CB-4CE0-8D35-237E864E3303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82304F43-500E-47BB-B8D5-05C275F910D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82304F43-500E-47BB-B8D5-05C275F910D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82304F43-500E-47BB-B8D5-05C275F910D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82304F43-500E-47BB-B8D5-05C275F910D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +56,8 @@ Global
 		{3758D6B9-3B73-4941-8452-54D94AA38117} = {94730968-9D63-479D-AD5B-1774F711D2D2}
 		{AA099EAB-F4FD-49E8-9A69-F64CFB731E3A} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{641FE1DA-52CB-4CE0-8D35-237E864E3303} = {AA099EAB-F4FD-49E8-9A69-F64CFB731E3A}
+		{051CB6B0-D678-4B00-AD11-C01E396821CD} = {852FA537-8F28-40AA-B6F5-4105B0AECA80}
+		{82304F43-500E-47BB-B8D5-05C275F910D3} = {051CB6B0-D678-4B00-AD11-C01E396821CD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE241909-E3B8-47DA-84FA-3A20C4A5362E}
