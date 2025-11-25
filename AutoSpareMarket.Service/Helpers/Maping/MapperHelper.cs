@@ -3,8 +3,8 @@
 namespace AutoSpareMarket.Service.Helpers.Maping
 {
     internal class MapperHelper<Tmodel, T> 
-        where Tmodel : class
-        where T : BaseEntity
+       //where Tmodel : class
+        //where T : BaseEntity
     {
         public static T Map(Tmodel model)
         {
