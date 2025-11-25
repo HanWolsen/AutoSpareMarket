@@ -1,7 +1,9 @@
 ﻿using AutoSpareMarket.DAL.Repository.Implementations;
 using AutoSpareMarket.DAL.Repository.Intarfacec;
+using AutoSpareMarket.Service.Interfaces;
 using AutoSpareMarket.Service.Service.Implementations;
 using AutoSpareMarket.Service.Service.Intarfaces;
+using AutoSpareMarket.Service.Services;
 
 namespace AutoSpareMarket.API
 {
@@ -17,6 +19,14 @@ namespace AutoSpareMarket.API
         public static IServiceCollection InitializeServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
+            services.AddScoped<IProductExtendedService, ProductExtendedService>();
+            services.AddScoped<ISupplierExtendedService, SupplierExtendedService>();
+            services.AddScoped<IOrderExtendedService, OrderExtendedService>();
+            services.AddScoped<ISaleExtendedService, SaleExtendedService>();
+            services.AddScoped<ICashRegisterExtendedService, CashRegisterExtendedService>();
+            services.AddScoped<ICustomerExtendedService, CustomerExtendedService>();
+            services.AddScoped<IAnalyticsService, AnalyticsService>();
+            services.AddScoped<IPromotionExtendedService, PromotionExtendedService>();
 
             return services;
         }

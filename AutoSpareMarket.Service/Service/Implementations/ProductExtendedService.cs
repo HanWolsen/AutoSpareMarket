@@ -3,7 +3,6 @@ using AutoSpareMarket.APIModels.Response.Helpers;
 using AutoSpareMarket.APIModels.Response.Interfaces;
 using AutoSpareMarket.DAL.Repository.Intarfacec;
 using AutoSpareMarket.Domain.Models.Entities;
-using AutoSpareMarket.Service.Helpers.Maping;
 using AutoSpareMarket.Service.Interfaces;
 using AutoSpareMarket.Validation;
 
@@ -31,11 +30,20 @@ namespace AutoSpareMarket.Service.Services
                 var product = _products.GetAll().FirstOrDefault(p => p.Id == productId);
                 ObjectValidator<Product>.CheckIsNotNull(product);
 
-                var suppliers = _suppliers.GetAll().FirstOrDefault(s => s.SupplierProducts.Any(sp => sp.ProductId == productId));
+                var supplier = _suppliers.GetAll().FirstOrDefault(s => s.SupplierProducts.Any(sp => sp.ProductId == productId));
 
-                ObjectValidator<Product>.CheckIsNotNull(product);
+                ObjectValidator<Supplier>.CheckIsNotNull(supplier);
 
-                var dto = MapperHelper<SupplierDto, Supplier>.Map(suppliers);
+                var dto = new SupplierDto
+                {
+                    Id = supplier.Id,
+                    ProductId = product.Id,
+                    Name = supplier.Name,
+                    Country = supplier.Country,
+                    IsActive = supplier.IsActive,
+                    CountryInfo = supplier.CountryInfo,
+                    CreatedAt = supplier.CreateAt
+                };
 
 
                 return ResponseFactory<SupplierDto>.CreateSuccessResponse(dto);

@@ -1,5 +1,6 @@
 ﻿using AutoSpareMarket.APIModels.DTO.BaseDTOs;
 using AutoSpareMarket.APIModels.DTO.DTOs.OrderItems;
+using AutoSpareMarket.Domain.Models.Enums;
 
 namespace AutoSpareMarket.APIModels.DTO.DTOs.Orders
 {

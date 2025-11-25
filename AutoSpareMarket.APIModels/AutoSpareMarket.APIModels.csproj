@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AutoSpareMarket.Validation\AutoSpareMarket.Validation.csproj" />
+    <ProjectReference Include="..\AutoSpareMarket\AutoSpareMarket.Domain.csproj" />
   </ItemGroup>
 
 </Project>

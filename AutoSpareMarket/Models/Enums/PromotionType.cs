@@ -2,7 +2,8 @@
 {
     public enum PromotionType
     {
-        Percentage,
-        FixedAmount,
+        HappyHour,
+        ProductOfDay,
+        Custom
     }
 }
