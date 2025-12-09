@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 
 namespace AutoSpareMarket.API.Controllers
 {
@@ -32,4 +32,4 @@ namespace AutoSpareMarket.API.Controllers
         public ActionResult ProductRating([FromQuery] string? month, [FromQuery] DateTime? from = null, [FromQuery] DateTime? to = null)
             => HandleResponse(_analyticsService.GetProductRating(month, from, to));
     }
-}
+}*/

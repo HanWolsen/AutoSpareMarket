@@ -16,14 +16,14 @@ namespace AutoSpareMarket.Service.Services
         private readonly IBaseRepository<SaleItem> _saleItems;
         private readonly IBaseRepository<Transaction> _transactions;
         private readonly IBaseRepository<Product> _products;
-        private readonly IBaseRepository<WarehoudeCell> _warehouseCells;
+        private readonly IBaseRepository<WarehouseCell> _warehouseCells;
         private readonly IBaseRepository<Promotion> _promotions;
 
         public SaleExtendedService(IBaseRepository<Sale> sales,
                                    IBaseRepository<SaleItem> saleItems,
                                    IBaseRepository<Transaction> transactions,
                                    IBaseRepository<Product> products,
-                                   IBaseRepository<WarehoudeCell> warehouseCells,
+                                   IBaseRepository<WarehouseCell> warehouseCells,
                                    IBaseRepository<Promotion> promotions)
         {
             _sales = sales;
@@ -41,6 +41,17 @@ namespace AutoSpareMarket.Service.Services
                 ObjectValidator<SaleCreateDto>.CheckIsNotNull(dto);
                 if (dto.Items == null || dto.Items.Count == 0)
                     throw new InvalidOperationException("Sale must contain items.");
+
+                foreach (var item in dto.Items)
+                {
+                    var product = _products.GetAll().FirstOrDefault(p => p.Id == item.ProductId);
+
+                    if (product.WarehouseCellId == null)
+                    {
+                        throw new InvalidOperationException("WareHouseCell must not be null.");
+
+                    }
+                }
 
                 var sale = new Sale
                 {

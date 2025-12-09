@@ -17,13 +17,13 @@ namespace AutoSpareMarket.Service.Services
         private readonly IBaseRepository<OrderItem> _orderItems;
         private readonly IBaseRepository<Product> _products;
         private readonly IBaseRepository<SupplierProduct> _supplierProducts;
-        private readonly IBaseRepository<WarehoudeCell> _warehouseCells;
+        private readonly IBaseRepository<WarehouseCell> _warehouseCells;
 
         public OrderExtendedService(IBaseRepository<Order> orders,
                                     IBaseRepository<OrderItem> orderItems,
                                     IBaseRepository<Product> products,
                                     IBaseRepository<SupplierProduct> supplierProducts,
-                                    IBaseRepository<WarehoudeCell> warehouseCells)
+                                    IBaseRepository<WarehouseCell> warehouseCells)
         {
             _orders = orders;
             _orderItems = orderItems;

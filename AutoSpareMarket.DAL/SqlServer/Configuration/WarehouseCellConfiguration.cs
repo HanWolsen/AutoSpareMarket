@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AutoSpareMarket.DAL.SqlServer.Configuration
 {
-    internal class WarehoudeCellConfiguration : IEntityTypeConfiguration<WarehoudeCell>
+    internal class WarehouseCellConfiguration : IEntityTypeConfiguration<WarehouseCell>
     {
-        public void Configure(EntityTypeBuilder<WarehoudeCell> builder)
+        public void Configure(EntityTypeBuilder<WarehouseCell> builder)
         {
             builder.HasKey(u => u.Id);
             builder.Property(u => u.CellNumber);

@@ -10,7 +10,7 @@ namespace AutoSpareMarket.Domain.Models.Entities
 
 
         public int? WarehouseCellId { get; set; }
-        public WarehoudeCell? WarehouseCell { get; set; }
+        public WarehouseCell? WarehouseCell { get; set; }
 
         public ICollection<Promotion>? Promotions { get; set; }
         public ICollection<SupplierProduct>? SupplierProducts { get; set; }

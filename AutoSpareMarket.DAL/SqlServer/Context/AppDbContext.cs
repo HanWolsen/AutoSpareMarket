@@ -27,7 +27,7 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
         DbSet<Supplier> Suppliers { get; set; }
         DbSet<SupplierProduct> SupplierProducts { get; set; }
         DbSet<Transaction> Transactions { get; set; }
-        DbSet<WarehoudeCell> WarehoudeCells { get; set; }
+        DbSet<WarehouseCell> WarehouseCells { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,7 +46,7 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
                 .ApplyConfigurationsFromAssembly(typeof(SupplierConfiguration).Assembly)
                 .ApplyConfigurationsFromAssembly(typeof(SupplierProductConfiguration).Assembly)
                 .ApplyConfigurationsFromAssembly(typeof(TransactionConfiguration).Assembly)
-                .ApplyConfigurationsFromAssembly(typeof(WarehoudeCellConfiguration).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(WarehouseCellConfiguration).Assembly)
                 ;
         }
     }

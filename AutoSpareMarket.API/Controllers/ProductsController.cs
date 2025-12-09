@@ -1,4 +1,5 @@
 ﻿using AutoSpareMarket.APIModels.DTO.DTOs.Products;
+using AutoSpareMarket.APIModels.DTO.DTOs.WarehouseCells;
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Service.Interfaces;
 using AutoSpareMarket.Service.Service.Intarfaces;
@@ -11,17 +12,25 @@ namespace AutoSpareMarket.API.Controllers
     {
         private readonly IBaseService<Product> _baseService;
         private readonly IProductExtendedService _extendedService;
+        private readonly IBaseService<WarehouseCell> _wareHouseService;
 
         public ProductsController(IBaseService<Product> baseService,
-                                  IProductExtendedService extendedService)
+                                  IProductExtendedService extendedService,
+                                  IBaseService<WarehouseCell> wareHouseService)
         {
             _baseService = baseService;
             _extendedService = extendedService;
+            _wareHouseService = wareHouseService;
         }
 
         [HttpPost]
         public ActionResult Create([FromBody] ProductCreateDto dto)
             => HandleResponse(_baseService.Create(dto));
+
+        [HttpPost]
+        [Route("create-warehousecell")]
+        public ActionResult CreateWareHouseCell([FromBody] WarehouseCellCreateDto dto)
+            => HandleResponse(_wareHouseService.Create(dto));
 
         [HttpGet]
         public ActionResult GetAll()

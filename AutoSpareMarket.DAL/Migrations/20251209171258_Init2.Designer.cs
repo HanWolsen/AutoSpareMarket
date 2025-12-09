@@ -4,6 +4,7 @@ using AutoSpareMarket.DAL.SqlServer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoSpareMarket.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251209171258_Init2")]
+    partial class Init2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,7 +390,7 @@ namespace AutoSpareMarket.DAL.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.WarehouseCell", b =>
+            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.WarehoudeCell", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -404,7 +407,7 @@ namespace AutoSpareMarket.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WarehouseCells");
+                    b.ToTable("WarehoudeCells");
                 });
 
             modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.Order", b =>
@@ -439,7 +442,7 @@ namespace AutoSpareMarket.DAL.Migrations
 
             modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.Product", b =>
                 {
-                    b.HasOne("AutoSpareMarket.Domain.Models.Entities.WarehouseCell", "WarehouseCell")
+                    b.HasOne("AutoSpareMarket.Domain.Models.Entities.WarehoudeCell", "WarehouseCell")
                         .WithMany("Products")
                         .HasForeignKey("WarehouseCellId");
 
@@ -568,7 +571,7 @@ namespace AutoSpareMarket.DAL.Migrations
                     b.Navigation("SupplierProducts");
                 });
 
-            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.WarehouseCell", b =>
+            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.WarehoudeCell", b =>
                 {
                     b.Navigation("Products");
                 });
