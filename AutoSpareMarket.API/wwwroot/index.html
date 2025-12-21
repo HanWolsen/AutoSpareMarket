@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoSpare Market · Витрина</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="hero">
+    <div>
+        <p class="eyebrow">AutoSpare Market</p>
+        <h1>Управление складом и заказами</h1>
+        <p class="lede">
+            Витрина для работы с розничными заказами автозапчастей: номенклатура, поставщики,
+            заявки на закупки, продажи и кассовые операции.
+        </p>
+        <div class="config">
+            <label class="stack">
+                <span>Базовый URL API</span>
+                <div class="inline">
+                    <input id="apiBase" type="text" placeholder="https://localhost:5001/api/v1">
+                    <button id="saveApiBase" type="button">Сохранить</button>
+                    <button id="pingApi" type="button" class="ghost">Проверить</button>
+                </div>
+            </label>
+            <small id="connectionStatus" class="muted">По умолчанию используется адрес текущего хоста.</small>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Склад и номенклатура</p>
+                <h2>Карточки товаров и ячейки хранения</h2>
+                <p class="muted">Создавайте новые товары и ячейки склада, смотрите фактические остатки.</p>
+            </div>
+            <div class="actions">
+                <button type="button" id="loadProducts">Обновить товары</button>
+            </div>
+        </div>
+        <div class="grid two">
+            <div class="card">
+                <h3>Новая ячейка склада</h3>
+                <form id="warehouseForm" class="stack">
+                    <label>Номер ячейки
+                        <input name="cellNumber" required placeholder="A-01">
+                    </label>
+                    <label>Начальный остаток
+                        <input name="quantity" type="number" min="0" value="0">
+                    </label>
+                    <button type="submit">Создать ячейку</button>
+                </form>
+                <div class="divider"></div>
+                <h3>Новый товар</h3>
+                <form id="productForm" class="stack">
+                    <label>ID ячейки хранения
+                        <input name="warehouseCellId" type="number" min="1" required>
+                    </label>
+                    <label>Название
+                        <input name="name" required placeholder="Амортизатор передний">
+                    </label>
+                    <label>Описание
+                        <textarea name="description" rows="2" placeholder="Кратко опишите товар"></textarea>
+                    </label>
+                    <button type="submit">Создать товар</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Текущая номенклатура</h3>
+                    <p class="muted">Список товаров с привязкой к ячейкам склада.</p>
+                </div>
+                <pre class="output" id="productsOutput">Нажмите «Обновить товары», чтобы загрузить данные.</pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Поставщики и маркетинг</p>
+                <h2>Работа с контрагентами</h2>
+                <p class="muted">Управляйте поставщиками и их ассортиментом, формируйте базу для заказов.</p>
+            </div>
+            <div class="actions">
+                <button type="button" id="loadSuppliers">Обновить поставщиков</button>
+            </div>
+        </div>
+        <div class="grid two">
+            <div class="card">
+                <h3>Новый поставщик</h3>
+                <form id="supplierForm" class="stack">
+                    <label>Название
+                        <input name="name" required placeholder="ACME Parts LTD">
+                    </label>
+                    <label>Страна
+                        <input name="country" required placeholder="Germany">
+                    </label>
+                    <div class="stack">
+                        <span class="muted">Статус</span>
+                        <label class="inline checkbox-label">
+                            <input type="checkbox" name="isActive" checked aria-label="Поставщик активен">
+                            <span>Активный</span>
+                        </label>
+                    </div>
+                    <label>Комментарий по стране
+                        <textarea name="countryInfo" rows="2" placeholder="Сроки и нюансы поставки"></textarea>
+                    </label>
+                    <button type="submit">Создать поставщика</button>
+                </form>
+                <div class="divider"></div>
+                <h3>Привязка товара к поставщику</h3>
+                <form id="supplierProductForm" class="stack">
+                    <label>ID поставщика
+                        <input name="supplierId" type="number" min="1" required>
+                    </label>
+                    <label>ID товара
+                        <input name="productId" type="number" min="1" required>
+                    </label>
+                    <div class="stack">
+                        <span class="muted">Статус</span>
+                        <label class="inline checkbox-label">
+                            <input type="checkbox" name="isActive" checked aria-label="Привязка активна">
+                            <span>Привязка активна</span>
+                        </label>
+                    </div>
+                    <button type="submit">Привязать товар</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Поставщики</h3>
+                    <p class="muted">Актуальный реестр контрагентов.</p>
+                </div>
+                <pre class="output" id="suppliersOutput">Нажмите «Обновить поставщиков», чтобы увидеть данные.</pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Закупки</p>
+                <h2>Заказы на пополнение склада</h2>
+                <p class="muted">Формируйте заказы с привязкой к поставщикам и менеджерам.</p>
+            </div>
+            <div class="actions">
+                <button type="button" id="loadOrders">Обновить заказы</button>
+            </div>
+        </div>
+        <div class="grid two">
+            <div class="card">
+                <h3>Новый заказ поставщику</h3>
+                <form id="orderForm" class="stack">
+                    <label>ID поставщика
+                        <input name="supplierId" type="number" min="1" required>
+                    </label>
+                    <label>ID менеджера
+                        <input name="managerId" type="number" min="1" required>
+                    </label>
+                    <div class="list-header">
+                        <div class="muted">Позиции заказа</div>
+                        <button type="button" id="addOrderItem" class="ghost">Добавить позицию</button>
+                    </div>
+                    <div id="orderItems" class="stack tight"></div>
+                    <button type="submit">Создать заказ</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>История заказов</h3>
+                    <p class="muted">Подробности заказов и статус поставки.</p>
+                </div>
+                <pre class="output" id="ordersOutput">Нажмите «Обновить заказы», чтобы загрузить данные.</pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">Продажи и касса</p>
+                <h2>Оформление продаж и транзакции</h2>
+                <p class="muted">Оперативные продажи с кассовыми операциями и привязкой к складу.</p>
+            </div>
+            <div class="actions">
+                <button type="button" id="loadSales">Обновить продажи</button>
+                <button type="button" id="loadCashRegisters" class="ghost">Кассы</button>
+            </div>
+        </div>
+        <div class="grid two">
+            <div class="card">
+                <h3>Новая продажа</h3>
+                <form id="saleForm" class="stack">
+                    <label>ID покупателя
+                        <input name="customerId" type="number" min="1" required>
+                    </label>
+                    <label>ID кассы
+                        <input name="cashRegisterId" type="number" min="1" required>
+                    </label>
+                    <label>Способ оплаты
+                        <input name="paymentMethod" required placeholder="Карта / Наличные">
+                    </label>
+                    <div class="list-header">
+                        <div class="muted">Позиции продажи</div>
+                        <button type="button" id="addSaleItem" class="ghost">Добавить позицию</button>
+                    </div>
+                    <div id="saleItems" class="stack tight"></div>
+                    <button type="submit">Создать продажу</button>
+                </form>
+                <div class="divider"></div>
+                <h3>Транзакция по продаже</h3>
+                <form id="transactionForm" class="stack">
+                    <label>ID продажи
+                        <input name="saleId" type="number" min="1" required>
+                    </label>
+                    <label>ID кассы
+                        <input name="cashRegisterId" type="number" min="1" required>
+                    </label>
+                    <label>Сумма
+                        <input name="amount" type="number" step="0.01" min="0" required>
+                    </label>
+                    <label>Тип операции
+                        <select name="type">
+                            <option value="Payment">Поступление</option>
+                            <option value="Refund">Возврат</option>
+                        </select>
+                    </label>
+                    <label>Комментарий
+                        <textarea name="note" rows="2" placeholder="Чек/основание операции"></textarea>
+                    </label>
+                    <button type="submit">Добавить транзакцию</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Продажи и кассы</h3>
+                    <p class="muted">Просматривайте продажи, позиции и транзакции.</p>
+                </div>
+                <pre class="output" id="salesOutput">Нажмите «Обновить продажи» или «Кассы», чтобы увидеть данные.</pre>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div>
+        <p class="eyebrow">Подсказки</p>
+        <ul>
+            <li>Все запросы выполняются к REST API по адресу выше.</li>
+            <li>ID сущностей можно получить из списков на странице.</li>
+            <li>Если БД пустая, начните с создания ячейки склада, товара и поставщика.</li>
+        </ul>
+    </div>
+    <div class="footer-brand">AutoSpare Market · Retail & Supply</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
