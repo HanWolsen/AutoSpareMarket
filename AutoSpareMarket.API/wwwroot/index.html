@@ -16,12 +16,14 @@
             заявки на закупки, продажи и кассовые операции.
         </p>
         <div class="config">
-            <label for="apiBase">Базовый URL API</label>
-            <div class="inline">
-                <input id="apiBase" type="text" placeholder="https://localhost:5001/api/v1">
-                <button id="saveApiBase" type="button">Сохранить</button>
-                <button id="pingApi" type="button" class="ghost">Проверить</button>
-            </div>
+            <label class="stack">
+                <span>Базовый URL API</span>
+                <div class="inline">
+                    <input id="apiBase" type="text" placeholder="https://localhost:5001/api/v1">
+                    <button id="saveApiBase" type="button">Сохранить</button>
+                    <button id="pingApi" type="button" class="ghost">Проверить</button>
+                </div>
+            </label>
             <small id="connectionStatus" class="muted">По умолчанию используется адрес текущего хоста.</small>
         </div>
     </div>
@@ -97,12 +99,13 @@
                     <label>Страна
                         <input name="country" required placeholder="Germany">
                     </label>
-                    <label>Статус
-                        <span class="inline">
-                            <input type="checkbox" name="isActive" checked>
-                            <small>Активный</small>
-                        </span>
-                    </label>
+                    <div class="stack">
+                        <span class="muted">Статус</span>
+                        <label class="inline checkbox-label">
+                            <input type="checkbox" name="isActive" checked aria-label="Поставщик активен">
+                            <span>Активный</span>
+                        </label>
+                    </div>
                     <label>Комментарий по стране
                         <textarea name="countryInfo" rows="2" placeholder="Сроки и нюансы поставки"></textarea>
                     </label>
@@ -117,12 +120,13 @@
                     <label>ID товара
                         <input name="productId" type="number" min="1" required>
                     </label>
-                    <label>Статус
-                        <span class="inline">
-                            <input type="checkbox" name="isActive" checked>
-                            <small>Поставщик активен</small>
-                        </span>
-                    </label>
+                    <div class="stack">
+                        <span class="muted">Статус</span>
+                        <label class="inline checkbox-label">
+                            <input type="checkbox" name="isActive" checked aria-label="Привязка активна">
+                            <span>Привязка активна</span>
+                        </label>
+                    </div>
                     <button type="submit">Привязать товар</button>
                 </form>
             </div>

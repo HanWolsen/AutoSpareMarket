@@ -9,6 +9,10 @@
     --muted: #94a3b8;
     --border: #1f2937;
     --shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+    --input-bg: #0d1526;
+    --button-text: #0b1120;
+    --output-bg: #0b1221;
+    --output-text: #d8e6ff;
 }
 
 * { box-sizing: border-box; }
@@ -92,6 +96,15 @@ header.hero {
     gap: 10px;
 }
 
+.checkbox-label {
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-label input {
+    width: auto;
+}
+
 .stack {
     display: flex;
     flex-direction: column;
@@ -129,7 +142,7 @@ label {
 }
 
 input, textarea, select {
-    background: #0d1526;
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 10px 12px;
@@ -141,7 +154,7 @@ textarea { resize: vertical; }
 
 button {
     background: var(--accent);
-    color: #0b1120;
+    color: var(--button-text);
     border: none;
     padding: 10px 14px;
     border-radius: 12px;
@@ -169,7 +182,7 @@ button.ghost {
 }
 
 .output {
-    background: #0b1221;
+    background: var(--output-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px;
@@ -178,7 +191,7 @@ button.ghost {
     word-break: break-word;
     overflow-x: auto;
     font-family: "SFMono-Regular", ui-monospace, "Cascadia Code", monospace;
-    color: #d8e6ff;
+    color: var(--output-text);
 }
 
 .divider {

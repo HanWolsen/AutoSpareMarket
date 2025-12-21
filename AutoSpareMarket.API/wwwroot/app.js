@@ -63,7 +63,7 @@ document.getElementById("productForm").addEventListener("submit", (e) => {
     const dto = {
         warehouseCellId: Number(form.warehouseCellId.value),
         name: form.name.value.trim(),
-        description: form.description.value.trim() || null,
+        description: form.description.value.trim(),
     };
     handleAction(() => api("/products", {
         method: "POST",
@@ -78,7 +78,7 @@ document.getElementById("supplierForm").addEventListener("submit", (e) => {
         name: form.name.value.trim(),
         country: form.country.value.trim(),
         isActive: form.isActive.checked,
-        countryInfo: form.countryInfo.value.trim() || null,
+        countryInfo: form.countryInfo.value.trim(),
     };
     handleAction(() => api("/suppliers", {
         method: "POST",
@@ -89,17 +89,20 @@ document.getElementById("supplierForm").addEventListener("submit", (e) => {
 document.getElementById("supplierProductForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const form = e.target;
-    const dto = {
-        id: Number(form.supplierId.value),
-        productId: Number(form.productId.value),
-        name: "",
-        country: "",
-        isActive: form.isActive.checked,
-        countryInfo: null,
-    };
+    const supplierId = Number(form.supplierId.value);
+    const productId = Number(form.productId.value);
+    const isActive = form.isActive.checked;
+
     handleAction(() => api("/suppliers/assign-product", {
         method: "POST",
-        body: JSON.stringify(dto),
+        body: JSON.stringify({
+            id: supplierId,
+            productId,
+            name: "",
+            country: "",
+            isActive,
+            countryInfo: "",
+        }),
     }), outputs.suppliers, "Товар привязан к поставщику:");
 });
 
@@ -113,7 +116,7 @@ document.getElementById("orderForm").addEventListener("submit", (e) => {
     const dto = {
         supplierId: Number(form.supplierId.value),
         managerId: Number(form.managerId.value),
-        items: collectItems(orderItems, ["productId", "quantity", "unitPrice"]),
+        items: collectItems(orderItems, ["productId", "quantity", "unitPrice"], "productId"),
     };
     handleAction(() => api("/orders", {
         method: "POST",
@@ -132,7 +135,7 @@ document.getElementById("saleForm").addEventListener("submit", (e) => {
         customerId: Number(form.customerId.value),
         cashRegisterId: Number(form.cashRegisterId.value),
         paymentMethod: form.paymentMethod.value.trim(),
-        items: collectItems(saleItems, ["productId", "supplierId", "quantity", "unitPrice", "unitCost"]),
+        items: collectItems(saleItems, ["productId", "supplierId", "quantity", "unitPrice", "unitCost"], "productId"),
     };
     handleAction(() => api("/sales", {
         method: "POST",
@@ -148,7 +151,7 @@ document.getElementById("transactionForm").addEventListener("submit", (e) => {
         cashRegisterId: Number(form.cashRegisterId.value),
         amount: Number(form.amount.value),
         type: form.type.value,
-        note: form.note.value.trim() || null,
+        note: form.note.value.trim(),
     };
     handleAction(() => api(`/sales/${saleId}/transactions`, {
         method: "POST",
@@ -169,7 +172,7 @@ function api(path, options = {}) {
                 const message = data && data.message ? data.message : res.statusText;
                 throw new Error(`${res.status}: ${message}`);
             }
-            return data ?? "Готово";
+            return unwrapResponse(data) ?? "Готово";
         });
 }
 
@@ -219,21 +222,28 @@ function addSaleItemRow() {
     saleItems.appendChild(row);
 }
 
-function collectItems(container, fields) {
+function collectItems(container, fields, requiredField = fields[0]) {
     return Array.from(container.children)
         .map((row) => {
             const entry = {};
             fields.forEach((field) => {
                 const input = row.querySelector(`[name='${field}']`);
-                const raw = input ? input.value : "";
+                const raw = input ? input.value.trim() : "";
                 if (raw === "") {
                     entry[field] = null;
-                    return;
+                } else {
+                    const numeric = Number(raw);
+                    entry[field] = Number.isFinite(numeric) ? numeric : raw;
                 }
-                const numeric = Number(raw);
-                entry[field] = Number.isNaN(numeric) ? raw : numeric;
             });
             return entry;
         })
-        .filter((item) => item[fields[0]] !== null && !Number.isNaN(item[fields[0]]));
+        .filter((item) => item[requiredField] !== null && item[requiredField] !== "");
+}
+
+function unwrapResponse(payload) {
+    if (payload && typeof payload === "object" && payload.hasOwnProperty && payload.hasOwnProperty("data")) {
+        return payload.data;
+    }
+    return payload;
 }
