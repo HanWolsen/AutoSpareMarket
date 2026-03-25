@@ -1,0 +1,203 @@
+.user-menu__wrapper {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+
+.user-menu__shop-info-list {
+  display: none;
+}
+
+.user-menu__nav-toggle {
+  position: relative;
+
+  justify-self: start;
+  align-self: start;
+  width: 33px;
+  height: 28px;
+  margin-top: 5px;
+
+  border: 0;
+  background-color: transparent;
+  background-image: url("../img/icon-burger.svg");
+}
+
+.user-menu__logo {
+  grid-column: 2 / 3;
+  justify-self: center;
+}
+
+.user-menu__logo-image {
+  width: 69px;
+  height: 38px;
+}
+
+.user-menu__adress-block {
+  display: none;
+}
+
+.user-menu__icons-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  justify-items: end;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.user-menu__icon-image {
+  fill: transparent;
+
+  &--popular,
+  &--cart {
+    stroke: #a8a8a8;
+    stroke-width: 2;
+  }
+
+  &--login {
+    fill: #a8a8a8;
+  }
+}
+
+.user-menu__quantity-block {
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+
+  display: none;
+
+  text-align: center;
+  color: #ffffff;
+  font-size: 12px;
+
+  width: 23px;
+  height: 23px;
+
+  border-radius: 50%;
+  background-color: #ff7931;
+
+  &--show {
+    display: block;
+  }
+}
+
+@media (min-width: $desktop-width) {
+  .user-menu {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .user-menu__wrapper {
+    @include desktop-wrapper;
+    padding: 0;
+    grid-template-columns: repeat(12, 70px);
+    align-items: center;
+    gap: 30px;
+  }
+
+  .user-menu__shop-info-list {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 20px 40px;
+    padding: 0;
+
+    grid-column: 1 / 6;
+
+    font-size: 22px;
+    font-weight: 600;
+
+    list-style: none;
+  }
+
+  .user-menu__nav-toggle {
+    display: none;
+  }
+
+  .user-menu__link {
+    color: #48494d;
+  }
+
+  .user-menu__logo {
+    grid-column: 6 / 8;
+    padding-bottom: 10px;
+  }
+
+  .user-menu__logo-image {
+    width: 101px;
+    height: 51px;
+  }
+
+  .user-menu__adress-block {
+    display: block;
+    width: 290px;
+    grid-column: 8 / 12;
+    justify-self: center;
+    padding-top: 20px;
+  }
+
+  .user-menu__adress-text {
+    position: relative;
+
+    margin: 0;
+
+    font-size: 21px;
+    font-weight: 600;
+
+    &::after {
+      position: absolute;
+      top: -7px;
+      left: -38px;
+
+      content: "";
+
+      width: 26px;
+      height: 35px;
+
+      background-image: url("../img/icon-adress-arrow.svg");
+    }
+  }
+
+  .user-menu__icons-block {
+    grid-column: 12 / 13;
+  }
+
+  .user-menu__icons-item {
+    position: relative;
+
+    &:hover .user-menu__icon-image--cart {
+      stroke: #ff7931;
+    }
+  }
+
+  .user-menu__icon-image {
+    &--cart {
+      width: 30px;
+      height: 30px;
+    }
+
+    &--login {
+      width: 25px;
+      height: 25px;
+
+      &:hover {
+        fill: #ff7931;
+      }
+    }
+
+    &--popular:hover {
+      stroke: #ff7931;
+    }
+  }
+
+  .user-menu__icons-list {
+    grid-template-columns: repeat(3, auto);
+    grid-auto-flow: row;
+    justify-content: end;
+    gap: 12px;
+    margin: 0 8px 0 0;
+  }
+}

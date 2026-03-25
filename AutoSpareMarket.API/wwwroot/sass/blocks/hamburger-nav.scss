@@ -1,0 +1,73 @@
+.hamburger-nav__list {
+  padding: 19px 0 0 0;
+  margin: 0;
+
+  list-style: none;
+}
+
+.hamburger-nav__item {
+  position: relative;
+
+  font-size: 20px;
+  line-height: 24px;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  &::before {
+    position: absolute;
+    top: 20px;
+    left: 16px;
+
+    content: "";
+  }
+
+  &--login::before {
+    width: 15px;
+    height: 15px;
+
+    background-image: url("../img/icon-login-hamburger.svg");
+  }
+
+  &--popular::before {
+    width: 19px;
+    height: 17px;
+
+    background-image: url("../img/icon-heart-hamburger.svg");
+  }
+
+  &--shops::before {
+    width: 15px;
+    height: 18px;
+
+    background-image: url("../img/icon-house-hamburger.svg");
+  }
+
+  &--promotions::before {
+    font-size: 21px;
+    line-height: 22px;
+    color: #e5e5e5;
+
+    content: "%";
+  }
+
+  &--delivery::before {
+    width: 17px;
+    height: 17px;
+
+    background-image: url("../img/icon-box-hamburger.svg");
+  }
+
+  &--adress {
+    padding: 18px 26px 19px 44px;
+
+    font-weight: 700;
+    color: #48494d;
+  }
+}
+
+.hamburger-nav__link {
+  display: block;
+  padding: 18px 26px 19px 44px;
+
+  color: #000000;
+}
