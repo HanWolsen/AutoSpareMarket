@@ -3,260 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoSpare Market · Витрина</title>
+    <title>AutoSpare Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="hero">
-    <div>
-        <p class="eyebrow">AutoSpare Market</p>
-        <h1>Управление складом и заказами</h1>
-        <p class="lede">
-            Витрина для работы с розничными заказами автозапчастей: номенклатура, поставщики,
-            заявки на закупки, продажи и кассовые операции.
-        </p>
-        <div class="config">
-            <label class="stack">
-                <span>Базовый URL API</span>
-                <div class="inline">
-                    <input id="apiBase" type="text" placeholder="https://localhost:5001/api/v1">
-                    <button id="saveApiBase" type="button">Сохранить</button>
-                    <button id="pingApi" type="button" class="ghost">Проверить</button>
-                </div>
-            </label>
-            <small id="connectionStatus" class="muted">По умолчанию используется адрес текущего хоста.</small>
-        </div>
-    </div>
-</header>
-
-<main class="page">
-    <section class="panel">
-        <div class="panel-header">
+<div id="app">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">⚙</span>
             <div>
-                <p class="eyebrow">Склад и номенклатура</p>
-                <h2>Карточки товаров и ячейки хранения</h2>
-                <p class="muted">Создавайте новые товары и ячейки склада, смотрите фактические остатки.</p>
-            </div>
-            <div class="actions">
-                <button type="button" id="loadProducts">Обновить товары</button>
+                <div class="logo-title">AutoSpare</div>
+                <div class="logo-sub">Market</div>
             </div>
         </div>
-        <div class="grid two">
-            <div class="card">
-                <h3>Новая ячейка склада</h3>
-                <form id="warehouseForm" class="stack">
-                    <label>Номер ячейки
-                        <input name="cellNumber" required placeholder="A-01">
-                    </label>
-                    <label>Начальный остаток
-                        <input name="quantity" type="number" min="0" value="0">
-                    </label>
-                    <button type="submit">Создать ячейку</button>
-                </form>
-                <div class="divider"></div>
-                <h3>Новый товар</h3>
-                <form id="productForm" class="stack">
-                    <label>ID ячейки хранения
-                        <input name="warehouseCellId" type="number" min="1" required>
-                    </label>
-                    <label>Название
-                        <input name="name" required placeholder="Амортизатор передний">
-                    </label>
-                    <label>Описание
-                        <textarea name="description" rows="2" placeholder="Кратко опишите товар"></textarea>
-                    </label>
-                    <button type="submit">Создать товар</button>
-                </form>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Текущая номенклатура</h3>
-                    <p class="muted">Список товаров с привязкой к ячейкам склада.</p>
-                </div>
-                <pre class="output" id="productsOutput">Нажмите «Обновить товары», чтобы загрузить данные.</pre>
-            </div>
-        </div>
-    </section>
-
-    <section class="panel">
-        <div class="panel-header">
-            <div>
-                <p class="eyebrow">Поставщики и маркетинг</p>
-                <h2>Работа с контрагентами</h2>
-                <p class="muted">Управляйте поставщиками и их ассортиментом, формируйте базу для заказов.</p>
-            </div>
-            <div class="actions">
-                <button type="button" id="loadSuppliers">Обновить поставщиков</button>
-            </div>
-        </div>
-        <div class="grid two">
-            <div class="card">
-                <h3>Новый поставщик</h3>
-                <form id="supplierForm" class="stack">
-                    <label>Название
-                        <input name="name" required placeholder="ACME Parts LTD">
-                    </label>
-                    <label>Страна
-                        <input name="country" required placeholder="Germany">
-                    </label>
-                    <div class="stack">
-                        <span class="muted">Статус</span>
-                        <label class="inline checkbox-label">
-                            <input type="checkbox" name="isActive" checked aria-label="Поставщик активен">
-                            <span>Активный</span>
-                        </label>
-                    </div>
-                    <label>Комментарий по стране
-                        <textarea name="countryInfo" rows="2" placeholder="Сроки и нюансы поставки"></textarea>
-                    </label>
-                    <button type="submit">Создать поставщика</button>
-                </form>
-                <div class="divider"></div>
-                <h3>Привязка товара к поставщику</h3>
-                <form id="supplierProductForm" class="stack">
-                    <label>ID поставщика
-                        <input name="supplierId" type="number" min="1" required>
-                    </label>
-                    <label>ID товара
-                        <input name="productId" type="number" min="1" required>
-                    </label>
-                    <div class="stack">
-                        <span class="muted">Статус</span>
-                        <label class="inline checkbox-label">
-                            <input type="checkbox" name="isActive" checked aria-label="Привязка активна">
-                            <span>Привязка активна</span>
-                        </label>
-                    </div>
-                    <button type="submit">Привязать товар</button>
-                </form>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Поставщики</h3>
-                    <p class="muted">Актуальный реестр контрагентов.</p>
-                </div>
-                <pre class="output" id="suppliersOutput">Нажмите «Обновить поставщиков», чтобы увидеть данные.</pre>
-            </div>
-        </div>
-    </section>
-
-    <section class="panel">
-        <div class="panel-header">
-            <div>
-                <p class="eyebrow">Закупки</p>
-                <h2>Заказы на пополнение склада</h2>
-                <p class="muted">Формируйте заказы с привязкой к поставщикам и менеджерам.</p>
-            </div>
-            <div class="actions">
-                <button type="button" id="loadOrders">Обновить заказы</button>
-            </div>
-        </div>
-        <div class="grid two">
-            <div class="card">
-                <h3>Новый заказ поставщику</h3>
-                <form id="orderForm" class="stack">
-                    <label>ID поставщика
-                        <input name="supplierId" type="number" min="1" required>
-                    </label>
-                    <label>ID менеджера
-                        <input name="managerId" type="number" min="1" required>
-                    </label>
-                    <div class="list-header">
-                        <div class="muted">Позиции заказа</div>
-                        <button type="button" id="addOrderItem" class="ghost">Добавить позицию</button>
-                    </div>
-                    <div id="orderItems" class="stack tight"></div>
-                    <button type="submit">Создать заказ</button>
-                </form>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>История заказов</h3>
-                    <p class="muted">Подробности заказов и статус поставки.</p>
-                </div>
-                <pre class="output" id="ordersOutput">Нажмите «Обновить заказы», чтобы загрузить данные.</pre>
-            </div>
-        </div>
-    </section>
-
-    <section class="panel">
-        <div class="panel-header">
-            <div>
-                <p class="eyebrow">Продажи и касса</p>
-                <h2>Оформление продаж и транзакции</h2>
-                <p class="muted">Оперативные продажи с кассовыми операциями и привязкой к складу.</p>
-            </div>
-            <div class="actions">
-                <button type="button" id="loadSales">Обновить продажи</button>
-                <button type="button" id="loadCashRegisters" class="ghost">Кассы</button>
-            </div>
-        </div>
-        <div class="grid two">
-            <div class="card">
-                <h3>Новая продажа</h3>
-                <form id="saleForm" class="stack">
-                    <label>ID покупателя
-                        <input name="customerId" type="number" min="1" required>
-                    </label>
-                    <label>ID кассы
-                        <input name="cashRegisterId" type="number" min="1" required>
-                    </label>
-                    <label>Способ оплаты
-                        <input name="paymentMethod" required placeholder="Карта / Наличные">
-                    </label>
-                    <div class="list-header">
-                        <div class="muted">Позиции продажи</div>
-                        <button type="button" id="addSaleItem" class="ghost">Добавить позицию</button>
-                    </div>
-                    <div id="saleItems" class="stack tight"></div>
-                    <button type="submit">Создать продажу</button>
-                </form>
-                <div class="divider"></div>
-                <h3>Транзакция по продаже</h3>
-                <form id="transactionForm" class="stack">
-                    <label>ID продажи
-                        <input name="saleId" type="number" min="1" required>
-                    </label>
-                    <label>ID кассы
-                        <input name="cashRegisterId" type="number" min="1" required>
-                    </label>
-                    <label>Сумма
-                        <input name="amount" type="number" step="0.01" min="0" required>
-                    </label>
-                    <label>Тип операции
-                        <select name="type">
-                            <option value="Payment">Поступление</option>
-                            <option value="Refund">Возврат</option>
-                        </select>
-                    </label>
-                    <label>Комментарий
-                        <textarea name="note" rows="2" placeholder="Чек/основание операции"></textarea>
-                    </label>
-                    <button type="submit">Добавить транзакцию</button>
-                </form>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Продажи и кассы</h3>
-                    <p class="muted">Просматривайте продажи, позиции и транзакции.</p>
-                </div>
-                <pre class="output" id="salesOutput">Нажмите «Обновить продажи» или «Кассы», чтобы увидеть данные.</pre>
-            </div>
-        </div>
-    </section>
-</main>
-
-<footer class="footer">
-    <div>
-        <p class="eyebrow">Подсказки</p>
-        <ul>
-            <li>Все запросы выполняются к REST API по адресу выше.</li>
-            <li>ID сущностей можно получить из списков на странице.</li>
-            <li>Если БД пустая, начните с создания ячейки склада, товара и поставщика.</li>
+        <ul class="nav-list">
+            <li><a href="#" class="nav-link active" data-tab="dashboard"><span class="nav-icon">◈</span>Дашборд</a></li>
+            <li class="nav-group-label">Склад</li>
+            <li><a href="#" class="nav-link" data-tab="products"><span class="nav-icon">📦</span>Товары</a></li>
+            <li><a href="#" class="nav-link" data-tab="warehouse"><span class="nav-icon">🏭</span>Ячейки склада</a></li>
+            <li class="nav-group-label">Контрагенты</li>
+            <li><a href="#" class="nav-link" data-tab="suppliers"><span class="nav-icon">🚚</span>Поставщики</a></li>
+            <li><a href="#" class="nav-link" data-tab="customers"><span class="nav-icon">👥</span>Покупатели</a></li>
+            <li class="nav-group-label">Торговля</li>
+            <li><a href="#" class="nav-link" data-tab="sales"><span class="nav-icon">🧾</span>Продажи</a></li>
+            <li><a href="#" class="nav-link" data-tab="orders"><span class="nav-icon">📋</span>Заказы</a></li>
+            <li><a href="#" class="nav-link" data-tab="promotions"><span class="nav-icon">🏷</span>Акции</a></li>
+            <li class="nav-group-label">Финансы</li>
+            <li><a href="#" class="nav-link" data-tab="cash-registers"><span class="nav-icon">💰</span>Кассы</a></li>
         </ul>
+        <div class="sidebar-footer">
+            <div class="api-config">
+                <div class="api-config-label">API</div>
+                <input id="apiBase" type="text" class="api-input" placeholder="http://localhost:5001/api/v1">
+                <div class="api-actions">
+                    <button id="saveApiBase" class="btn-sm">Сохранить</button>
+                    <button id="pingApi" class="btn-sm ghost">Проверить</button>
+                </div>
+                <div id="connectionStatus" class="connection-status"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-wrap">
+        <header class="topbar">
+            <button class="menu-toggle" id="menuToggle" aria-label="Меню">☰</button>
+            <div class="topbar-title" id="topbarTitle">Дашборд</div>
+            <div class="topbar-right">
+                <span class="badge" id="statusBadge">●&nbsp;Не подключено</span>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <!-- DASHBOARD -->
+            <section class="tab-pane active" id="tab-dashboard">
+                <div class="page-header">
+                    <h1>Обзор системы</h1>
+                    <p class="page-desc">Общая статистика и быстрый доступ к основным разделам.</p>
+                </div>
+                <div class="stats-grid" id="dashboardStats">
+                    <div class="stat-card" data-tab-link="products">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-products">—</div>
+                            <div class="stat-label">Товаров</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-tab-link="suppliers">
+                        <div class="stat-icon">🚚</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-suppliers">—</div>
+                            <div class="stat-label">Поставщиков</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-tab-link="customers">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-customers">—</div>
+                            <div class="stat-label">Покупателей</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-tab-link="orders">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-orders">—</div>
+                            <div class="stat-label">Заказов</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-tab-link="sales">
+                        <div class="stat-icon">🧾</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-sales">—</div>
+                            <div class="stat-label">Продаж</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-tab-link="cash-registers">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-cash">—</div>
+                            <div class="stat-label">Касс</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-start card">
+                    <h3>Быстрый старт</h3>
+                    <ol class="quick-list">
+                        <li>Создайте <a href="#" data-tab-link="warehouse">ячейку склада</a></li>
+                        <li>Добавьте <a href="#" data-tab-link="products">товар</a> в номенклатуру</li>
+                        <li>Зарегистрируйте <a href="#" data-tab-link="suppliers">поставщика</a> и привяжите к нему товар</li>
+                        <li>Создайте <a href="#" data-tab-link="customers">покупателя</a></li>
+                        <li>Создайте <a href="#" data-tab-link="cash-registers">кассу</a></li>
+                        <li>Оформите <a href="#" data-tab-link="sales">продажу</a></li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- PRODUCTS -->
+            <section class="tab-pane" id="tab-products">
+                <div class="page-header">
+                    <div>
+                        <h1>Товары</h1>
+                        <p class="page-desc">Номенклатура автозапчастей.</p>
+                    </div>
+                    <button class="btn" id="openProductModal">+ Добавить товар</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="productsSearch" placeholder="Поиск по названию...">
+                    <button class="btn ghost" id="refreshProducts">Обновить</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="productsTable">
+                        <thead>
+                            <tr><th>ID</th><th>Название</th><th>Описание</th><th>Ячейка</th><th>Добавлен</th><th>Действия</th></tr>
+                        </thead>
+                        <tbody id="productsTbody"><tr><td colspan="6" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- WAREHOUSE -->
+            <section class="tab-pane" id="tab-warehouse">
+                <div class="page-header">
+                    <div>
+                        <h1>Ячейки склада</h1>
+                        <p class="page-desc">Управление местами хранения товаров.</p>
+                    </div>
+                    <button class="btn" id="openWarehouseModal">+ Добавить ячейку</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="warehouseSearch" placeholder="Поиск по номеру...">
+                    <button class="btn ghost" id="refreshWarehouse">Обновить</button>
+                </div>
+                <div class="info-banner">
+                    Ячейки склада управляются через раздел товаров. Здесь отображаются ячейки, привязанные к существующим товарам.
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="warehouseTable">
+                        <thead>
+                            <tr><th>Ячейка</th><th>Количество</th><th>Товар</th></tr>
+                        </thead>
+                        <tbody id="warehouseTbody"><tr><td colspan="3" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SUPPLIERS -->
+            <section class="tab-pane" id="tab-suppliers">
+                <div class="page-header">
+                    <div>
+                        <h1>Поставщики</h1>
+                        <p class="page-desc">Реестр контрагентов и привязка ассортимента.</p>
+                    </div>
+                    <button class="btn" id="openSupplierModal">+ Добавить поставщика</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="suppliersSearch" placeholder="Поиск...">
+                    <button class="btn ghost" id="refreshSuppliers">Обновить</button>
+                    <button class="btn secondary" id="openAssignModal">Привязать товар</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="suppliersTable">
+                        <thead>
+                            <tr><th>ID</th><th>Название</th><th>Страна</th><th>Статус</th><th>Комментарий</th><th>Создан</th><th>Действия</th></tr>
+                        </thead>
+                        <tbody id="suppliersTbody"><tr><td colspan="7" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- CUSTOMERS -->
+            <section class="tab-pane" id="tab-customers">
+                <div class="page-header">
+                    <div>
+                        <h1>Покупатели</h1>
+                        <p class="page-desc">База клиентов магазина.</p>
+                    </div>
+                    <button class="btn" id="openCustomerModal">+ Добавить покупателя</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="customersSearch" placeholder="Поиск по имени или email...">
+                    <button class="btn ghost" id="refreshCustomers">Обновить</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="customersTable">
+                        <thead>
+                            <tr><th>ID</th><th>Имя</th><th>Email</th><th>Телефон</th><th>Зарегистрирован</th><th>Действия</th></tr>
+                        </thead>
+                        <tbody id="customersTbody"><tr><td colspan="6" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SALES -->
+            <section class="tab-pane" id="tab-sales">
+                <div class="page-header">
+                    <div>
+                        <h1>Продажи</h1>
+                        <p class="page-desc">История продаж, позиции и кассовые транзакции.</p>
+                    </div>
+                    <button class="btn" id="openSaleModal">+ Новая продажа</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="salesSearch" placeholder="Поиск по ID...">
+                    <button class="btn ghost" id="refreshSales">Обновить</button>
+                    <button class="btn secondary" id="openTransactionModal">+ Транзакция</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="salesTable">
+                        <thead>
+                            <tr><th>ID</th><th>Покупатель ID</th><th>Касса ID</th><th>Способ оплаты</th><th>Сумма</th><th>Позиций</th><th>Дата</th><th>Действия</th></tr>
+                        </thead>
+                        <tbody id="salesTbody"><tr><td colspan="8" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ORDERS -->
+            <section class="tab-pane" id="tab-orders">
+                <div class="page-header">
+                    <div>
+                        <h1>Заказы поставщикам</h1>
+                        <p class="page-desc">Закупочные заявки на пополнение склада.</p>
+                    </div>
+                    <button class="btn" id="openOrderModal">+ Новый заказ</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="ordersSearch" placeholder="Поиск по ID или статусу...">
+                    <button class="btn ghost" id="refreshOrders">Обновить</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="ordersTable">
+                        <thead>
+                            <tr><th>ID</th><th>Поставщик ID</th><th>Менеджер ID</th><th>Статус</th><th>Сумма</th><th>Позиций</th><th>Создан</th><th>Действия</th></tr>
+                        </thead>
+                        <tbody id="ordersTbody"><tr><td colspan="8" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PROMOTIONS -->
+            <section class="tab-pane" id="tab-promotions">
+                <div class="page-header">
+                    <div>
+                        <h1>Акции и скидки</h1>
+                        <p class="page-desc">Управление маркетинговыми кампаниями.</p>
+                    </div>
+                    <div class="actions-group">
+                        <button class="btn" id="openPromotionModal">+ Акция</button>
+                        <button class="btn secondary" id="openHappyHourModal">Happy Hour</button>
+                        <button class="btn secondary" id="openProductOfDayModal">Товар дня</button>
+                    </div>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="promotionsSearch" placeholder="Поиск...">
+                    <button class="btn ghost" id="refreshPromotions">Обновить</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="promotionsTable">
+                        <thead>
+                            <tr><th>ID</th><th>Название</th><th>Тип</th><th>Скидка %</th><th>Товар ID</th><th>Начало</th><th>Конец</th><th>Действия</th></tr>
+                        </thead>
+                        <tbody id="promotionsTbody"><tr><td colspan="8" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- CASH REGISTERS -->
+            <section class="tab-pane" id="tab-cash-registers">
+                <div class="page-header">
+                    <div>
+                        <h1>Кассы</h1>
+                        <p class="page-desc">Управление кассовыми аппаратами.</p>
+                    </div>
+                    <button class="btn" id="openCashModal">+ Добавить кассу</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="cashSearch" placeholder="Поиск...">
+                    <button class="btn ghost" id="refreshCash">Обновить</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="cashTable">
+                        <thead>
+                            <tr><th>ID</th><th>Название</th><th>Местоположение</th><th>Действия</th></tr>
+                        </thead>
+                        <tbody id="cashTbody"><tr><td colspan="4" class="empty-row">Загрузка...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
     </div>
-    <div class="footer-brand">AutoSpare Market · Retail & Supply</div>
-</footer>
+</div>
+
+<!-- MODALS -->
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="productModalTitle">Новый товар</h2>
+            <button class="modal-close" data-modal="productModal">&times;</button>
+        </div>
+        <form id="productForm" class="modal-body stack">
+            <input type="hidden" name="id" id="productId">
+            <label>ID ячейки хранения <span class="required">*</span>
+                <input name="warehouseCellId" type="number" min="1" required placeholder="1">
+            </label>
+            <label>Название <span class="required">*</span>
+                <input name="name" required placeholder="Амортизатор передний левый">
+            </label>
+            <label>Описание
+                <textarea name="description" rows="3" placeholder="Краткое описание товара"></textarea>
+            </label>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="productModal">Отмена</button>
+                <button type="submit" class="btn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Warehouse Modal -->
+<div class="modal-overlay" id="warehouseModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Новая ячейка склада</h2>
+            <button class="modal-close" data-modal="warehouseModal">&times;</button>
+        </div>
+        <form id="warehouseForm" class="modal-body stack">
+            <label>Номер ячейки <span class="required">*</span>
+                <input name="cellNumber" required placeholder="A-01">
+            </label>
+            <label>Начальный остаток
+                <input name="quantity" type="number" min="0" value="0">
+            </label>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="warehouseModal">Отмена</button>
+                <button type="submit" class="btn">Создать ячейку</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Supplier Modal -->
+<div class="modal-overlay" id="supplierModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="supplierModalTitle">Новый поставщик</h2>
+            <button class="modal-close" data-modal="supplierModal">&times;</button>
+        </div>
+        <form id="supplierForm" class="modal-body stack">
+            <input type="hidden" name="id" id="supplierId">
+            <label>Название <span class="required">*</span>
+                <input name="name" required placeholder="ACME Parts LTD">
+            </label>
+            <label>Страна <span class="required">*</span>
+                <input name="country" required placeholder="Germany">
+            </label>
+            <label class="checkbox-row">
+                <input type="checkbox" name="isActive" checked>
+                <span>Активный поставщик</span>
+            </label>
+            <label>Комментарий по стране
+                <textarea name="countryInfo" rows="2" placeholder="Сроки и нюансы поставки"></textarea>
+            </label>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="supplierModal">Отмена</button>
+                <button type="submit" class="btn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Assign Product Modal -->
+<div class="modal-overlay" id="assignModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Привязать товар к поставщику</h2>
+            <button class="modal-close" data-modal="assignModal">&times;</button>
+        </div>
+        <form id="assignForm" class="modal-body stack">
+            <label>ID поставщика <span class="required">*</span>
+                <input name="supplierId" type="number" min="1" required placeholder="1">
+            </label>
+            <label>ID товара <span class="required">*</span>
+                <input name="productId" type="number" min="1" required placeholder="1">
+            </label>
+            <label class="checkbox-row">
+                <input type="checkbox" name="isActive" checked>
+                <span>Привязка активна</span>
+            </label>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="assignModal">Отмена</button>
+                <button type="submit" class="btn">Привязать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Customer Modal -->
+<div class="modal-overlay" id="customerModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="customerModalTitle">Новый покупатель</h2>
+            <button class="modal-close" data-modal="customerModal">&times;</button>
+        </div>
+        <form id="customerForm" class="modal-body stack">
+            <input type="hidden" name="id" id="customerId">
+            <div class="form-row">
+                <label>Имя <span class="required">*</span>
+                    <input name="firstName" required placeholder="Иван">
+                </label>
+                <label>Фамилия <span class="required">*</span>
+                    <input name="lastName" required placeholder="Иванов">
+                </label>
+            </div>
+            <label>Email <span class="required">*</span>
+                <input name="email" type="email" required placeholder="ivan@example.com">
+            </label>
+            <label>Телефон
+                <input name="phone" placeholder="+7 (999) 123-45-67">
+            </label>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="customerModal">Отмена</button>
+                <button type="submit" class="btn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Sale Modal -->
+<div class="modal-overlay" id="saleModal">
+    <div class="modal modal-lg">
+        <div class="modal-header">
+            <h2>Новая продажа</h2>
+            <button class="modal-close" data-modal="saleModal">&times;</button>
+        </div>
+        <form id="saleForm" class="modal-body stack">
+            <div class="form-row">
+                <label>ID покупателя <span class="required">*</span>
+                    <input name="customerId" type="number" min="1" required placeholder="1">
+                </label>
+                <label>ID кассы <span class="required">*</span>
+                    <input name="cashRegisterId" type="number" min="1" required placeholder="1">
+                </label>
+            </div>
+            <label>Способ оплаты <span class="required">*</span>
+                <select name="paymentMethod" required>
+                    <option value="">— выберите —</option>
+                    <option value="Карта">Карта</option>
+                    <option value="Наличные">Наличные</option>
+                    <option value="QR">QR-оплата</option>
+                    <option value="Перевод">Банковский перевод</option>
+                </select>
+            </label>
+            <div class="items-section">
+                <div class="items-header">
+                    <span class="items-title">Позиции продажи</span>
+                    <button type="button" class="btn-sm" id="addSaleItem">+ Позиция</button>
+                </div>
+                <div id="saleItems" class="items-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="saleModal">Отмена</button>
+                <button type="submit" class="btn">Создать продажу</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Transaction Modal -->
+<div class="modal-overlay" id="transactionModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Кассовая транзакция</h2>
+            <button class="modal-close" data-modal="transactionModal">&times;</button>
+        </div>
+        <form id="transactionForm" class="modal-body stack">
+            <label>ID продажи <span class="required">*</span>
+                <input name="saleId" type="number" min="1" required placeholder="1">
+            </label>
+            <label>ID кассы <span class="required">*</span>
+                <input name="cashRegisterId" type="number" min="1" required placeholder="1">
+            </label>
+            <label>Сумма <span class="required">*</span>
+                <input name="amount" type="number" step="0.01" min="0" required placeholder="0.00">
+            </label>
+            <label>Тип операции
+                <select name="type">
+                    <option value="Payment">Поступление</option>
+                    <option value="Refund">Возврат</option>
+                </select>
+            </label>
+            <label>Комментарий
+                <textarea name="note" rows="2" placeholder="Основание операции / номер чека"></textarea>
+            </label>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="transactionModal">Отмена</button>
+                <button type="submit" class="btn">Добавить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Order Modal -->
+<div class="modal-overlay" id="orderModal">
+    <div class="modal modal-lg">
+        <div class="modal-header">
+            <h2>Новый заказ поставщику</h2>
+            <button class="modal-close" data-modal="orderModal">&times;</button>
+        </div>
+        <form id="orderForm" class="modal-body stack">
+            <div class="form-row">
+                <label>ID поставщика <span class="required">*</span>
+                    <input name="supplierId" type="number" min="1" required placeholder="1">
+                </label>
+                <label>ID менеджера <span class="required">*</span>
+                    <input name="managerId" type="number" min="1" required placeholder="1">
+                </label>
+            </div>
+            <div class="items-section">
+                <div class="items-header">
+                    <span class="items-title">Позиции заказа</span>
+                    <button type="button" class="btn-sm" id="addOrderItem">+ Позиция</button>
+                </div>
+                <div id="orderItems" class="items-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="orderModal">Отмена</button>
+                <button type="submit" class="btn">Создать заказ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Promotion Modal -->
+<div class="modal-overlay" id="promotionModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="promotionModalTitle">Новая акция</h2>
+            <button class="modal-close" data-modal="promotionModal">&times;</button>
+        </div>
+        <form id="promotionForm" class="modal-body stack">
+            <input type="hidden" name="promoType" id="promoTypeHidden" value="generic">
+            <label>Название <span class="required">*</span>
+                <input name="name" required placeholder="Летняя скидка">
+            </label>
+            <label>Тип акции
+                <select name="promotionType">
+                    <option value="0">Обычная</option>
+                    <option value="1">Happy Hour</option>
+                    <option value="2">Товар дня</option>
+                </select>
+            </label>
+            <label>ID товара <span class="required">*</span>
+                <input name="productId" type="number" min="1" required placeholder="1">
+            </label>
+            <label>Скидка % <span class="required">*</span>
+                <input name="discountPercent" type="number" min="1" max="100" required placeholder="10">
+            </label>
+            <div class="form-row">
+                <label>Начало <span class="required">*</span>
+                    <input name="startAt" type="datetime-local" required>
+                </label>
+                <label>Конец <span class="required">*</span>
+                    <input name="endAt" type="datetime-local" required>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="promotionModal">Отмена</button>
+                <button type="submit" class="btn">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Cash Register Modal -->
+<div class="modal-overlay" id="cashModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="cashModalTitle">Новая касса</h2>
+            <button class="modal-close" data-modal="cashModal">&times;</button>
+        </div>
+        <form id="cashForm" class="modal-body stack">
+            <input type="hidden" name="id" id="cashId">
+            <label>Название <span class="required">*</span>
+                <input name="name" required placeholder="Касса №1">
+            </label>
+            <label>Местоположение <span class="required">*</span>
+                <input name="location" required placeholder="Торговый зал">
+            </label>
+            <div class="modal-footer">
+                <button type="button" class="btn ghost" data-modal="cashModal">Отмена</button>
+                <button type="submit" class="btn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Sale Detail Modal -->
+<div class="modal-overlay" id="saleDetailModal">
+    <div class="modal modal-lg">
+        <div class="modal-header">
+            <h2 id="saleDetailTitle">Детали продажи</h2>
+            <button class="modal-close" data-modal="saleDetailModal">&times;</button>
+        </div>
+        <div class="modal-body" id="saleDetailBody">
+        </div>
+    </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" id="orderDetailModal">
+    <div class="modal modal-lg">
+        <div class="modal-header">
+            <h2 id="orderDetailTitle">Детали заказа</h2>
+            <button class="modal-close" data-modal="orderDetailModal">&times;</button>
+        </div>
+        <div class="modal-body" id="orderDetailBody">
+        </div>
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast"></div>
 
 <script src="app.js"></script>
 </body>
