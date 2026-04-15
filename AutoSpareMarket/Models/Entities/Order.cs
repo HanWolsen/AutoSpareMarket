@@ -11,8 +11,6 @@ namespace AutoSpareMarket.Domain.Models.Entities
 
         public int? SuplierId { get; set; }
         public Supplier? Supplier { get; set; }
-        public int? ManagerId { get; set; }
-        public Manager? Manager { get; set; }
 
         public ICollection<OrderItem>? OrderItems { get; set; }
     }

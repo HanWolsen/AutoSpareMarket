@@ -13,6 +13,8 @@ namespace AutoSpareMarket.API.Controllers
         private readonly ISupplierExtendedService _extendedService;
         private readonly IBaseService<SupplierProduct> _supplierProductBase;
 
+        // SupplierController(...) - конструктор
+        // Конструктор - это метод который вызываеться при создании обьекта класса
         public SuppliersController(IBaseService<Supplier> supplierService,
                                    ISupplierExtendedService extendedService,
                                    IBaseService<SupplierProduct> supplierProductBase)
@@ -20,6 +22,25 @@ namespace AutoSpareMarket.API.Controllers
             _supplierService = supplierService;
             _extendedService = extendedService;
             _supplierProductBase = supplierProductBase;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        //[Атрибут]
+        [HttpPut("{id:int}")]
+        // public - модификатор доступа
+        // ActionResult - возвращаемый тип данных (returns)
+        // Update - наименование метода
+        // (int id, [FromBody] SupplierUpdateDto dto) - параметры метода (param)
+        public ActionResult Update(int id, [FromBody] SupplierUpdateDto dto)
+        {
+            dto.Id = id;
+            return HandleBoolResponse(_supplierService.Update(dto));
+
         }
 
         [HttpPost]
@@ -34,12 +55,8 @@ namespace AutoSpareMarket.API.Controllers
         public ActionResult GetById(int id)
             => HandleResponse(_supplierService.GetById(id));
 
-        [HttpPut("{id:int}")]
-        public ActionResult Update(int id, [FromBody] SupplierUpdateDto dto)
-        {
-            dto.Id = id;
-            return HandleBoolResponse(_supplierService.Update(dto));
-        }
+        
+        
 
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)

@@ -4,6 +4,7 @@ using AutoSpareMarket.DAL.SqlServer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoSpareMarket.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328181426_AuthMigration")]
+    partial class AuthMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -596,7 +599,7 @@ namespace AutoSpareMarket.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.User", b =>
+            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.Manager", b =>
                 {
                     b.HasBaseType("AutoSpareMarket.Domain.Models.Abstractions.ApplicationUser");
 
@@ -615,7 +618,7 @@ namespace AutoSpareMarket.DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasDiscriminator().HasValue("User");
+                    b.HasDiscriminator().HasValue("Manager");
                 });
 
             modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.Order", b =>

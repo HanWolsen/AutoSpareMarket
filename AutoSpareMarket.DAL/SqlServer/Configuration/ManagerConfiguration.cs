@@ -4,17 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AutoSpareMarket.DAL.SqlServer.Configuration
 {
-    internal class ManagerConfiguration : IEntityTypeConfiguration<Manager>
+    internal class ManagerConfiguration : IEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<Manager> builder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(u => u.Id);
-            builder.Property(u => u.Name).IsRequired().HasMaxLength(50);
+            builder.Property(u => u.FirstName).IsRequired().HasMaxLength(50);
+            builder.Property(u => u.LastName).IsRequired().HasMaxLength(50);
+            builder.Property(u => u.MiddleName).IsRequired().HasMaxLength(50);
             builder.Property(u => u.Email).IsRequired().HasMaxLength(50);
-
-            builder.HasMany(u => u.Orders)
-                   .WithOne(o => o.Manager)
-                   .HasForeignKey(o => o.ManagerId);
         }
     }
 }

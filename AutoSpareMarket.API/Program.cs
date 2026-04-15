@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager configuration = builder.Configuration;
 
-var connection = configuration.GetConnectionString("ConnectionString"); ;
+var connection = configuration.GetConnectionString("ConnectionString");
 
-// Add services to the container.
+// Add services to the container
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection, sqlOptions =>
 {
@@ -18,8 +18,10 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 }));
 
 builder.Services
+    .InitializeIdentity(configuration)
     .InitializeRepositories()
-    .InitializeServices();
+    .InitializeServices()
+    .SeedAdmins();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -31,7 +33,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
 {
-    x.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "AutoSpareMarket" });
+    x.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "AutoSpareMarket API" });
 
     x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

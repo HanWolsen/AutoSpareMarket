@@ -19,7 +19,7 @@ namespace AutoSpareMarket.APIModels.Response.Helpers
             return new Response<T>
             {
                 IsSuccess = false,
-                StatusCode = 200,
+                StatusCode = 400,
                 Message = $"Внтреннее ошибка сервиса : {exception}"
             };
         }

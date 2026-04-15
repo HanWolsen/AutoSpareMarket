@@ -23,6 +23,25 @@ namespace AutoSpareMarket.API.Controllers
             return Ok(response.Data);
         }
 
+        protected ActionResult HandleResponse<T>(Task<IResponse<T>> response)
+        {
+            var responseResult = response.Result;
+
+            if (responseResult == null)
+                return StatusCode(500, "Null response");
+
+            if (!responseResult.IsSuccess)
+            {
+                // Можно улучшить определением типов ошибок (NotFoundException и т.д.)
+                return BadRequest(new { responseResult.Message });
+            }
+
+            if (responseResult.Data == null)
+                return NotFound();
+
+            return Ok(responseResult.Data);
+        }
+
         protected ActionResult HandleBoolResponse(IResponse<bool> response)
         {
             if (response == null)

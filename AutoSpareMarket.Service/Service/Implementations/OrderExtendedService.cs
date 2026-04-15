@@ -200,7 +200,6 @@ namespace AutoSpareMarket.Service.Services
             {
                 Id = order.Id,
                 SupplierId = order.SuplierId,
-                ManagerId = order.ManagerId,
                 TotalAmount = order.TotalAmount,
                 Status = order.Status,
                 CreatedAt = order.CreatedAt,

@@ -1,10 +1,12 @@
 ﻿using AutoSpareMarket.DAL.SqlServer.Configuration;
+using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Domain.Models.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AutoSpareMarket.DAL.SqlServer.Context
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser,ApplicationRole,int>
     {
         public AppDbContext() : base()
         {
@@ -17,7 +19,7 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
 
         DbSet<CashRegister> CashRegisters { get; set; }
         DbSet<Customer> Customers { get; set; }
-        DbSet<Manager> Managers { get; set; }
+        DbSet<User> Managers { get; set; }
         DbSet<Order> Orders { get; set; }
         DbSet<OrderItem> OrderItems { get; set; }
         DbSet<Product> Products { get; set; }
@@ -27,7 +29,7 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
         DbSet<Supplier> Suppliers { get; set; }
         DbSet<SupplierProduct> SupplierProducts { get; set; }
         DbSet<Transaction> Transactions { get; set; }
-        DbSet<WarehouseCell> WarehouseCells { get; set; }
+        DbSet<WarehouseCell> WarehouseCells { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +49,7 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
                 .ApplyConfigurationsFromAssembly(typeof(SupplierProductConfiguration).Assembly)
                 .ApplyConfigurationsFromAssembly(typeof(TransactionConfiguration).Assembly)
                 .ApplyConfigurationsFromAssembly(typeof(WarehouseCellConfiguration).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(ApplicationUserConfiguration).Assembly)
                 ;
         }
     }
