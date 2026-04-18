@@ -12,21 +12,41 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="logo" href="/">
-      <span class="logo-icon">&#9881;</span>
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0M4.93 19.07a10 10 0 0 0 14.14 0M12 2v2m0 18v-2m10-8h-2M4 12H2m15.66-6.34-1.42 1.42M7.76 16.24l-1.42 1.42m9.9 0-1.42-1.42M7.76 7.76 6.34 6.34"/></svg>
       <span class="logo-text">АвтоЗапчасти</span>
     </a>
     <div class="search-wrap">
       <input type="text" id="searchInput" class="search-input" placeholder="Поиск запчастей, артикул, марка…" />
-      <button class="search-btn" id="searchBtn">&#128269;</button>
+      <button class="search-btn" id="searchBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
     </div>
     <nav class="header-nav">
-      <button class="btn-support" id="openSupportBtn">Тех. поддержка</button>
+      <button class="btn-support" id="openSupportBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Поддержка
+      </button>
+
+      <div class="auth-nav" id="authNav">
+        <button class="btn-auth-login" id="headerLoginBtn">Войти</button>
+        <button class="btn-auth-reg" id="headerRegBtn">Регистрация</button>
+      </div>
+      <div class="user-nav" id="userNav" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="user-greeting" id="userGreeting"></span>
+        <button class="btn-logout" id="headerLogoutBtn">Выйти</button>
+      </div>
+
       <a class="cart-link" href="cart.html">
-        <span class="cart-icon">&#128722;</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         <span class="cart-badge" id="cartBadge">0</span>
         <span class="cart-label">Корзина</span>
       </a>
-      <a class="admin-link" href="admin.html">Панель управления</a>
+
+      <a class="admin-link" id="adminLink" href="admin.html" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Панель
+      </a>
     </nav>
   </div>
 </header>
@@ -34,25 +54,43 @@
 <!-- HERO -->
 <section class="hero">
   <div class="container hero-content">
+    <div class="hero-badge">Более 50 000 запчастей в каталоге</div>
     <h1>Запчасти для любого автомобиля</h1>
-    <p>Широкий ассортимент, быстрая доставка, гарантия качества</p>
-    <button class="btn-primary hero-btn" onclick="document.getElementById('catalogSection').scrollIntoView({behavior:'smooth'})">
-      Перейти в каталог
-    </button>
+    <p>Оригинальные и аналоговые детали с доставкой по всей России. Быстро, надёжно, с гарантией.</p>
+    <div class="hero-actions">
+      <button class="btn-primary hero-btn" onclick="document.getElementById('catalogSection').scrollIntoView({behavior:'smooth'})">Перейти в каталог</button>
+      <button class="btn-outline hero-btn-outline" id="heroSupportBtn">Задать вопрос</button>
+    </div>
   </div>
 </section>
 
-<!-- PROMO BADGES -->
+<!-- PROMO BAR -->
 <section class="promo-bar">
   <div class="container promo-bar-inner">
-    <div class="promo-item">&#9989; Оригинальные запчасти</div>
-    <div class="promo-item">&#128666; Доставка по всей стране</div>
-    <div class="promo-item">&#128274; Безопасная оплата</div>
-    <div class="promo-item">&#128222; Поддержка 7 дней в неделю</div>
+    <div class="promo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>
+      Оригинальные запчасти
+    </div>
+    <div class="promo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Доставка по всей стране
+    </div>
+    <div class="promo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Безопасная оплата
+    </div>
+    <div class="promo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.36 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16z"/></svg>
+      Поддержка 7 дней
+    </div>
+    <div class="promo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Гарантия качества
+    </div>
   </div>
 </section>
 
-<!-- ACTIVE PROMOTIONS -->
+<!-- PROMOTIONS -->
 <section class="promotions-section" id="promotionsSection" style="display:none">
   <div class="container">
     <h2 class="section-title">Акции и скидки</h2>
@@ -73,10 +111,12 @@
       </div>
     </div>
 
-    <div id="loadingMsg" class="loading-msg">Загрузка товаров…</div>
+    <div id="loadingMsg" class="loading-msg">
+      <svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke-opacity=".2"/><path d="M21 12a9 9 0 0 1-9 9"/></svg>
+      Загрузка товаров…
+    </div>
     <div id="emptyMsg" class="empty-msg" style="display:none">Товары не найдены</div>
     <div class="products-grid" id="productsGrid"></div>
-
     <div class="pagination" id="pagination"></div>
   </div>
 </section>
@@ -85,7 +125,7 @@
 <footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-col">
-      <span class="logo-text footer-logo-text">АвтоЗапчасти</span>
+      <span class="footer-logo-text">АвтоЗапчасти</span>
       <p>Интернет-магазин автомобильных запчастей. Работаем с 2020 года.</p>
     </div>
     <div class="footer-col">
@@ -96,7 +136,7 @@
     </div>
     <div class="footer-col">
       <strong>Контакты</strong>
-      <span id="footerEmail">—</span>
+      <span id="footerEmail">support@autosparemarket.ru</span>
     </div>
   </div>
   <div class="footer-bottom">
@@ -104,14 +144,48 @@
   </div>
 </footer>
 
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal auth-modal">
+    <button class="modal-close" id="closeAuthBtn">&times;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin">Вход</button>
+      <button class="auth-tab" id="tabReg">Регистрация</button>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <h2 class="auth-title">Войти в аккаунт</h2>
+      <label>Email<input type="email" name="email" required placeholder="example@mail.ru" /></label>
+      <label>Пароль<input type="password" name="password" required placeholder="Пароль" /></label>
+      <div id="loginError" class="form-error" style="display:none"></div>
+      <button type="submit" class="btn-primary dark" id="loginSubmitBtn">Войти</button>
+      <p class="auth-switch">Нет аккаунта? <button type="button" class="link-btn-inline" id="switchToReg">Зарегистрируйтесь</button></p>
+    </form>
+
+    <form id="regForm" class="auth-form" style="display:none">
+      <h2 class="auth-title">Создать аккаунт</h2>
+      <div class="form-row-2">
+        <label>Имя<input type="text" name="firstName" required placeholder="Иван" /></label>
+        <label>Фамилия<input type="text" name="lastName" required placeholder="Петров" /></label>
+      </div>
+      <label>Имя пользователя<input type="text" name="username" required placeholder="ivan_petrov" /></label>
+      <label>Email<input type="email" name="email" required placeholder="example@mail.ru" /></label>
+      <label>Телефон<input type="tel" name="phone" placeholder="+7 (999) 000-00-00" /></label>
+      <label>Пароль<input type="password" name="password" required placeholder="Минимум 6 символов" minlength="6" /></label>
+      <div id="regError" class="form-error" style="display:none"></div>
+      <button type="submit" class="btn-primary dark" id="regSubmitBtn">Зарегистрироваться</button>
+      <p class="auth-switch">Уже есть аккаунт? <button type="button" class="link-btn-inline" id="switchToLogin">Войдите</button></p>
+    </form>
+  </div>
+</div>
+
 <!-- SUPPORT MODAL -->
 <div class="modal-overlay" id="supportModal">
   <div class="modal support-modal">
     <button class="modal-close" id="closeSupportBtn">&times;</button>
     <h2 class="modal-title">Техническая поддержка</h2>
     <form id="supportForm" class="support-form">
-      <label>
-        Категория
+      <label>Категория
         <select name="category" required>
           <option value="">— выберите —</option>
           <option value="order">Вопрос по заказу</option>
@@ -120,34 +194,20 @@
           <option value="other">Другое</option>
         </select>
       </label>
-      <label>
-        Тема
-        <input type="text" name="subject" required placeholder="Кратко опишите вопрос" />
-      </label>
-      <label>
-        Сообщение
-        <textarea name="message" rows="4" required placeholder="Подробно опишите проблему…"></textarea>
-      </label>
-      <label>
-        Ваш email
-        <input type="email" name="email" required placeholder="example@mail.ru" />
-      </label>
-      <label>
-        Прикрепить фото (необязательно)
-        <input type="file" name="photo" accept="image/*" />
-      </label>
+      <label>Тема<input type="text" name="subject" required placeholder="Кратко опишите вопрос" /></label>
+      <label>Сообщение<textarea name="message" rows="4" required placeholder="Подробно опишите проблему…"></textarea></label>
+      <label>Ваш email<input type="email" name="email" required placeholder="example@mail.ru" /></label>
+      <label>Прикрепить фото (необязательно)<input type="file" name="photo" accept="image/*" /></label>
       <div id="supportError" class="form-error" style="display:none"></div>
-      <div id="supportSuccess" class="form-success" style="display:none">
-        Ваше обращение отправлено! Мы ответим на указанный email.
-      </div>
-      <button type="submit" class="btn-primary" id="supportSubmitBtn">Отправить обращение</button>
+      <div id="supportSuccess" class="form-success" style="display:none">Ваше обращение отправлено! Мы ответим на указанный email.</div>
+      <button type="submit" class="btn-primary dark" id="supportSubmitBtn">Отправить обращение</button>
     </form>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="auth.js"></script>
 <script src="store.js"></script>
 </body>
 </html>

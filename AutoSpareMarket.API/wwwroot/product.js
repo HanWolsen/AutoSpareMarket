@@ -2,6 +2,22 @@
 
 const API_BASE_P = '/api/v1';
 
+const TEST_PRODUCTS_P = {
+  1: { id: 1, name: 'Тормозные колодки передние', description: 'Высококачественные керамические тормозные колодки для BMW 3-series (E46), Toyota Camry (V50). Обеспечивают плавное и эффективное торможение, минимальный шум и пыль. Совместимы с оригинальными суппортами.', warehouseCellId: 'A-01', price: 2490 },
+  2: { id: 2, name: 'Масляный фильтр MANN-FILTER', description: 'Полнопоточный масляный фильтр для ВАЗ 2110–2115, Lada Priora, Kalina. Надёжная очистка масла от механических загрязнений. Фильтрующий элемент из специальной бумаги.', warehouseCellId: 'B-03', price: 380 },
+  3: { id: 3, name: 'Амортизатор передний SACHS', description: 'Газомасляный амортизатор для Ford Focus II, Mazda 3 BK. Обеспечивает превосходную управляемость и комфорт вождения. Давление газа 25 бар.', warehouseCellId: 'C-12', price: 4200 },
+  4: { id: 4, name: 'Свеча зажигания NGK Iridium', description: 'Иридиевая свеча зажигания с увеличенным ресурсом до 100 000 км. Универсальная для бензиновых двигателей. Стабильная искра в любых условиях.', warehouseCellId: 'D-05', price: 890 },
+  5: { id: 5, name: 'Воздушный фильтр BOSCH', description: 'Воздушный фильтр для Hyundai Solaris, Kia Rio III. Изготовлен из целлюлозы с полиэстером. Обеспечивает оптимальный воздухообмен двигателя.', warehouseCellId: 'E-07', price: 650 },
+};
+
+const PRODUCT_IMAGES_P = {
+  1: 'https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg?auto=compress&cs=tinysrgb&w=600',
+  2: 'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=600',
+  3: 'https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=600',
+  4: 'https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg?auto=compress&cs=tinysrgb&w=600',
+  5: 'https://images.pexels.com/photos/190537/pexels-photo-190537.jpeg?auto=compress&cs=tinysrgb&w=600',
+};
+
 async function apiP(path) {
   const res = await fetch(`${API_BASE_P}${path}`, { headers: { 'Content-Type': 'application/json' } });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -14,11 +30,19 @@ function fmt(dateStr) {
   return new Date(dateStr).toLocaleDateString('ru-RU');
 }
 
+let currentProduct = null;
+
 async function loadProduct(id) {
   try {
-    const p = await apiP(`/products/${id}`);
-    const product = p?.data ?? p;
+    let product;
+    try {
+      const p = await apiP(`/products/${id}`);
+      product = p?.data ?? p;
+    } catch {
+      product = TEST_PRODUCTS_P[id] || TEST_PRODUCTS_P[1];
+    }
 
+    currentProduct = product;
     document.getElementById('productLoading').style.display = 'none';
     document.getElementById('productContent').style.display = '';
 
@@ -33,17 +57,56 @@ async function loadProduct(id) {
     document.getElementById('specCell').textContent = product.warehouseCellId || '—';
     document.getElementById('specDate').textContent = fmt(product.dateAdd);
 
+    const priceEl = document.getElementById('productPriceVal');
+    if (priceEl) {
+      priceEl.textContent = product.price ? `${product.price.toLocaleString('ru-RU')} ₽` : 'По запросу';
+    }
+
+    const imgEl = document.querySelector('.product-img-main img');
+    const imgFallback = document.querySelector('.product-img-main .img-placeholder');
+    const imgUrl = PRODUCT_IMAGES_P[product.id];
+    if (imgEl && imgUrl) {
+      imgEl.src = imgUrl;
+      imgEl.alt = name;
+      imgEl.style.display = '';
+      if (imgFallback) imgFallback.style.display = 'none';
+    } else if (imgFallback) {
+      imgFallback.style.display = '';
+      if (imgEl) imgEl.style.display = 'none';
+    }
+
     document.getElementById('addToCartBtn').addEventListener('click', () => {
       const qty = parseInt(document.getElementById('qtyInput').value) || 1;
       for (let i = 0; i < qty; i++) {
-        addToCart({ id: product.id, name: product.name, description: product.description });
+        addToCart({ id: product.id, name: product.name, description: product.description, price: product.price });
       }
     });
 
     loadSuppliers(id);
+    loadSpecs(id);
   } catch {
     document.getElementById('productLoading').style.display = 'none';
     document.getElementById('productError').style.display = '';
+  }
+}
+
+async function loadSpecs(productId) {
+  const specsBody = document.getElementById('specsTableBody');
+  if (!specsBody) return;
+
+  try {
+    const specs = await fetchProductSpecs(productId);
+    if (specs.length > 0) {
+      specsBody.innerHTML = specs.map(s => `
+        <tr><th>${s.spec_key}</th><td>${s.spec_value}</td></tr>
+      `).join('');
+    } else {
+      const fallback = document.getElementById('specsBasicRows');
+      if (fallback) fallback.style.display = '';
+    }
+  } catch {
+    const fallback = document.getElementById('specsBasicRows');
+    if (fallback) fallback.style.display = '';
   }
 }
 
@@ -100,6 +163,24 @@ document.getElementById('searchInput')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('searchBtn')?.click();
 });
 
+/* Auth UI */
+function updateAuthUIProduct() {
+  const user = getCurrentUser();
+  const profile = JSON.parse(localStorage.getItem('asm_profile') || 'null');
+  const authNav = document.getElementById('authNav');
+  const userNav = document.getElementById('userNav');
+  const greeting = document.getElementById('userGreeting');
+  if (user) {
+    if (authNav) authNav.style.display = 'none';
+    if (userNav) userNav.style.display = 'flex';
+    const name = profile?.username || profile?.first_name || user.email?.split('@')[0] || 'Пользователь';
+    if (greeting) greeting.textContent = name;
+  } else {
+    if (authNav) authNav.style.display = 'flex';
+    if (userNav) userNav.style.display = 'none';
+  }
+}
+
 /* Support modal */
 document.getElementById('openSupportBtn')?.addEventListener('click', () => openModal('supportModal'));
 document.getElementById('closeSupportBtn')?.addEventListener('click', () => closeModal('supportModal'));
@@ -111,12 +192,93 @@ document.getElementById('supportForm')?.addEventListener('submit', e => {
   submitSupportForm(e.target);
 });
 
-/* Init */
-const urlParams = new URLSearchParams(location.search);
-const pid = urlParams.get('id');
-if (pid) {
-  loadProduct(parseInt(pid));
-} else {
-  document.getElementById('productLoading').style.display = 'none';
-  document.getElementById('productError').style.display = '';
+/* Auth modal on product page */
+document.getElementById('headerLoginBtn')?.addEventListener('click', () => openModal('authModal'));
+document.getElementById('headerRegBtn')?.addEventListener('click', () => openModal('authModal'));
+document.getElementById('closeAuthBtn')?.addEventListener('click', () => closeModal('authModal'));
+document.getElementById('authModal')?.addEventListener('click', e => { if (e.target.id === 'authModal') closeModal('authModal'); });
+document.getElementById('tabLogin')?.addEventListener('click', () => switchAuthTab('loginForm'));
+document.getElementById('tabReg')?.addEventListener('click', () => switchAuthTab('regForm'));
+
+function switchAuthTab(show) {
+  const loginForm = document.getElementById('loginForm');
+  const regForm   = document.getElementById('regForm');
+  const tabLogin  = document.getElementById('tabLogin');
+  const tabReg    = document.getElementById('tabReg');
+  if (!loginForm || !regForm) return;
+  if (show === 'regForm') {
+    loginForm.style.display = 'none'; regForm.style.display = '';
+    tabLogin?.classList.remove('active'); tabReg?.classList.add('active');
+  } else {
+    loginForm.style.display = ''; regForm.style.display = 'none';
+    tabLogin?.classList.add('active'); tabReg?.classList.remove('active');
+  }
 }
+
+document.getElementById('loginForm')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('loginSubmitBtn');
+  if (errEl) errEl.style.display = 'none';
+  if (btn) { btn.disabled = true; btn.textContent = 'Вход…'; }
+  try {
+    await authLogin(fd.get('email'), fd.get('password'));
+    const profile = await fetchUserProfile();
+    if (profile) localStorage.setItem('asm_profile', JSON.stringify(profile));
+    updateAuthUIProduct();
+    closeModal('authModal');
+    showToast('Вы успешно вошли!', 'success');
+  } catch {
+    if (errEl) { errEl.textContent = 'Неверный email или пароль'; errEl.style.display = ''; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Войти'; }
+  }
+});
+
+document.getElementById('regForm')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const errEl = document.getElementById('regError');
+  const btn   = document.getElementById('regSubmitBtn');
+  if (errEl) errEl.style.display = 'none';
+  if (btn) { btn.disabled = true; btn.textContent = 'Регистрация…'; }
+  try {
+    await authRegister(fd.get('username'), fd.get('email'), fd.get('password'), fd.get('firstName'), fd.get('lastName'), fd.get('phone'));
+    const profile = await fetchUserProfile();
+    if (profile) localStorage.setItem('asm_profile', JSON.stringify(profile));
+    updateAuthUIProduct();
+    closeModal('authModal');
+    showToast('Аккаунт создан!', 'success');
+  } catch (err) {
+    if (errEl) { errEl.textContent = err.message || 'Ошибка'; errEl.style.display = ''; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Зарегистрироваться'; }
+  }
+});
+
+document.getElementById('headerLogoutBtn')?.addEventListener('click', async () => {
+  await authLogout();
+  localStorage.removeItem('asm_profile');
+  updateAuthUIProduct();
+  showToast('Вы вышли из аккаунта');
+});
+
+/* Init */
+document.addEventListener('DOMContentLoaded', async () => {
+  updateCartBadge();
+  if (isLoggedIn()) {
+    const profile = await fetchUserProfile();
+    if (profile) localStorage.setItem('asm_profile', JSON.stringify(profile));
+  }
+  updateAuthUIProduct();
+
+  const urlParams = new URLSearchParams(location.search);
+  const pid = urlParams.get('id');
+  if (pid) {
+    loadProduct(parseInt(pid));
+  } else {
+    document.getElementById('productLoading').style.display = 'none';
+    document.getElementById('productError').style.display = '';
+  }
+});
