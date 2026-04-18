@@ -45,6 +45,7 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         [Route("register")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var response = await _authManager.Register(model);
@@ -59,6 +60,7 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         [Route("update-token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> UpdateAccessToken(TokenModel model)
         {
             var response = await _tokenManager.UpdateToken(model);
@@ -73,6 +75,7 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         [Route("revork-refresh-token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> RevokeRefreshToken(string username)
         {
             var response = await _tokenManager.RevokeRefreshTokenByUserName(username);
@@ -87,6 +90,7 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         [Route("revork-all-refresh-token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> RevokeAllRefreshTokens()
         {
             var response = await _tokenManager.RevokeAllRefreshTokens();
@@ -105,10 +109,12 @@ namespace AutoSpareMarket.API.Controllers
             => HandleResponse(_userService.GetAll());
 
         [HttpGet("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public IActionResult GetById(int id)
             => HandleResponse(_userService.GetByIdAsync(id));
 
         [HttpPut("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public IActionResult Update(int id, [FromBody] UserDto dto)
         {
             dto.Id = id;
@@ -116,16 +122,19 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public IActionResult Delete(int id)
             => HandleResponse(_userService.DeleteByIdAsync(id));
 
         [HttpGet]
         [Route("get-admins-email")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public IActionResult GetAdminsEmail()
             => HandleResponse(_userService.GetAdminsEmail());
 
         [HttpPost]
         [Route("update-email")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> UpdateEmail([FromBody] string email)
         {
             IResponse<string> response = await _userService.UpdateAdminsProperty(
@@ -144,6 +153,7 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         [Route("update-phone-number")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> UpdatePhoneNumber([FromBody] string phoneNumber)
         {
             IResponse<string> response = await _userService.UpdateAdminsProperty(
@@ -162,6 +172,7 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         [Route("update-user-name")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> UpdateUserName([FromBody] string userName)
         {
             IResponse<string> response = await _userService.UpdateAdminsProperty(

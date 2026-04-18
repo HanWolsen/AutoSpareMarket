@@ -58,6 +58,7 @@ namespace AutoSpareMarket.API.Controllers
             => HandleBoolResponse(_baseService.DeleteById(id));
 
         [HttpGet("{id:int}/supplier-details")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult SupplierDetails(int id)
             => HandleResponse(_extendedService.GetSupplierDetails(id));
     }

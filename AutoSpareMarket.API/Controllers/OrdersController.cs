@@ -51,11 +51,12 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Delete(int id)
             => HandleBoolResponse(_baseService.DeleteById(id));
 
         [HttpPost("{id:int}/receive-items")]
-
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult ReceiveItems(int id, [FromBody] List<OrderItemDto> items)
             => HandleResponse(_extendedService.ReceiveItems(id, items));
     }

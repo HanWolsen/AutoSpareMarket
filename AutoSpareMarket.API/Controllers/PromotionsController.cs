@@ -26,6 +26,7 @@ namespace AutoSpareMarket.API.Controllers
             => HandleResponse(_baseService.Create(dto));
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetAll()
             => HandleResponse(_baseService.GetAll());
 
