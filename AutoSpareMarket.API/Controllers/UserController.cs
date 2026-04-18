@@ -45,7 +45,6 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         [Route("register")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var response = await _authManager.Register(model);

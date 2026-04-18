@@ -40,7 +40,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
         });
         const data = await res.json().catch(() => null);
         if (!res.ok || !data) throw new Error(data?.message || 'Неверные данные для входа');
-        const token = data?.data?.accessToken || data?.accessToken || data?.token;
+        const token = data?.data?.token;
         if (!token) throw new Error('Токен не получен от сервера');
         setToken(token);
         localStorage.setItem(AUTH_USER_KEY, username);

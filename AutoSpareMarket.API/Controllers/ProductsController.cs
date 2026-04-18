@@ -40,7 +40,6 @@ namespace AutoSpareMarket.API.Controllers
             => HandleResponse(_baseService.GetAll());
 
         [HttpGet("{id:int}")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetById(int id)
             => HandleResponse(_baseService.GetById(id));
 
