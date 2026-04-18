@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Карточка товара — АвтоЗапчасти</title>
+  <link rel="stylesheet" href="store.css" />
+  <link rel="stylesheet" href="product.css" />
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="/">
+      <span class="logo-icon">&#9881;</span>
+      <span class="logo-text">АвтоЗапчасти</span>
+    </a>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" class="search-input" placeholder="Поиск запчастей…" />
+      <button class="search-btn" id="searchBtn">&#128269;</button>
+    </div>
+    <nav class="header-nav">
+      <button class="btn-support" id="openSupportBtn">Тех. поддержка</button>
+      <a class="cart-link" href="cart.html">
+        <span class="cart-icon">&#128722;</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+        <span class="cart-label">Корзина</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container">
+    <a href="/">Каталог</a>
+    <span class="bc-sep">›</span>
+    <span id="bcName">Товар</span>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<main class="container product-page">
+  <div id="productLoading" class="loading-msg">Загрузка товара…</div>
+  <div id="productError" class="empty-msg" style="display:none">Товар не найден</div>
+
+  <div id="productContent" style="display:none">
+    <div class="product-layout">
+
+      <!-- LEFT: IMAGE -->
+      <div class="product-gallery">
+        <div class="product-img-main">
+          <span>&#9881;</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: INFO -->
+      <div class="product-info">
+        <h1 class="product-title" id="productTitle">—</h1>
+        <div class="product-meta">
+          <span class="meta-item">Артикул: <strong id="productId">—</strong></span>
+          <span class="meta-item">Добавлен: <strong id="productDate">—</strong></span>
+        </div>
+
+        <div class="product-price-block">
+          <span class="product-price">По запросу</span>
+          <span class="product-availability avail-ok">&#10003; В наличии</span>
+        </div>
+
+        <div class="product-actions">
+          <div class="qty-wrap">
+            <button class="qty-btn" id="qtyMinus">&#8722;</button>
+            <input type="number" id="qtyInput" class="qty-input" value="1" min="1" max="99" />
+            <button class="qty-btn" id="qtyPlus">&#43;</button>
+          </div>
+          <button class="btn-primary dark add-to-cart-btn" id="addToCartBtn">
+            &#128722; В корзину
+          </button>
+        </div>
+
+        <div class="delivery-options">
+          <div class="delivery-item">
+            <span class="delivery-icon">&#128666;</span>
+            <div>
+              <strong>Доставка по России</strong>
+              <span>2–7 рабочих дней</span>
+            </div>
+          </div>
+          <div class="delivery-item">
+            <span class="delivery-icon">&#128274;</span>
+            <div>
+              <strong>Гарантия качества</strong>
+              <span>Возврат в течение 14 дней</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="product-tabs">
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="about">О товаре</button>
+        <button class="tab-btn" data-tab="specs">Характеристики</button>
+        <button class="tab-btn" data-tab="suppliers">Поставщики</button>
+      </div>
+
+      <div class="tab-content active" id="tab-about">
+        <p id="productDesc">Описание не указано.</p>
+      </div>
+
+      <div class="tab-content" id="tab-specs">
+        <table class="specs-table">
+          <tbody>
+            <tr><th>Артикул</th><td id="specId">—</td></tr>
+            <tr><th>Ячейка склада</th><td id="specCell">—</td></tr>
+            <tr><th>Дата добавления</th><td id="specDate">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-content" id="tab-suppliers">
+        <div id="suppliersList" class="loading-msg">Загрузка поставщиков…</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-col">
+      <span class="footer-logo-text">АвтоЗапчасти</span>
+      <p>Интернет-магазин автомобильных запчастей.</p>
+    </div>
+    <div class="footer-col">
+      <strong>Навигация</strong>
+      <a href="/">Каталог</a>
+      <a href="cart.html">Корзина</a>
+    </div>
+  </div>
+  <div class="footer-bottom"><div class="container">&copy; 2025 АвтоЗапчасти</div></div>
+</footer>
+
+<!-- SUPPORT MODAL -->
+<div class="modal-overlay" id="supportModal">
+  <div class="modal support-modal">
+    <button class="modal-close" id="closeSupportBtn">&times;</button>
+    <h2 class="modal-title">Техническая поддержка</h2>
+    <form id="supportForm" class="support-form">
+      <label>Категория
+        <select name="category" required>
+          <option value="">— выберите —</option>
+          <option value="order">Вопрос по заказу</option>
+          <option value="product">Вопрос по товару</option>
+          <option value="delivery">Доставка</option>
+          <option value="other">Другое</option>
+        </select>
+      </label>
+      <label>Тема<input type="text" name="subject" required placeholder="Кратко опишите вопрос" /></label>
+      <label>Сообщение<textarea name="message" rows="4" required></textarea></label>
+      <label>Ваш email<input type="email" name="email" required placeholder="example@mail.ru" /></label>
+      <label>Фото (необязательно)<input type="file" name="photo" accept="image/*" /></label>
+      <div id="supportError" class="form-error" style="display:none"></div>
+      <div id="supportSuccess" class="form-success" style="display:none">Обращение отправлено!</div>
+      <button type="submit" class="btn-primary dark" id="supportSubmitBtn">Отправить</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="product.js"></script>
+</body>
+</html>

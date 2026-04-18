@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Корзина — АвтоЗапчасти</title>
+  <link rel="stylesheet" href="store.css" />
+  <link rel="stylesheet" href="cart.css" />
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="/">
+      <span class="logo-icon">&#9881;</span>
+      <span class="logo-text">АвтоЗапчасти</span>
+    </a>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" class="search-input" placeholder="Поиск запчастей…" />
+      <button class="search-btn" id="searchBtn">&#128269;</button>
+    </div>
+    <nav class="header-nav">
+      <button class="btn-support" id="openSupportBtn">Тех. поддержка</button>
+      <a class="cart-link" href="cart.html">
+        <span class="cart-icon">&#128722;</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+        <span class="cart-label">Корзина</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container">
+    <a href="/">Каталог</a>
+    <span class="bc-sep">›</span>
+    <span>Корзина</span>
+  </div>
+</div>
+
+<!-- CART PAGE -->
+<main class="container cart-page">
+  <h1 class="cart-title">Корзина</h1>
+
+  <!-- EMPTY STATE -->
+  <div id="cartEmpty" class="cart-empty" style="display:none">
+    <span class="cart-empty-icon">&#128722;</span>
+    <p>Ваша корзина пуста</p>
+    <a href="/" class="btn-primary dark">Перейти в каталог</a>
+  </div>
+
+  <!-- CART CONTENT -->
+  <div id="cartContent" class="cart-layout" style="display:none">
+
+    <!-- ITEMS LIST -->
+    <div class="cart-items">
+      <div class="cart-items-header">
+        <span id="cartItemsCount">0 товаров</span>
+        <button class="clear-cart-btn" id="clearCartBtn">Очистить корзину</button>
+      </div>
+      <div id="cartItemsList"></div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="cart-sidebar">
+      <div class="order-summary">
+        <h2 class="summary-title">Оформление заказа</h2>
+
+        <div class="summary-row">
+          <span>Товары (<span id="summaryCount">0</span>)</span>
+          <span>По запросу</span>
+        </div>
+        <div class="summary-row">
+          <span>Доставка</span>
+          <span class="text-success">Бесплатно</span>
+        </div>
+
+        <div class="promo-section">
+          <label class="promo-label">Промокод</label>
+          <div class="promo-wrap">
+            <input type="text" id="promoInput" class="promo-input" placeholder="Введите промокод" />
+            <button class="promo-apply-btn" id="promoApplyBtn">Применить</button>
+          </div>
+          <div id="promoMsg" class="promo-msg" style="display:none"></div>
+        </div>
+
+        <div class="summary-total">
+          <span>Итого</span>
+          <span class="total-price">По запросу</span>
+        </div>
+
+        <button class="btn-primary dark checkout-btn" id="checkoutBtn">
+          Оформить заказ
+        </button>
+        <a href="/" class="continue-link">← Продолжить покупки</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal checkout-modal">
+    <button class="modal-close" id="closeCheckoutBtn">&times;</button>
+    <h2 class="modal-title">Оформление заказа</h2>
+
+    <div id="checkoutStep1" class="checkout-step">
+      <p class="step-hint">Для оформления заказа введите ваши контактные данные:</p>
+      <form id="checkoutForm" class="checkout-form">
+        <div class="form-row">
+          <label>Имя <input type="text" name="firstName" required placeholder="Иван" /></label>
+          <label>Фамилия <input type="text" name="lastName" required placeholder="Петров" /></label>
+        </div>
+        <label>Email <input type="email" name="email" required placeholder="ivan@mail.ru" /></label>
+        <label>Телефон <input type="tel" name="phone" placeholder="+7 (999) 000-00-00" /></label>
+        <label>Способ оплаты
+          <select name="paymentMethod" required>
+            <option value="Cash">Наличные при получении</option>
+            <option value="Card">Банковская карта</option>
+            <option value="Online">Онлайн-оплата</option>
+          </select>
+        </label>
+        <div id="checkoutError" class="form-error" style="display:none"></div>
+        <button type="submit" class="btn-primary dark" id="checkoutSubmitBtn">Подтвердить заказ</button>
+      </form>
+    </div>
+
+    <div id="checkoutStep2" class="checkout-step" style="display:none">
+      <div class="order-success">
+        <div class="order-success-icon">&#10003;</div>
+        <h3>Заказ успешно оформлен!</h3>
+        <p id="orderSuccessMsg">Мы свяжемся с вами для подтверждения.</p>
+        <a href="/" class="btn-primary dark">Вернуться в каталог</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORT MODAL -->
+<div class="modal-overlay" id="supportModal">
+  <div class="modal support-modal">
+    <button class="modal-close" id="closeSupportBtn">&times;</button>
+    <h2 class="modal-title">Техническая поддержка</h2>
+    <form id="supportForm" class="support-form">
+      <label>Категория
+        <select name="category" required>
+          <option value="">— выберите —</option>
+          <option value="order">Вопрос по заказу</option>
+          <option value="product">Вопрос по товару</option>
+          <option value="delivery">Доставка</option>
+          <option value="other">Другое</option>
+        </select>
+      </label>
+      <label>Тема<input type="text" name="subject" required placeholder="Кратко опишите вопрос" /></label>
+      <label>Сообщение<textarea name="message" rows="4" required></textarea></label>
+      <label>Ваш email<input type="email" name="email" required placeholder="example@mail.ru" /></label>
+      <label>Фото (необязательно)<input type="file" name="photo" accept="image/*" /></label>
+      <div id="supportError" class="form-error" style="display:none"></div>
+      <div id="supportSuccess" class="form-success" style="display:none">Обращение отправлено!</div>
+      <button type="submit" class="btn-primary dark" id="supportSubmitBtn">Отправить</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="cart.js"></script>
+</body>
+</html>
