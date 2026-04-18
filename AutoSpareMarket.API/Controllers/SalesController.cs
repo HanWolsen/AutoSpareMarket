@@ -4,6 +4,7 @@ using AutoSpareMarket.APIModels.DTO.DTOs.Transactions;
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Service.Interfaces;
 using AutoSpareMarket.Service.Service.Intarfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoSpareMarket.API.Controllers
@@ -25,26 +26,32 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Create([FromBody] SaleCreateDto dto)
             => HandleResponse(_extendedService.CreateSale(dto));
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetAll()
             => HandleResponse(_baseService.GetAll());
 
         [HttpGet("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetById(int id)
             => HandleResponse(_baseService.GetById(id));
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Delete(int id)
             => HandleBoolResponse(_baseService.DeleteById(id));
 
         [HttpPost("{id:int}/add-items")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult AddItems(int id, [FromBody] List<SaleItemCreateDto> items)
             => HandleResponse(_extendedService.AddItems(id, items));
 
         [HttpPost("{id:int}/transactions")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult AddTransaction(int id, [FromBody] TransactionCreateDto dto)
         {
             dto.SaleId = id;
@@ -52,6 +59,7 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpGet("{id:int}/transactions")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetTransactions(int id)
             => HandleResponse(_extendedService.GetTransactions(id));
     }

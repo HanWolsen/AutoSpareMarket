@@ -2,6 +2,7 @@
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Service.Interfaces;
 using AutoSpareMarket.Service.Service.Intarfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoSpareMarket.API.Controllers
@@ -20,18 +21,22 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Create([FromBody] CustomerCreateDto dto)
             => HandleResponse(_baseService.Create(dto));
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetAll()
             => HandleResponse(_baseService.GetAll());
 
         [HttpGet("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetById(int id)
             => HandleResponse(_baseService.GetById(id));
 
         [HttpPut("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Update(int id, [FromBody] CustomerUpdateDto dto)
         {
             dto.Id = id;
@@ -39,10 +44,12 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Delete(int id)
             => HandleBoolResponse(_baseService.DeleteById(id));
 
         [HttpGet("by-product/{productId:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetCustomersByProduct(int productId, [FromQuery] int? minQuantity, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
             => HandleResponse(_extendedService.GetCustomersByProduct(productId, minQuantity, from, to));
     }

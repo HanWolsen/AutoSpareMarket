@@ -38,10 +38,11 @@ builder.Services.AddSwaggerGen(x =>
     x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter JWT with Bearer into field",
+        Description = "Please enter JWT Token",
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "bearer",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
     });
 
     x.AddSecurityRequirement(new OpenApiSecurityRequirement

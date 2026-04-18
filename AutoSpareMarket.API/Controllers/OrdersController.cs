@@ -30,10 +30,12 @@ namespace AutoSpareMarket.API.Controllers
             => HandleResponse(_baseService.GetAll());
 
         [HttpGet("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetById(int id)
             => HandleResponse(_baseService.GetById(id));
 
         [HttpPut("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Update(int id, [FromBody] OrderUpdateDto dto)
         {
             dto.Id = id;
@@ -41,6 +43,7 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPatch("{id:int}/status")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult UpdateStatus(int id, [FromBody] OrderUpdateDto dto)
         {
             dto.Id = id;
@@ -52,6 +55,7 @@ namespace AutoSpareMarket.API.Controllers
             => HandleBoolResponse(_baseService.DeleteById(id));
 
         [HttpPost("{id:int}/receive-items")]
+
         public ActionResult ReceiveItems(int id, [FromBody] List<OrderItemDto> items)
             => HandleResponse(_extendedService.ReceiveItems(id, items));
     }

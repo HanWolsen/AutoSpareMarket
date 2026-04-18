@@ -3,6 +3,7 @@ using AutoSpareMarket.APIModels.DTO.DTOs.WarehouseCells;
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Service.Interfaces;
 using AutoSpareMarket.Service.Service.Intarfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoSpareMarket.API.Controllers
@@ -24,11 +25,13 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Create([FromBody] ProductCreateDto dto)
             => HandleResponse(_baseService.Create(dto));
 
         [HttpPost]
         [Route("create-warehousecell")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult CreateWareHouseCell([FromBody] WarehouseCellCreateDto dto)
             => HandleResponse(_wareHouseService.Create(dto));
 
@@ -37,10 +40,12 @@ namespace AutoSpareMarket.API.Controllers
             => HandleResponse(_baseService.GetAll());
 
         [HttpGet("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetById(int id)
             => HandleResponse(_baseService.GetById(id));
 
         [HttpPut("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Update(int id, [FromBody] ProductUpdateDto dto)
         {
             dto.Id = id;
@@ -48,6 +53,7 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Delete(int id)
             => HandleBoolResponse(_baseService.DeleteById(id));
 

@@ -2,6 +2,7 @@
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Service.Interfaces;
 using AutoSpareMarket.Service.Service.Intarfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoSpareMarket.API.Controllers
@@ -20,6 +21,7 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Create([FromBody] PromotionCreateDto dto)
             => HandleResponse(_baseService.Create(dto));
 
@@ -28,24 +30,29 @@ namespace AutoSpareMarket.API.Controllers
             => HandleResponse(_baseService.GetAll());
 
         [HttpGet("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult GetById(int id)
             => HandleResponse(_baseService.GetById(id));
 
         [HttpPut("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Update(int id, [FromBody] PromotionUpdateDto dto)
         {
             return HandleBoolResponse(_baseService.Update(dto));
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Delete(int id)
             => HandleBoolResponse(_baseService.DeleteById(id));
 
         [HttpPost("happy-hour")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult CreateHappyHour([FromBody] PromotionCreateDto dto)
             => HandleResponse(_extendedService.CreateHappyHour(dto));
 
         [HttpPost("product-of-day")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult CreateProductOfDay([FromBody] PromotionCreateDto dto)
             => HandleResponse(_extendedService.CreateProductOfDay(dto));
     }

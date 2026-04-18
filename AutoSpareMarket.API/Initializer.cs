@@ -147,7 +147,7 @@ namespace AutoSpareMarket.API
             string adminName = AdminInfo.AdminName;
 
             var user = await userManager.FindByNameAsync(adminName);
-            if (user == null) return;
+            if (user != null) return;
 
             var admin = new User()
             {
