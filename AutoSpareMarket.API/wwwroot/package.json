@@ -4,10 +4,16 @@
   "description": "",
   "main": "admin.js",
   "scripts": {
+    "dev": "http-server . -p 3000 -c-1",
+    "start": "http-server . -p 3000 -c-1",
+    "serve": "http-server . -p 8080 -c-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
 }
