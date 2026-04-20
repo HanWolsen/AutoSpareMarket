@@ -3,7 +3,7 @@ using AutoSpareMarket.Domain.Models.Enums;
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class Promotion : BaseEntity
+    public class Promotion : BaseEntity<int>
     {
         public string Name { get; set; }
         public PromotionType PromotionType { get; set; }

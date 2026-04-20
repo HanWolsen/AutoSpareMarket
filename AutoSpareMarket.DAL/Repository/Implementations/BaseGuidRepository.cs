@@ -1,18 +1,24 @@
 ﻿using AutoSpareMarket.DAL.Repository.Intarfacec;
+using AutoSpareMarket.DAL.Repository.Interfaces;
 using AutoSpareMarket.DAL.SqlServer.Context;
 using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Validation;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AutoSpareMarket.DAL.Repository.Implementations
 {
-    public class BaseRepository<T> : IBaseRepository<T>
-        where T : BaseEntity<int>
+    public class BaseGuidRepository<T> : IBaseGuidRepository<T>
+        where T : BaseEntity<Guid>
     {
         protected readonly DbSet<T> _dbset;
         protected readonly AppDbContext _context;
 
-        public BaseRepository(AppDbContext context)
+        public BaseGuidRepository(AppDbContext context)
         {
             ObjectValidator<AppDbContext>.CheckIsNotNull(context);
 
@@ -31,7 +37,7 @@ namespace AutoSpareMarket.DAL.Repository.Implementations
             return _dbset;
         }
 
-        public T GetById(int id)
+        public T GetById(Guid id)
         {
             var entity = GetAll().FirstOrDefault(x => x.Id == id);
             ObjectValidator<T>.CheckIsNotNull(entity);

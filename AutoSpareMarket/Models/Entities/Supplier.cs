@@ -2,7 +2,7 @@
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class Supplier : BaseEntity
+    public class Supplier : BaseEntity<int>
     {
         public string Name { get; set; }
         public string Country { get; set; }

@@ -2,9 +2,9 @@
 
 namespace AutoSpareMarket.Service.Helpers.Maping
 {
-    internal class MapperHelper<Tmodel, T> 
+    internal class GuidMapperHelper<Tmodel, T>
        where Tmodel : class
-       where T : BaseEntity<int>
+       where T : BaseEntity<Guid>
     {
         public static T Map(Tmodel model)
         {

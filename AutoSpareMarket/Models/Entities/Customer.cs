@@ -2,7 +2,7 @@
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class Customer : BaseEntity
+    public class Customer : BaseEntity<int>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

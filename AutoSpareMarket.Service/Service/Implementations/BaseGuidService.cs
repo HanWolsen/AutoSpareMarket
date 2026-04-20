@@ -1,7 +1,7 @@
 ﻿using AutoSpareMarket.APIModels.DTO.BaseDTOs;
 using AutoSpareMarket.APIModels.Response.Helpers;
 using AutoSpareMarket.APIModels.Response.Interfaces;
-using AutoSpareMarket.DAL.Repository.Intarfacec;
+using AutoSpareMarket.DAL.Repository.Interfaces;
 using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Service.Helpers.Maping;
 using AutoSpareMarket.Service.Service.Intarfaces;
@@ -9,12 +9,12 @@ using AutoSpareMarket.Validation;
 
 namespace AutoSpareMarket.Service.Service.Implementations
 {
-    public class BaseService<T> : IBaseService<T>
-        where T : BaseEntity<int>
+    public class BaseGuidService<T> : IBaseGuidService<T>
+        where T : BaseEntity<Guid>
     {
-        protected readonly IBaseRepository<T> _baseRepository;
+        protected readonly IBaseGuidRepository<T> _baseRepository;
 
-        public BaseService(IBaseRepository<T> baseRepository)
+        public BaseGuidService(IBaseGuidRepository<T> baseRepository)
         {
             _baseRepository = baseRepository;
         }
@@ -26,13 +26,13 @@ namespace AutoSpareMarket.Service.Service.Implementations
             {
                 ObjectValidator<Tmodel>.CheckIsNotNull(entityDTO);
 
-                var entity = MapperHelper<Tmodel, T>.Map(entityDTO);
+                var entity = GuidMapperHelper<Tmodel, T>.Map(entityDTO);
 
                 _baseRepository.Create(entity);
 
                 return ResponseFactory<T>.CreateSuccessResponse(entity);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 return ResponseFactory<T>.CreateErrorResponse(exception);
             }
@@ -54,7 +54,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
             }
         }
 
-        public IResponse<T> GetById(int id)
+        public IResponse<T> GetById(Guid id)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
             {
                 ObjectValidator<Tmodel>.CheckIsNotNull(entityDTO);
 
-                var entity = MapperHelper<Tmodel, T>.Map(entityDTO);
+                var entity = GuidMapperHelper<Tmodel, T>.Map(entityDTO);
 
                 _baseRepository.Update(entity);
 
@@ -89,7 +89,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
             }
         }
 
-        public IResponse<bool> DeleteById(int id)
+        public IResponse<bool> DeleteById(Guid id)
         {
             try
             {

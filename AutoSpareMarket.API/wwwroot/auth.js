@@ -119,26 +119,30 @@ async function fetchUserProfile() {
   return Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
 }
 
+
+//[9] Заменить во всех местах, где используется SUPBASE на вызов нашего АПИ запроса
 /* ── PRODUCT SPECS ── */
 async function fetchProductSpecs(productId) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/product_specs?product_id=eq.${productId}&order=sort_order.asc&select=spec_key,spec_value`, {
+  const res = await fetch(`/api/v1/products_images/${productId}`, {
+    method: 'GET',
     headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': `Bearer ${SUPABASE_ANON}`,
-    },
+        'Accept': 'application/json'
+    }
   });
   const rows = await res.json().catch(() => []);
   return Array.isArray(rows) ? rows : [];
 }
 
+//[9] Заменить во всех местах, где используется SUPBASE на вызов нашего АПИ запроса
+
 /* ── PRODUCT IMAGE ── */
 async function fetchProductImage(productId) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/product_images?product_id=eq.${productId}&is_primary=eq.true&limit=1&select=image_url`, {
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': `Bearer ${SUPABASE_ANON}`,
-    },
-  });
+  const res = await fetch(`/api/v1/products_images/${productId}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+  })
   const rows = await res.json().catch(() => []);
   return Array.isArray(rows) && rows.length > 0 ? rows[0].image_url : null;
 }

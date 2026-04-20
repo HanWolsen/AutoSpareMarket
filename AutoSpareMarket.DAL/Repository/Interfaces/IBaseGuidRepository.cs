@@ -1,14 +1,14 @@
 ﻿using AutoSpareMarket.Domain.Models.Abstractions;
 
-namespace AutoSpareMarket.DAL.Repository.Intarfacec
+namespace AutoSpareMarket.DAL.Repository.Interfaces
 {
-    public interface IBaseRepository<T> where T : BaseEntity<int>
+    public interface IBaseGuidRepository<T> where T : BaseEntity<Guid>
     {
         public void Create(T entity);
 
         public IQueryable<T> GetAll();
 
-        public T GetById(int id);
+        public T GetById(Guid id);
 
         public void Update(T entity);
 

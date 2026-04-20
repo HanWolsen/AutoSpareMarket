@@ -1,6 +1,7 @@
 ﻿using AutoSpareMarket.DAL.SqlServer.Configuration;
 using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Domain.Models.Entities;
+using AutoSpareMarket.Domain.Models.Entities.FrontEnd;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +30,10 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
         DbSet<Supplier> Suppliers { get; set; }
         DbSet<SupplierProduct> SupplierProducts { get; set; }
         DbSet<Transaction> Transactions { get; set; }
-        DbSet<WarehouseCell> WarehouseCells { get; set; } 
+        DbSet<WarehouseCell> WarehouseCells { get; set; }
+
+        // [3] Добавить DbSet для сущности
+        DbSet<ProductImages> ProductImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,7 +54,14 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
                 .ApplyConfigurationsFromAssembly(typeof(TransactionConfiguration).Assembly)
                 .ApplyConfigurationsFromAssembly(typeof(WarehouseCellConfiguration).Assembly)
                 .ApplyConfigurationsFromAssembly(typeof(ApplicationUserConfiguration).Assembly)
+
+                // [4.2] Добавить конфигурацию для сущности
+                .ApplyConfigurationsFromAssembly(typeof(ProductImagesConfiguration).Assembly)
                 ;
+
+
+
+
         }
     }
 }

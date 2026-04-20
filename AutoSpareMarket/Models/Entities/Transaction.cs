@@ -3,7 +3,7 @@ using AutoSpareMarket.Domain.Models.Enums;
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class Transaction : BaseEntity
+    public class Transaction : BaseEntity<int>
     {
         public decimal Amount { get; set; }
         public TransactionType Type { get; set; }

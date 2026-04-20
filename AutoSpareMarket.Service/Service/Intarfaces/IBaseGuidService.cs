@@ -4,19 +4,19 @@ using AutoSpareMarket.Domain.Models.Abstractions;
 
 namespace AutoSpareMarket.Service.Service.Intarfaces
 {
-    public interface IBaseService<T>
-        where T : BaseEntity<int>
+    public interface IBaseGuidService<T>
+        where T : BaseEntity<Guid>
     {
         IResponse<T> Create<Tmodel>(Tmodel entityDTO)
             where Tmodel : BaseDTO;
 
         IResponse<IEnumerable<T>> GetAll();
 
-        IResponse<T> GetById(int id);
+        IResponse<T> GetById(Guid id);
 
         IResponse<bool> Update<Tmodel>(Tmodel entityDTO)
             where Tmodel : BaseDTO;
 
-        IResponse<bool> DeleteById(int id);
+        IResponse<bool> DeleteById(Guid id);
     }
 }

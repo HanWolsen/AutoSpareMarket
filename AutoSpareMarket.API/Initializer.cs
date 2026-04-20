@@ -1,6 +1,7 @@
 ﻿using AutoSpareMarket.APIModels.DTO.DTOs.Auth;
 using AutoSpareMarket.DAL.Repository.Implementations;
 using AutoSpareMarket.DAL.Repository.Intarfacec;
+using AutoSpareMarket.DAL.Repository.Interfaces;
 using AutoSpareMarket.DAL.SqlServer.Context;
 using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Domain.Models.Entities;
@@ -27,6 +28,8 @@ namespace AutoSpareMarket.API
         public static IServiceCollection InitializeRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddScoped(typeof(IBaseGuidRepository<>), typeof(BaseGuidRepository<>));
+
             services.AddScoped(typeof(UserManager<>));
             return services;
         }
@@ -39,6 +42,11 @@ namespace AutoSpareMarket.API
         public static IServiceCollection InitializeServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
+            services.AddScoped(typeof(IBaseGuidService<>), typeof(BaseGuidService<>));
+
+            //[8.1] Добавить все использованные зависимости(все сервисы) в контейнер внедрения зависимостей
+            services.AddScoped<IProductImagesService, ProductImagesService>();
+
             services.AddScoped<IProductExtendedService, ProductExtendedService>();
             services.AddScoped<ISupplierExtendedService, SupplierExtendedService>();
             services.AddScoped<IOrderExtendedService, OrderExtendedService>();
@@ -49,6 +57,7 @@ namespace AutoSpareMarket.API
             services.AddScoped<IPromotionExtendedService, PromotionExtendedService>();
             services.AddScoped<IUserService,UserService>();
             services.AddScoped<IUserStore<User>, UserStore<User, IdentityRole<int>, AppDbContext, int>>();
+
             
             return services;
         }

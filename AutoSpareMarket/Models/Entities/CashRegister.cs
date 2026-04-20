@@ -2,7 +2,7 @@
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class CashRegister : BaseEntity
+    public class CashRegister : BaseEntity<int>
     {
         public string Name { get; set; }
         public string Location { get; set; }

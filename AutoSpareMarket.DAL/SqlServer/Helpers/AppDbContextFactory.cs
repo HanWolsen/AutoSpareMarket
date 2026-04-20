@@ -5,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace AutoSpareMarket.DAL.SqlServer.Helpers
 {
+    // [5] Создать миграцию при помощи фабрики для миграций
+    // add-migration ProductImagesMigration 
+    // update-database
     public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         public AppDbContext CreateDbContext(string[] args)

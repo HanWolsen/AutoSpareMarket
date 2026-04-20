@@ -2,7 +2,7 @@
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class Sale : BaseEntity
+    public class Sale : BaseEntity<int>
     {
         public string PaymentMethod { get; set; }
         public decimal TotalAmaunt { get; set; }

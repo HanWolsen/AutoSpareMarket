@@ -2,7 +2,7 @@
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class WarehouseCell : BaseEntity
+    public class WarehouseCell : BaseEntity<int>
     {
         public string CellNumber { get; set; }
         public int Quantity { get; set; }

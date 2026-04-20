@@ -3,7 +3,7 @@ using AutoSpareMarket.Domain.Models.Enums;
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class Order : BaseEntity
+    public class Order : BaseEntity<int>
     {
         public int TotalAmount { get; set; }
         public OrderStatus Status { get; set; }
