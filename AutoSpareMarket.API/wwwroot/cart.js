@@ -219,6 +219,7 @@ function updateAuthUICart() {
     if (authNav) authNav.style.display = 'flex';
     if (userNav) userNav.style.display = 'none';
   }
+  updateCartBadge();
 }
 
 /* ── AUTH MODAL ── */
@@ -255,8 +256,23 @@ document.getElementById('loginForm')?.addEventListener('submit', async e => {
     await authLogin(fd.get('email'), fd.get('password'));
     const profile = await fetchUserProfile();
     if (profile) localStorage.setItem('asm_profile', JSON.stringify(profile));
+    // Restore cart saved before logout
+    const user = getCurrentUser();
+    if (user) {
+      const saved = localStorage.getItem(`${CART_KEY}_${user.id}`);
+      if (saved) {
+        try {
+          const items = JSON.parse(saved);
+          if (Array.isArray(items) && items.length > 0) {
+            saveCart(items);
+            localStorage.removeItem(`${CART_KEY}_${user.id}`);
+          }
+        } catch { /* ignore */ }
+      }
+    }
     updateAuthUICart();
     closeModal('authModal');
+    renderCart();
     showToast('Вы успешно вошли!', 'success');
   } catch {
     if (errEl) { errEl.textContent = 'Неверный email или пароль'; errEl.style.display = ''; }
@@ -287,9 +303,19 @@ document.getElementById('regForm')?.addEventListener('submit', async e => {
 });
 
 document.getElementById('headerLogoutBtn')?.addEventListener('click', async () => {
+  // Save cart under user key before clearing
+  const user = getCurrentUser();
+  if (user) {
+    const cart = getCart();
+    if (cart.length > 0) {
+      localStorage.setItem(`${CART_KEY}_${user.id}`, JSON.stringify(cart));
+    }
+  }
+  saveCart([]);
   await authLogout();
   localStorage.removeItem('asm_profile');
   updateAuthUICart();
+  renderCart();
   showToast('Вы вышли из аккаунта');
 });
 

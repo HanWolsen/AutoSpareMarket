@@ -179,6 +179,7 @@ function updateAuthUIProduct() {
     if (authNav) authNav.style.display = 'flex';
     if (userNav) userNav.style.display = 'none';
   }
+  updateCartBadge();
 }
 
 /* Support modal */
@@ -226,6 +227,11 @@ document.getElementById('loginForm')?.addEventListener('submit', async e => {
     await authLogin(fd.get('email'), fd.get('password'));
     const profile = await fetchUserProfile();
     if (profile) localStorage.setItem('asm_profile', JSON.stringify(profile));
+    const user = getCurrentUser();
+    if (user) {
+      const saved = localStorage.getItem(`${CART_KEY}_${user.id}`);
+      if (saved) { try { const items = JSON.parse(saved); if (Array.isArray(items) && items.length > 0) { saveCart(items); localStorage.removeItem(`${CART_KEY}_${user.id}`); } } catch {} }
+    }
     updateAuthUIProduct();
     closeModal('authModal');
     showToast('Вы успешно вошли!', 'success');
@@ -258,9 +264,16 @@ document.getElementById('regForm')?.addEventListener('submit', async e => {
 });
 
 document.getElementById('headerLogoutBtn')?.addEventListener('click', async () => {
+  const user = getCurrentUser();
+  if (user) {
+    const cart = getCart();
+    if (cart.length > 0) localStorage.setItem(`${CART_KEY}_${user.id}`, JSON.stringify(cart));
+  }
+  saveCart([]);
   await authLogout();
   localStorage.removeItem('asm_profile');
   updateAuthUIProduct();
+  updateCartBadge();
   showToast('Вы вышли из аккаунта');
 });
 
