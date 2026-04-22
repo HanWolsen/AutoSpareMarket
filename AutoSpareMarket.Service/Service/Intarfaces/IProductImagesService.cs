@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.Domain.Models.Entities.FrontEnd;
+using AutoSpareMarket.Domain.Models.Entities.FrontEnd;
 
 namespace AutoSpareMarket.Service.Service.Intarfaces
 {

@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.Domain.Models.Abstractions;
+using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Domain.Models.Enums;
 
 namespace AutoSpareMarket.Domain.Models.Entities

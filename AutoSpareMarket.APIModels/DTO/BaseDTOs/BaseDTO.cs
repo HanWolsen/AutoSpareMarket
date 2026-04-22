@@ -1,4 +1,4 @@
-﻿namespace AutoSpareMarket.APIModels.DTO.BaseDTOs
+namespace AutoSpareMarket.APIModels.DTO.BaseDTOs
 {
     public abstract class BaseDTO
     {

@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.BaseDTOs;
+using AutoSpareMarket.APIModels.DTO.BaseDTOs;
 using AutoSpareMarket.APIModels.DTO.DTOs.Transactions;
 
 namespace AutoSpareMarket.APIModels.DTO.DTOs.CashRegisters

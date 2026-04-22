@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.DTOs.CashRegisters;
+using AutoSpareMarket.APIModels.DTO.DTOs.CashRegisters;
 using AutoSpareMarket.APIModels.DTO.DTOs.Transactions;
 using AutoSpareMarket.APIModels.Response.Helpers;
 using AutoSpareMarket.APIModels.Response.Interfaces;

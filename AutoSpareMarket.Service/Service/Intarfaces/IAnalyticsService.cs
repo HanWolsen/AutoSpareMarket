@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.DTOs.Sales;
+using AutoSpareMarket.APIModels.DTO.DTOs.Sales;
 using AutoSpareMarket.APIModels.DTO.DTOs.Suppliers;
 using AutoSpareMarket.APIModels.Response.Interfaces;
 

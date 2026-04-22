@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.BaseDTOs;
+using AutoSpareMarket.APIModels.DTO.BaseDTOs;
 using AutoSpareMarket.Domain.Models.Enums;
 
 namespace AutoSpareMarket.APIModels.DTO.DTOs.Transactions

@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.Domain.Models.Abstractions;
+using AutoSpareMarket.Domain.Models.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;

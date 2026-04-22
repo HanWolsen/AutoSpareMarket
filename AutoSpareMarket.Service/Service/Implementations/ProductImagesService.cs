@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.DAL.Repository.Intarfacec;
+using AutoSpareMarket.DAL.Repository.Intarfacec;
 using AutoSpareMarket.DAL.Repository.Interfaces;
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Domain.Models.Entities.FrontEnd;

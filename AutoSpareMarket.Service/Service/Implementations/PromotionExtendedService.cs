@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.DTOs.Promotions;
+using AutoSpareMarket.APIModels.DTO.DTOs.Promotions;
 using AutoSpareMarket.APIModels.Response.Helpers;
 using AutoSpareMarket.APIModels.Response.Interfaces;
 using AutoSpareMarket.DAL.Repository.Intarfacec;

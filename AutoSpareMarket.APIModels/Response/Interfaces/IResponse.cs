@@ -1,4 +1,4 @@
-﻿namespace AutoSpareMarket.APIModels.Response.Interfaces
+namespace AutoSpareMarket.APIModels.Response.Interfaces
 {
     public interface IResponse<T>
     {

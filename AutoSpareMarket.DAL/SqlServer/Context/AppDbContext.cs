@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.DAL.SqlServer.Configuration;
+using AutoSpareMarket.DAL.SqlServer.Configuration;
 using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Domain.Models.Entities.FrontEnd;

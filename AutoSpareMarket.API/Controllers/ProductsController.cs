@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.DTOs.Products;
+using AutoSpareMarket.APIModels.DTO.DTOs.Products;
 using AutoSpareMarket.APIModels.DTO.DTOs.WarehouseCells;
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Service.Interfaces;

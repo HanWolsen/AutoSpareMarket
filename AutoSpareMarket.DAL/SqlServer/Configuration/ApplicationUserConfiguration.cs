@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.Domain.Models.Abstractions;
+using AutoSpareMarket.Domain.Models.Abstractions;
 using AutoSpareMarket.Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

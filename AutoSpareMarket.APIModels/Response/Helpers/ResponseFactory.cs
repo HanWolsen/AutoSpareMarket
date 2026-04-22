@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.Response.Implementations;
+using AutoSpareMarket.APIModels.Response.Implementations;
 
 namespace AutoSpareMarket.APIModels.Response.Helpers
 {
