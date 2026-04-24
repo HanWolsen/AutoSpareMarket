@@ -96,7 +96,7 @@ async function authLogin(username, password) {
             'Authorization': `${token}`,
             'Accept': 'application/json',
         },
-        body: JSON.stringify({ userName: username }),
+        body: JSON.stringify({ username }),
     });
     const rows = await saveUserRes.json().catch(() => null);
     console.log('[LOGIN] save session:', JSON.stringify(rows));
