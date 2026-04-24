@@ -75,7 +75,13 @@ async function authRegister(username, password, email, phonenumber, firstname, l
 
 /* ── LOGIN ── */
 async function authLogin(username, password) {
+    console.log("[LOGIN] username = " + username);
+    console.log("[LOGIN] password = " + password);
+    
     const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
+    
+    console.log("[LOGIN] fetch = " + `${base}/user/login`);
+
     const data = await fetch(`${base}/user/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,6 +94,8 @@ async function authLogin(username, password) {
   //    headers: { 'Content-Type': 'application/json' },
   //});
     saveToken(data.data.token);
+    console.log("[LOGIN] saveToken = " + data.data.token);
+
   return data;
 }
 
