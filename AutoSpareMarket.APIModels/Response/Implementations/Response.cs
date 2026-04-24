@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.Response.Interfaces;
+using AutoSpareMarket.APIModels.Response.Interfaces;
 using AutoSpareMarket.Validation;
 
 namespace AutoSpareMarket.APIModels.Response.Implementations

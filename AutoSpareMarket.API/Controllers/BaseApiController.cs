@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.Response.Interfaces;
+using AutoSpareMarket.APIModels.Response.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoSpareMarket.API.Controllers

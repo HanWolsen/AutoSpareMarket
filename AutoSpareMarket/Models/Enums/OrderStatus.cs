@@ -1,4 +1,4 @@
-﻿namespace AutoSpareMarket.Domain.Models.Enums
+namespace AutoSpareMarket.Domain.Models.Enums
 {
     public enum OrderStatus
     {

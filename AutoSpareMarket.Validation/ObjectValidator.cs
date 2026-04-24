@@ -1,4 +1,4 @@
-﻿namespace AutoSpareMarket.Validation
+namespace AutoSpareMarket.Validation
 {
     public static class ObjectValidator<T>
     {

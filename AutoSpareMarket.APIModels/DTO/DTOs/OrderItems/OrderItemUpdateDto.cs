@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.BaseDTOs;
+using AutoSpareMarket.APIModels.DTO.BaseDTOs;
 
 namespace AutoSpareMarket.APIModels.DTO.DTOs.OrderItems
 {

@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.DAL.SqlServer.Context;
+using AutoSpareMarket.DAL.SqlServer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;

@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.Domain.Models.Abstractions;
+using AutoSpareMarket.Domain.Models.Abstractions;
 
 namespace AutoSpareMarket.DAL.Repository.Intarfacec
 {

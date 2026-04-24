@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.DTOs.CashRegisters;
+using AutoSpareMarket.APIModels.DTO.DTOs.CashRegisters;
 using AutoSpareMarket.APIModels.Response.Interfaces;
 
 namespace AutoSpareMarket.Service.Interfaces

@@ -1,4 +1,4 @@
-﻿using AutoSpareMarket.APIModels.DTO.DTOs.Promotions;
+using AutoSpareMarket.APIModels.DTO.DTOs.Promotions;
 using AutoSpareMarket.APIModels.Response.Interfaces;
 
 namespace AutoSpareMarket.Service.Interfaces

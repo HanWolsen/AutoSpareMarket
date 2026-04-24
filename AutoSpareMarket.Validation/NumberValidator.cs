@@ -1,4 +1,4 @@
-﻿namespace AutoSpareMarket.Validation
+namespace AutoSpareMarket.Validation
 {
     public static class NumberValidator<T> where T : struct, IComparable, IConvertible
     {

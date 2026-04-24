@@ -1,4 +1,4 @@
-﻿namespace AutoSpareMarket.APIModels.DTO.DTOs.Auth
+namespace AutoSpareMarket.APIModels.DTO.DTOs.Auth
 {
     public enum RoleType
     {
