@@ -79,11 +79,14 @@ async function authRegister(username, password, email, phoneNumber, firstName, l
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
     });
-    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+        console.error('[authRegister] Server returned status:', res.status);
+    }
 
-    const session = data.data;
-    if (session) {
-        saveSession(session);
+    const data = await res.json();
+
+    if (data && data.data) {
+        saveSession(data.data);
     }
     return data;
 }
@@ -166,8 +169,6 @@ async function fetchUserProfile() {
     const result = await res.json().catch(() => null);
     console.log('[fetchUserProfile] result:', JSON.stringify(result));
 
-    // Возвращаем данные. 
-    // Если ваш бэкенд оборачивает ответ в структуру { data: {...}, isSuccess: true }, распаковываем ее:
     return result?.data ? result.data : result;
 }
 
