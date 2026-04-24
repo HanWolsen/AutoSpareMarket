@@ -66,12 +66,12 @@ async function authRegister(username, password, email, phoneNumber, firstName, l
     const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
 
     const payload = {
-        username: username,
-        password: password,
         email: email,
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
         phoneNumber: phoneNumber, 
-        firstName: firstName,     
-        lastName: lastName        
+        username: username
     };
 
     const res = await fetch(`${base}/user/register`, {
