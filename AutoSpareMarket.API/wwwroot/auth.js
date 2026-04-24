@@ -71,11 +71,9 @@ async function authRegister(username, password, email, phonenumber, firstname, l
     });
     const data = await res.json().catch(() => null);
 
-    if (!data.IsSuccess) throw new Error('Ошибка регистрации');
-
-  const session = data.data;
-  saveSession(session);
-  return data;
+    const session = data.data;
+    saveSession(session);
+    return data;
 }
 
 /* ── LOGIN ── */
@@ -92,7 +90,6 @@ async function authLogin(username, password) {
     const token = data?.data?.token;
     if (!token) throw new Error('Токен не получен от сервера');
     saveToken(token);
-
 
     const saveUserRes = await fetch(`${base}/user/get-by-user-name`, {
         headers: {
