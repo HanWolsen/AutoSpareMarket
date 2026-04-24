@@ -1,8 +1,9 @@
 ﻿using AutoSpareMarket.Domain.Models.Abstractions;
+using AutoSpareMarket.Domain.Models.Entities.FrontEnd;
 
 namespace AutoSpareMarket.Domain.Models.Entities
 {
-    public class User : ApplicationUser
+    public class AdminUser : ApplicationUser
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

@@ -382,7 +382,7 @@ async function loadPromotions() {
 /* ── SUPPORT FORM ── */
 async function submitSupportForm(form) {
   const fd = new FormData(form);
-  const payload = { category: fd.get('category'), subject: fd.get('subject'), message: fd.get('message'), email: fd.get('email') };
+  const supportDto = { category: fd.get('category'), subject: fd.get('subject'), message: fd.get('message'), email: fd.get('email') };
   const errEl = document.getElementById('supportError');
   const okEl  = document.getElementById('supportSuccess');
   const btn   = document.getElementById('supportSubmitBtn');
@@ -391,12 +391,9 @@ async function submitSupportForm(form) {
   if (btn)   { btn.disabled = true; btn.textContent = 'Отправка…'; }
 
   try {
-    const supabaseUrl  = 'https://exvbhqoiqwyxbffzfemy.supabase.co';
-    const supabaseAnon = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4dmJocW9pcXd5eGJmZnpmZW15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTg0OTgsImV4cCI6MjA5MjA5NDQ5OH0.AVJw1JbKz0SkvtBhjmIxAH7EeSoZnBFB1Zyg77dl0HI';
-    await fetch(`${supabaseUrl}/functions/v1/support-email`, {
+      await fetch(`/api/v1/support-request/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${supabaseAnon}`, 'Apikey': supabaseAnon },
-      body: JSON.stringify(payload),
+          body: JSON.stringify(supportDto),
     });
     if (okEl) okEl.style.display = '';
     form.reset();

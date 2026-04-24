@@ -14,6 +14,7 @@ namespace AutoSpareMarket.Domain.Models.Entities
         public WarehouseCell? WarehouseCell { get; set; }
 
         // [2.2] Добавить связь с обеих сторон для сущности
+        public ICollection<ProductSpecs>? ProductSpecs { get; set; }
         public ICollection<ProductImages>? ProductImages { get; set; }
         public ICollection<Promotion>? Promotions { get; set; }
         public ICollection<SupplierProduct>? SupplierProducts { get; set; }

@@ -13,7 +13,8 @@ namespace AutoSpareMarket.Service.Service.Intarfaces
         Task<IResponse<bool>> UpdateAsync(UserDto dto);
         Task<IResponse<bool>> DeleteByIdAsync(int Id);
         Task<IResponse<string>> GetAdminsEmail();
-        Task<IResponse<string>> UpdateAdminsProperty<T>(Func<User,T> propertySelector,
-            Action<User, T> propertyUpdater,T newValue);
+        Task<IResponse<UserDto>> GetByUserName(string username);
+        Task<IResponse<string>> UpdateAdminsProperty<T>(Func<AdminUser,T> propertySelector,
+            Action<AdminUser, T> propertyUpdater,T newValue);
     }
 }

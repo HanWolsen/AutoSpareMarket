@@ -3,27 +3,52 @@ using AutoSpareMarket.APIModels.Response.Helpers;
 using AutoSpareMarket.APIModels.Response.Interfaces;
 using AutoSpareMarket.Domain.Models.Entities;
 using AutoSpareMarket.Service.Helpers.Constans;
-using AutoSpareMarket.Service.Helpers.Maping;
 using AutoSpareMarket.Service.Service.Intarfaces;
 using AutoSpareMarket.Validation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System;
 
 namespace AutoSpareMarket.Service.Service.Implementations
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<AdminUser> _userManager;
 
         /// <summary>
         /// Инициализирует новый экземпляр менеджера аутентификации с необходимыми зависимостями
         /// </summary>
         /// <param name="userManager">Менеджер пользователя для управления операциями с пользователями</param>
-        public UserService(UserManager<User> userManager)
+        public UserService(UserManager<AdminUser> userManager)
         {
-            ObjectValidator<UserManager<User>>.CheckIsNotNull(userManager);
+            ObjectValidator<UserManager<AdminUser>>.CheckIsNotNull(userManager);
             _userManager = userManager;
+        }
+
+        public async Task<IResponse<UserDto>> GetByUserName(string username)
+        {
+            try
+            {
+                AdminUser user = _userManager.Users.ToList().FirstOrDefault(x => x.UserName == username);
+
+                ObjectValidator<AdminUser>.CheckIsNotNull(user);
+
+                UserDto userDto = new UserDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    MiddleName = user.MiddleName
+                };
+
+
+                return ResponseFactory<UserDto>.CreateSuccessResponse(userDto);
+            }
+            catch (Exception exception)
+            {
+                return ResponseFactory<UserDto>.CreateErrorResponse(exception);
+            }
         }
 
         /// <summary>
@@ -35,9 +60,9 @@ namespace AutoSpareMarket.Service.Service.Implementations
         {
             try
             {
-                User user = await _userManager.FindByIdAsync(Id.ToString());
+                AdminUser user = await _userManager.FindByIdAsync(Id.ToString());
 
-                ObjectValidator<User>.CheckIsNotNull(user);
+                ObjectValidator<AdminUser>.CheckIsNotNull(user);
 
                 IdentityResult result = await _userManager.DeleteAsync(user);
 
@@ -66,7 +91,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
             {
                 var user = await _userManager.FindByNameAsync(AdminInfo.AdminName);
 
-                ObjectValidator<User>.CheckIsNotNull(user);
+                ObjectValidator<AdminUser>.CheckIsNotNull(user);
 
                 return ResponseFactory<string>.CreateSuccessResponse(user.Email);
             }
@@ -84,16 +109,16 @@ namespace AutoSpareMarket.Service.Service.Implementations
         {
             try
             {
-                List<User> users = _userManager.Users.ToList();
+                List<AdminUser> users = _userManager.Users.ToList();
 
-                ObjectValidator<List<User>>.CheckIsNotNull(users);
+                ObjectValidator<List<AdminUser>>.CheckIsNotNull(users);
 
                 List<UserDto> userDtos = new List<UserDto>();
 
-                foreach (User user in users) 
+                foreach (AdminUser user in users)
                 {
-                    UserDto userDto= new UserDto 
-                    { 
+                    UserDto userDto = new UserDto
+                    {
                         Id = user.Id,
                         UserName = user.UserName,
                         Email = user.Email,
@@ -127,7 +152,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
 
                 var user = await _userManager.FindByIdAsync(Id.ToString());
 
-                ObjectValidator<User>.CheckIsNotNull(user);
+                ObjectValidator<AdminUser>.CheckIsNotNull(user);
 
                 UserDto userDto = new UserDto
                 {
@@ -157,13 +182,13 @@ namespace AutoSpareMarket.Service.Service.Implementations
         /// <param name="newValue">Новое значение для обновляемого свойства</param>
         /// <returns>Ответ с идентификатором администратора в случае успеха, либо ошибкой в случае неудачи</returns>
         public async Task<IResponse<string>> UpdateAdminsProperty<T>(
-            Func<User, T> propertySelector, Action<User, T> propertyUpdater, T newValue)
+            Func<AdminUser, T> propertySelector, Action<AdminUser, T> propertyUpdater, T newValue)
         {
             try
             {
                 var user = await _userManager.FindByNameAsync(AdminInfo.AdminName);
 
-                ObjectValidator<User>.CheckIsNotNull(user);
+                ObjectValidator<AdminUser>.CheckIsNotNull(user);
 
                 propertyUpdater(user, newValue);
 
@@ -188,11 +213,11 @@ namespace AutoSpareMarket.Service.Service.Implementations
             {
                 ObjectValidator<UserDto>.CheckIsNotNull(dto);
 
-                User user = await _userManager.FindByIdAsync(dto.Id.ToString());
+                AdminUser user = await _userManager.FindByIdAsync(dto.Id.ToString());
 
                 user.Email = dto.Email;
                 user.FirstName = dto.FirstName;
-                user.LastName = dto.LastName;   
+                user.LastName = dto.LastName;
                 user.MiddleName = dto.MiddleName;
                 await _userManager.UpdateAsync(user);
 

@@ -26,8 +26,5 @@ namespace AutoSpareMarket.APIModels.DTO.DTOs.Auth
 
         [Required(ErrorMessage = "Last name is required")]
         public string? lastname { get; set; }
-
-        [Required(ErrorMessage = "Middle name is required")]
-        public string? middlename { get; set; }
     }
 }

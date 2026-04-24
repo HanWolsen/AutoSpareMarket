@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AutoSpareMarket.DAL.SqlServer.Configuration
 {
-    internal class ManagerConfiguration : IEntityTypeConfiguration<User>
+    internal class ManagerConfiguration : IEntityTypeConfiguration<AdminUser>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<AdminUser> builder)
         {
             builder.Property(u => u.FirstName).IsRequired().HasMaxLength(50);
             builder.Property(u => u.LastName).IsRequired().HasMaxLength(50);

@@ -22,8 +22,7 @@ async function sbFetch(path, options = {}) {
 }
 
 async function sbAuthFetch(path, options = {}) {
-  const session = getSession();
-  const token = session?.access_token || SUPABASE_ANON;
+    const token = getToken();
   const res = await fetch(`${SUPABASE_URL}${path}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -47,72 +46,73 @@ function clearSession() { localStorage.removeItem('asm_session'); }
 
 function getCurrentUser() {
   const s = getSession();
-  return s?.user || null;
+  return s?.username || null;
 }
 function isLoggedIn() { return !!getCurrentUser(); }
 
+/* -- TOKEN -- */
+function getToken() {
+    try { return JSON.parse(localStorage.getItem('asm_token') || 'null'); } catch { return null; }
+}
+function saveToken(session) { localStorage.setItem('asm_token', JSON.stringify(session)); }
+function clearToken() { localStorage.removeItem('asm_token'); }
+
+
 /* ── REGISTER ── */
-async function authRegister(username, email, password, firstName, lastName, phone) {
-  const data = await sbFetch('/auth/v1/signup', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-  });
-  if (!data.user && !data.access_token) throw new Error('Ошибка регистрации');
-
-  const session = data.session || data;
-  saveSession(session);
-
-  const userId = data.user?.id || session?.user?.id;
-  if (userId) {
-    const token = session?.access_token || SUPABASE_ANON;
-    await fetch(`${SUPABASE_URL}/rest/v1/store_users`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON,
-        'Authorization': `Bearer ${token}`,
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({ id: userId, username, first_name: firstName, last_name: lastName, email, phone: phone || null }),
+async function authRegister(username, password, email, phonenumber, firstname, lastname) {
+    const data = await Fetch('/api/v1/user/register', {
+        method: 'POST',
+        body: JSON.stringify({ username, password, email, phonenumber, firstname, lastname }),
     });
-  }
+    if (!data.IsSuccess) throw new Error('Ошибка регистрации');
+
+  const session = data.data;
+  saveSession(session);
   return data;
 }
 
 /* ── LOGIN ── */
-async function authLogin(email, password) {
-  const data = await sbFetch('/auth/v1/token?grant_type=password', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-  });
-  saveSession(data);
+async function authLogin(username, password) {
+    const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
+    const data = await fetch(`${base}/user/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName: username, password }),
+    });
+
+  //const data = await Fetch('/api/v1/user/login', {
+  //  method: 'POST',
+  //    body: JSON.stringify({ username, password }),
+  //    headers: { 'Content-Type': 'application/json' },
+  //});
+    saveToken(data.data.token);
   return data;
 }
 
 /* ── LOGOUT ── */
 async function authLogout() {
   try {
-    const session = getSession();
-    if (session?.access_token) {
-      await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
-        method: 'POST',
-        headers: { ...SB_HEADERS, 'Authorization': `Bearer ${session.access_token}` },
+      const accessToken = getToken();
+      if (accessToken) {
+        await fetch(`/api/v1/user/revoke-refresh-token`, {
+            method: 'POST',
+            headers: { 'Authorization': `${accessToken}` },
       });
     }
   } catch { /* ignore */ }
-  clearSession();
+    clearSession();
+    clearToken();
 }
 
 /* ── FETCH USER PROFILE ── */
 async function fetchUserProfile() {
-  const user = getCurrentUser();
-  if (!user) return null;
-  const session = getSession();
-  const token = session?.access_token || SUPABASE_ANON;
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/store_users?id=eq.${user.id}&select=*`, {
+  const userName = getCurrentUser();
+  if (!userName) return null;
+    const token = getToken();
+  const res = await fetch(`/api/v1/user/get-by-user-name`, {
     headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': `Bearer ${token}`,
+          'Authorization': `${token}`,
+          body: JSON.stringify({ userName }),
     },
   });
   const rows = await res.json().catch(() => []);

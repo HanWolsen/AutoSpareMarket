@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutoSpareMarket.DAL.SqlServer.Context
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser,ApplicationRole,int>
+    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public AppDbContext() : base()
         {
@@ -20,7 +20,7 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
 
         DbSet<CashRegister> CashRegisters { get; set; }
         DbSet<Customer> Customers { get; set; }
-        DbSet<User> Managers { get; set; }
+        DbSet<AdminUser> Managers { get; set; }
         DbSet<Order> Orders { get; set; }
         DbSet<OrderItem> OrderItems { get; set; }
         DbSet<Product> Products { get; set; }
@@ -34,6 +34,10 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
 
         // [3] Добавить DbSet для сущности
         DbSet<ProductImages> ProductImages { get; set; }
+        DbSet<SupportRequests> SupportRequests { get; set; }
+        DbSet<StoreUsers> StoreUsers { get; set; }
+        DbSet<ProductSpecs> ProductSpecs { get; set; }
+        DbSet<ProductCategories> ProductCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,11 +61,11 @@ namespace AutoSpareMarket.DAL.SqlServer.Context
 
                 // [4.2] Добавить конфигурацию для сущности
                 .ApplyConfigurationsFromAssembly(typeof(ProductImagesConfiguration).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(SupportRequestConfiguration).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(StoreUserConfiguration).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(ProductSpecsConfiguration).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(ProductCategoriesConfiguration).Assembly)
                 ;
-
-
-
-
         }
     }
 }

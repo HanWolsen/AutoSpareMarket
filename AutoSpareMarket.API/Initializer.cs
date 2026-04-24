@@ -46,6 +46,7 @@ namespace AutoSpareMarket.API
 
             //[8.1] Добавить все использованные зависимости(все сервисы) в контейнер внедрения зависимостей
             services.AddScoped<IProductImagesService, ProductImagesService>();
+            services.AddScoped<IProductSpecsService, ProductSpecsService>();
 
             services.AddScoped<IProductExtendedService, ProductExtendedService>();
             services.AddScoped<ISupplierExtendedService, SupplierExtendedService>();
@@ -56,7 +57,7 @@ namespace AutoSpareMarket.API
             services.AddScoped<IAnalyticsService, AnalyticsService>();
             services.AddScoped<IPromotionExtendedService, PromotionExtendedService>();
             services.AddScoped<IUserService,UserService>();
-            services.AddScoped<IUserStore<User>, UserStore<User, IdentityRole<int>, AppDbContext, int>>();
+            services.AddScoped<IUserStore<AdminUser>, UserStore<AdminUser, IdentityRole<int>, AppDbContext, int>>();
 
             
             return services;
@@ -70,13 +71,13 @@ namespace AutoSpareMarket.API
         /// <returns>Коллекция сервисов с настроенной аутентификацией и Identity</returns>
         public static IServiceCollection InitializeIdentity(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IAuthManager<User>>(provider =>
+            services.AddScoped<IAuthManager<AdminUser>>(provider =>
             {
-                var userManager = provider.GetRequiredService<UserManager<User>>();
-                return new AuthManager<User>(userManager, configuration);
+                var userManager = provider.GetRequiredService<UserManager<AdminUser>>();
+                return new AuthManager<AdminUser>(userManager, configuration);
             });
 
-            services.AddScoped(typeof(ITokenManager<User>), typeof(AuthManager<User>));
+            services.AddScoped(typeof(ITokenManager<AdminUser>), typeof(AuthManager<AdminUser>));
 
             services.AddAuthentication(options =>
             {
@@ -105,8 +106,8 @@ namespace AutoSpareMarket.API
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddScoped<IUserStore<User>, UserStore<User, IdentityRole<int>, AppDbContext, int>>();
-            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IUserStore<AdminUser>, UserStore<AdminUser, IdentityRole<int>, AppDbContext, int>>();
+            services.AddScoped<IPasswordHasher<AdminUser>, PasswordHasher<AdminUser>>();
 
             return services;
         }
@@ -151,14 +152,14 @@ namespace AutoSpareMarket.API
         /// <returns>Задача, представляющая асинхронную операцию создания администратора</returns>
         public static async Task SeedAdmins(this IServiceCollection services)
         {
-            var userManager = services.BuildServiceProvider().GetRequiredService<UserManager<User>>();
+            var userManager = services.BuildServiceProvider().GetRequiredService<UserManager<AdminUser>>();
 
             string adminName = AdminInfo.AdminName;
 
             var user = await userManager.FindByNameAsync(adminName);
             if (user != null) return;
 
-            var admin = new User()
+            var admin = new AdminUser()
             {
                 Id = AdminInfo.Id,
                 UserName = AdminInfo.UserName,

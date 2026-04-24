@@ -4,6 +4,7 @@ using AutoSpareMarket.DAL.SqlServer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoSpareMarket.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260423121325_StoreUsersMigration")]
+    partial class StoreUsersMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,31 +194,6 @@ namespace AutoSpareMarket.DAL.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.FrontEnd.ProductCategories", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ParentSlug")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductCategories");
-                });
-
             modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.FrontEnd.ProductImages", b =>
                 {
                     b.Property<Guid>("Id")
@@ -240,40 +218,6 @@ namespace AutoSpareMarket.DAL.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
-                });
-
-            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.FrontEnd.ProductSpecs", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CategorySlug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SpecKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SpecValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductSpecs");
                 });
 
             modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.FrontEnd.StoreUsers", b =>
@@ -777,16 +721,6 @@ namespace AutoSpareMarket.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.FrontEnd.ProductSpecs", b =>
-                {
-                    b.HasOne("AutoSpareMarket.Domain.Models.Entities.Product", "Product")
-                        .WithMany("ProductSpecs")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("AutoSpareMarket.Domain.Models.Entities.Order", b =>
                 {
                     b.HasOne("AutoSpareMarket.Domain.Models.Entities.Supplier", "Supplier")
@@ -968,8 +902,6 @@ namespace AutoSpareMarket.DAL.Migrations
                     b.Navigation("OrderItems");
 
                     b.Navigation("ProductImages");
-
-                    b.Navigation("ProductSpecs");
 
                     b.Navigation("Promotions");
 

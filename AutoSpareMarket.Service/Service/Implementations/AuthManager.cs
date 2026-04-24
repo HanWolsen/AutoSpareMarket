@@ -21,7 +21,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
     public class AuthManager<T> : BaseTokenGenerator<T>, IAuthManager<T>, ITokenManager<T>
         where T : ApplicationUser
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<AdminUser> _userManager;
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -29,9 +29,9 @@ namespace AutoSpareMarket.Service.Service.Implementations
         /// </summary>
         /// <param name="userManager">Менеджер пользователя для управления операциями с пользователями</param>
         /// <param name="configuration">Конфигурация приложения, содержащая настройки аутентификации</param>
-        public AuthManager(UserManager<User> userManager, IConfiguration configuration)
+        public AuthManager(UserManager<AdminUser> userManager, IConfiguration configuration)
         {
-            ObjectValidator<UserManager<User>>.CheckIsNotNull(userManager);
+            ObjectValidator<UserManager<AdminUser>>.CheckIsNotNull(userManager);
             ObjectValidator<IConfiguration>.CheckIsNotNull(configuration);
             _userManager = userManager;
             _configuration = configuration;
@@ -116,14 +116,13 @@ namespace AutoSpareMarket.Service.Service.Implementations
                     throw new UnauthorizedAccessException("This user already exists, please edit username!");
                 }
 
-                var user = new User
+                var user = new AdminUser
                 {
                     Email = model.email,
                     UserName = model.username,
                     PhoneNumber = model.phonenumber,
                     FirstName = model.firstname, 
                     LastName = model.lastname,
-                    MiddleName = model.middlename,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
 
@@ -190,7 +189,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
 
                 var user = await _userManager.FindByNameAsync(username);
 
-                ObjectValidator<User>.CheckIsNotNull(user);
+                ObjectValidator<AdminUser>.CheckIsNotNull(user);
 
                 user.RefreshToken = null;
                 await _userManager.UpdateAsync(user);

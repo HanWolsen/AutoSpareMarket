@@ -1,15 +1,11 @@
 ﻿
 
 using AutoSpareMarket.APIModels.DTO.DTOs.Auth;
-using AutoSpareMarket.APIModels.DTO.DTOs.Orders;
-using AutoSpareMarket.APIModels.DTO.DTOs.Products;
 using AutoSpareMarket.APIModels.Response.Interfaces;
 using AutoSpareMarket.Domain.Models.Entities;
-using AutoSpareMarket.Service.Service.Implementations;
 using AutoSpareMarket.Service.Service.Intarfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace AutoSpareMarket.API.Controllers
 {
@@ -17,18 +13,18 @@ namespace AutoSpareMarket.API.Controllers
     public class UserController : BaseApiController
     {
         private readonly IUserService _userService;
-        private readonly ITokenManager<User> _tokenManager;
-        private readonly IAuthManager<User> _authManager;
+        private readonly ITokenManager<AdminUser> _tokenManager;
+        private readonly IAuthManager<AdminUser> _authManager;
 
         public UserController(IUserService userService,
-                              ITokenManager<User> tokenManager,
-                              IAuthManager<User> authManager)
+                              ITokenManager<AdminUser> tokenManager,
+                              IAuthManager<AdminUser> authManager)
         {
             _userService = userService;
             _tokenManager = tokenManager;
             _authManager = authManager;
         }
-
+        
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -73,7 +69,7 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPost]
-        [Route("revork-refresh-token")]
+        [Route("revoke-refresh-token")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> RevokeRefreshToken(string username)
         {
@@ -88,7 +84,7 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPost]
-        [Route("revork-all-refresh-token")]
+        [Route("revoke-all-refresh-token")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> RevokeAllRefreshTokens()
         {
@@ -137,9 +133,9 @@ namespace AutoSpareMarket.API.Controllers
         public async Task<IActionResult> UpdateEmail([FromBody] string email)
         {
             IResponse<string> response = await _userService.UpdateAdminsProperty(
-                user => user.Email, 
+                user => user.Email,
                 (user, value) => user.Email = value,
-                email 
+                email
                 );
 
             if (response.IsSuccess)
@@ -167,6 +163,16 @@ namespace AutoSpareMarket.API.Controllers
             }
 
             return BadRequest(response.Message);
+        }
+
+        [HttpGet]
+        [Route("get-by-user-name")]
+        public async Task<IActionResult> GetByUserName([FromBody] string username)
+        {
+            IResponse<UserDto> userResponse = await _userService.GetByUserName(username);
+            if (userResponse.IsSuccess)
+                return Ok(userResponse);
+            return BadRequest(userResponse.Message);
         }
 
         [HttpPost]

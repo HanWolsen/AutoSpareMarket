@@ -1,9 +1,6 @@
-﻿using AutoSpareMarket.Domain.Models.Entities;
-using AutoSpareMarket.Domain.Models.Entities.FrontEnd;
+﻿using AutoSpareMarket.Domain.Models.Entities.FrontEnd;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
 
 namespace AutoSpareMarket.DAL.SqlServer.Configuration
 {
@@ -13,12 +10,12 @@ namespace AutoSpareMarket.DAL.SqlServer.Configuration
         public void Configure(EntityTypeBuilder<ProductImages> builder)
         {
 
-                builder.HasKey(pi => pi.Id);  
-    
-                builder.HasOne(pi => pi.Product)
-                    .WithMany(p => p.ProductImages)
-                    .HasForeignKey(pi => pi.ProductId)
-                    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasKey(pi => pi.Id);
+
+            builder.HasOne(pi => pi.Product)
+                .WithMany(p => p.ProductImages)
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
