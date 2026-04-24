@@ -64,11 +64,13 @@ function clearToken() { localStorage.removeItem('asm_token'); }
 /* ── REGISTER ── */
 async function authRegister(username, password, email, phonenumber, firstname, lastname) {
     const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
-    const data = await fetch(`${base}/user/register`, {
+    const res = await fetch(`${base}/user/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, email, phonenumber, firstname, lastname }),
     });
+    const data = await res.json().catch(() => null);
+
     if (!data.IsSuccess) throw new Error('Ошибка регистрации');
 
   const session = data.data;
@@ -90,6 +92,19 @@ async function authLogin(username, password) {
     const token = data?.data?.token;
     if (!token) throw new Error('Токен не получен от сервера');
     saveToken(token);
+
+
+    const saveUserRes = await fetch(`${base}/user/get-by-user-name`, {
+        headers: {
+            'Authorization': `${token}`,
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({ userName: username }),
+    });
+    const rows = await saveUserRes.json().catch(() => null);
+    console.log('[LOGIN] save session:', JSON.stringify(rows));
+    saveSession(rows);
+
     return data;
 }
 
