@@ -60,8 +60,10 @@ function clearToken() { localStorage.removeItem('asm_token'); }
 
 /* ── REGISTER ── */
 async function authRegister(username, password, email, phonenumber, firstname, lastname) {
-    const data = await Fetch('/api/v1/user/register', {
+    const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
+    const data = await fetch(`${base}/user/register`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, email, phonenumber, firstname, lastname }),
     });
     if (!data.IsSuccess) throw new Error('Ошибка регистрации');

@@ -254,12 +254,17 @@ document.getElementById('loginForm')?.addEventListener('submit', async e => {
   if (btn) { btn.disabled = true; btn.textContent = 'Вход…'; }
   try {
     await authLogin(fd.get('email'), fd.get('password'));
-    const profile = await fetchUserProfile();
+      const profile = await fetchUserProfile();
+      console.log("[0] profile = " + profile);
+
     if (profile) localStorage.setItem('asm_profile', JSON.stringify(profile));
     // Restore cart saved before logout
-    const user = getCurrentUser();
+      const user = getCurrentUser();
+      console.log("[1] user = " + user);
     if (user) {
-      const saved = localStorage.getItem(`${CART_KEY}_${user.id}`);
+        const saved = localStorage.getItem(`${CART_KEY}_${user.id}`);
+        console.log("[2] saved = " + user);
+
       if (saved) {
         try {
           const items = JSON.parse(saved);
