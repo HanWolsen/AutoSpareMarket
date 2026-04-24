@@ -78,24 +78,16 @@ async function authRegister(username, password, email, phonenumber, firstname, l
 
 /* ── LOGIN ── */
 async function authLogin(username, password) {
-    console.log("[LOGIN] username = " + username);
-    console.log("[LOGIN] password = " + password);
-    
     const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
     
-    console.log("[LOGIN] fetch = " + `${base}/user/login`);
-
     const res = await fetch(`${base}/user/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userName: username, password }),
     });
-    console.log("[LOGIN] res = " + res);
     const data = await res.json().catch(() => null);
-    console.log("[LOGIN] data = " + JSON.stringify(data));
     if (!res.ok || !data) throw new Error(data?.message || 'Неверные данные для входа');
     const token = data?.data?.token;
-    console.log("[LOGIN] token = " + JSON.stringify(token));
     if (!token) throw new Error('Токен не получен от сервера');
     saveToken(token);
     return data;
@@ -118,17 +110,24 @@ async function authLogout() {
 
 /* ── FETCH USER PROFILE ── */
 async function fetchUserProfile() {
-  const user = getCurrentUser();
+    const user = getCurrentUser();
+    console.log('[fetchUserProfile] Current user from session:', user);
+    console.log('[fetchUserProfile] UserName:', user.UserName);
     if (!user.UserName) return null;
     const token = getToken();
-  const res = await fetch(`/api/v1/user/get-by-user-name`, {
-    headers: {
-          'Authorization': `${token}`,
-          'Accept': 'application/json',
-    },
-    body: JSON.stringify({ userName: user.UserName }),
-  });
-  const rows = await res.json().catch(() => []);
+    console.log('[fetchUserProfile] Token:', token);
+    const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
+    console.log('[fetchUserProfile] API Base:', `${base}/user/get-by-user-name`);
+    const res = await fetch(`${base}/user/get-by-user-name`, {
+        headers: {
+                'Authorization': `${token}`,
+                'Accept': 'application/json',
+        },
+        body: JSON.stringify({ userName: user.UserName }),
+    });
+    const rows = await data.json().catch(() => []);
+    console.log('[fetchUserProfile] rows:', JSON.stringify(rows));
+
   return Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
 }
 
