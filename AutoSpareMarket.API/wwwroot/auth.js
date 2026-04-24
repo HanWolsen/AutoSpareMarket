@@ -45,8 +45,8 @@ function saveSession(session) { localStorage.setItem('asm_session', JSON.stringi
 function clearSession() { localStorage.removeItem('asm_session'); }
 
 function getCurrentUser() {
-  const s = getSession();
-  return s?.username || null;
+  const session = getSession();
+    return session;
 }
 function isLoggedIn() { return !!getCurrentUser(); }
 
@@ -106,14 +106,15 @@ async function authLogout() {
 
 /* ── FETCH USER PROFILE ── */
 async function fetchUserProfile() {
-  const userName = getCurrentUser();
-  if (!userName) return null;
+  const user = getCurrentUser();
+    if (!user.UserName) return null;
     const token = getToken();
   const res = await fetch(`/api/v1/user/get-by-user-name`, {
     headers: {
           'Authorization': `${token}`,
-          body: JSON.stringify({ userName }),
+          'Accept': 'application/json',
     },
+    body: JSON.stringify({ userName: user.UserName }),
   });
   const rows = await res.json().catch(() => []);
   return Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
