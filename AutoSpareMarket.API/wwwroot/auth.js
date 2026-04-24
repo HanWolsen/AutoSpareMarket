@@ -138,25 +138,37 @@ async function authLogout() {
 
 /* ── FETCH USER PROFILE ── */
 async function fetchUserProfile() {
-    const user = getCurrentUser();
-    console.log('[fetchUserProfile] Current user from session:', user);
-    console.log('[fetchUserProfile] UserName:', user.userName);
-    if (!user.UserName) return null;
+    const sessionObj = getCurrentUser();
+    console.log('[fetchUserProfile] Current user from session:', sessionObj);
+    
+    const user = sessionObj?.data;
+    
+    console.log('[fetchUserProfile] UserName:', user?.userName);
+    
+    if (!user || !user.userName) return null;
+    
     const token = getToken();
     console.log('[fetchUserProfile] Token:', token);
+    
     const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
-    console.log('[fetchUserProfile] API Base:', `${base}/user/get-by-user-name`);
-    const res = await fetch(`${base}/user/get-by-user-name`, {
+    
+    const queryUrl = `${base}/user/get-by-user-name?username=${encodeURIComponent(user.userName)}`;
+    console.log('[fetchUserProfile] Fetching:', queryUrl);
+    
+    const res = await fetch(queryUrl, {
+        method: 'GET', 
         headers: {
-                'Authorization': `${token}`,
-                'Accept': 'application/json',
-        },
-        body: JSON.stringify({ userName: user.UserName }),
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+        }
     });
-    const rows = await data.json().catch(() => []);
-    console.log('[fetchUserProfile] rows:', JSON.stringify(rows));
+    
+    const result = await res.json().catch(() => null);
+    console.log('[fetchUserProfile] result:', JSON.stringify(result));
 
-  return Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
+    // Возвращаем данные. 
+    // Если ваш бэкенд оборачивает ответ в структуру { data: {...}, isSuccess: true }, распаковываем ее:
+    return result?.data ? result.data : result;
 }
 
 
