@@ -54,7 +54,10 @@ function isLoggedIn() { return !!getCurrentUser(); }
 function getToken() {
     try { return JSON.parse(localStorage.getItem('asm_token') || 'null'); } catch { return null; }
 }
-function saveToken(session) { localStorage.setItem('asm_token', JSON.stringify(session)); }
+function saveToken(token)
+{
+    localStorage.setItem('asm_token', JSON.stringify(token));
+}
 function clearToken() { localStorage.removeItem('asm_token'); }
 
 
@@ -82,21 +85,20 @@ async function authLogin(username, password) {
     
     console.log("[LOGIN] fetch = " + `${base}/user/login`);
 
-    const data = await fetch(`${base}/user/login`, {
+    const res = await fetch(`${base}/user/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userName: username, password }),
     });
-
-  //const data = await Fetch('/api/v1/user/login', {
-  //  method: 'POST',
-  //    body: JSON.stringify({ username, password }),
-  //    headers: { 'Content-Type': 'application/json' },
-  //});
-    saveToken(data.data.token);
-    console.log("[LOGIN] saveToken = " + data.data.token);
-
-  return data;
+    console.log("[LOGIN] res = " + res);
+    const data = await res.json().catch(() => null);
+    console.log("[LOGIN] data = " + JSON.stringify(data));
+    if (!res.ok || !data) throw new Error(data?.message || 'Неверные данные для входа');
+    const token = data?.data?.token;
+    console.log("[LOGIN] token = " + JSON.stringify(token));
+    if (!token) throw new Error('Токен не получен от сервера');
+    saveToken(token);
+    return data;
 }
 
 /* ── LOGOUT ── */
