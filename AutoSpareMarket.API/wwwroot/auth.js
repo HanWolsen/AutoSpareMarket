@@ -62,7 +62,7 @@ function clearToken() { localStorage.removeItem('asm_token'); }
 
 
 /* ── REGISTER ── */
-async function authRegister(username, password, email, phoneNumber, firstName, lastName) {
+async function authRegister(username, email, password, firstName, lastName, phoneNumber) {
     const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
 
     const payload = {
