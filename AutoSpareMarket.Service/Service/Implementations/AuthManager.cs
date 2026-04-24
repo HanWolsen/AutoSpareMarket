@@ -109,7 +109,7 @@ namespace AutoSpareMarket.Service.Service.Implementations
             {
                 ObjectValidator<RegisterModel>.CheckIsNotNull(model);
 
-                var userExists = await _userManager.FindByNameAsync(model.username);
+                var userExists = await _userManager.FindByNameAsync(model.UserName);
 
                 if (userExists != null)
                 {
@@ -118,15 +118,15 @@ namespace AutoSpareMarket.Service.Service.Implementations
 
                 var user = new AdminUser
                 {
-                    Email = model.email,
-                    UserName = model.username,
-                    PhoneNumber = model.phonenumber,
-                    FirstName = model.firstname, 
-                    LastName = model.lastname,
+                    Email = model.Email,
+                    UserName = model.UserName,
+                    PhoneNumber = model.PhoneNumber,
+                    FirstName = model.FirstName, 
+                    LastName = model.LastName,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
 
-                IdentityResult createResult = await _userManager.CreateAsync(user, model.password);
+                IdentityResult createResult = await _userManager.CreateAsync(user, model.Password);
 
                 if (!createResult.Succeeded)
                 {

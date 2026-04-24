@@ -62,17 +62,29 @@ function clearToken() { localStorage.removeItem('asm_token'); }
 
 
 /* ── REGISTER ── */
-async function authRegister(username, password, email, phonenumber, firstname, lastname) {
+async function authRegister(username, password, email, phoneNumber, firstName, lastName) {
     const base = (localStorage.getItem('apiBase') || `${window.location.origin}/api/v1`).replace(/\/$/, '');
+
+    const payload = {
+        username: username,
+        password: password,
+        email: email,
+        phoneNumber: phoneNumber, 
+        firstName: firstName,     
+        lastName: lastName        
+    };
+
     const res = await fetch(`${base}/user/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, email, phonenumber, firstname, lastname }),
+        body: JSON.stringify(payload),
     });
     const data = await res.json().catch(() => null);
 
     const session = data.data;
-    saveSession(session);
+    if (session) {
+        saveSession(session);
+    }
     return data;
 }
 
@@ -94,12 +106,11 @@ async function authLogin(username, password) {
     const queryUrl = `${base}/user/get-by-user-name?username=${encodeURIComponent(username)}`;
 
     const saveUserRes = await fetch(queryUrl, {
-        method: 'GET', // Явно указываем метод GET
+        method: 'GET', 
         headers: {
-            'Authorization': `Bearer ${token}`, // Добавляем Bearer, если сервер этого требует
+            'Authorization': `Bearer ${token}`, 
             'Accept': 'application/json',
-        }
-        // body: JSON.stringify({ username }) -- ЭТО НУЖНО УДАЛИТЬ!
+        }   
     });
 
     const rows = await saveUserRes.json().catch(() => null);
@@ -129,7 +140,7 @@ async function authLogout() {
 async function fetchUserProfile() {
     const user = getCurrentUser();
     console.log('[fetchUserProfile] Current user from session:', user);
-    console.log('[fetchUserProfile] UserName:', user.UserName);
+    console.log('[fetchUserProfile] UserName:', user.userName);
     if (!user.UserName) return null;
     const token = getToken();
     console.log('[fetchUserProfile] Token:', token);
