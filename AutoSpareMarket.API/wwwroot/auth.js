@@ -91,16 +91,21 @@ async function authLogin(username, password) {
     if (!token) throw new Error('Токен не получен от сервера');
     saveToken(token);
 
-    const saveUserRes = await fetch(`${base}/user/get-by-user-name`, {
+    const queryUrl = `${base}/user/get-by-user-name?username=${encodeURIComponent(username)}`;
+
+    const saveUserRes = await fetch(queryUrl, {
+        method: 'GET', // Явно указываем метод GET
         headers: {
-            'Authorization': `${token}`,
+            'Authorization': `Bearer ${token}`, // Добавляем Bearer, если сервер этого требует
             'Accept': 'application/json',
-        },
-        body: JSON.stringify({ username }),
+        }
+        // body: JSON.stringify({ username }) -- ЭТО НУЖНО УДАЛИТЬ!
     });
+
     const rows = await saveUserRes.json().catch(() => null);
     console.log('[LOGIN] save session:', JSON.stringify(rows));
     saveSession(rows);
+
 
     return data;
 }

@@ -167,7 +167,7 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpGet]
         [Route("get-by-user-name")]
-        public async Task<IActionResult> GetByUserName([FromBody] string username)
+        public async Task<IActionResult> GetByUserName([FromQuery] string username)
         {
             IResponse<UserDto> userResponse = await _userService.GetByUserName(username);
             if (userResponse.IsSuccess)
