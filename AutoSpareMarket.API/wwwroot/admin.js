@@ -62,34 +62,61 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 // ── API ──────────────────────────────────────────────────────
 const defaultBase = `${window.location.origin}/api/v1`;
 const apiBaseInput = document.getElementById('apiBase');
-apiBaseInput.value = localStorage.getItem('apiBase') || defaultBase;
+if (apiBaseInput) {
+    apiBaseInput.value = localStorage.getItem('apiBase') || defaultBase;
+}
 
 function getBase() {
-    return (apiBaseInput.value || defaultBase).replace(/\/$/, '');
+    return (apiBaseInput ? apiBaseInput.value : defaultBase).replace(/\/$/, '');
 }
 
 async function api(path, options = {}) {
-    const token = getToken();
-    const headers = Object.assign(
-        { 'Content-Type': 'application/json' },
-        token ? { 'Authorization': `Bearer ${token}` } : {},
-        options.headers || {}
-    );
-    const res = await fetch(`${getBase()}${path}`, { ...options, headers });
-    if (res.status === 401) { clearToken(); showLogin(); throw new Error('Сессия истекла. Войдите снова.'); }
-    const text = await res.text();
-    let data;
-    try { data = text ? JSON.parse(text) : null; } catch { data = text || null; }
-    if (!res.ok) {
-        const msg = data && data.message ? data.message : (data && data.title ? data.title : res.statusText);
-        throw new Error(`${res.status}: ${msg}`);
+    const token = typeof getToken === 'function' ? getToken() : null;
+    const headers = { ...options.headers };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`; 
     }
-    if (data && typeof data === 'object' && 'data' in data) return data.data;
+
+    if (!(options.body instanceof FormData)) {
+        headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+    } else {
+        headers['Accept'] = 'application/json';
+    }
+
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+    const res = await fetch(`${getBase()}${normalizedPath}`, { ...options, headers });
+    
+    if (res.status === 401) {
+        if (typeof clearToken === 'function') clearToken();
+        if (typeof showLogin === 'function') showLogin();
+        throw new Error('Сессия истекла. Войдите снова.');
+    }
+
+    const text = await res.text();
+    let data = null;
+    try { 
+        data = text ? JSON.parse(text) : null; 
+    } catch { 
+        data = text; 
+    }
+
+    if (!res.ok) {
+        const msg = (data && data.message) ? data.message : ((data && data.title) ? data.title : res.statusText);
+        throw new Error(msg || `HTTP ${res.status}`);
+    }
+
+    if (data && typeof data === 'object' && 'data' in data) {
+        return data.data;
+    }
+    
     return data;
 }
 
 function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
+    if (!t) return;
     t.textContent = msg;
     t.className = `toast toast-${type} show`;
     clearTimeout(t._timer);
@@ -99,6 +126,8 @@ function showToast(msg, type = 'success') {
 function setConnectionStatus(ok) {
     const badge = document.getElementById('statusBadge');
     const status = document.getElementById('connectionStatus');
+    if (!badge || !status) return;
+    
     if (ok) {
         badge.className = 'badge badge-ok'; badge.textContent = '● Подключено';
         status.textContent = 'Подключено'; status.className = 'connection-status ok';
@@ -108,17 +137,29 @@ function setConnectionStatus(ok) {
     }
 }
 
-document.getElementById('saveApiBase').addEventListener('click', () => {
-    const v = apiBaseInput.value.trim().replace(/\/$/, '');
-    if (!v) return;
-    localStorage.setItem('apiBase', v);
-    showToast('URL API сохранён');
-});
+const saveApiBaseBtn = document.getElementById('saveApiBase');
+if (saveApiBaseBtn) {
+    saveApiBaseBtn.addEventListener('click', () => {
+        const v = apiBaseInput.value.trim().replace(/\/$/, '');
+        if (!v) return;
+        localStorage.setItem('apiBase', v);
+        showToast('URL API сохранён');
+    });
+}
 
-document.getElementById('pingApi').addEventListener('click', async () => {
-    try { await fetch(`${getBase()}/products`); setConnectionStatus(true); showToast('Соединение установлено'); }
-    catch { setConnectionStatus(false); showToast('Нет связи с API', 'error'); }
-});
+const pingApiBtn = document.getElementById('pingApi');
+if (pingApiBtn) {
+    pingApiBtn.addEventListener('click', async () => {
+        try { 
+            await fetch(`${getBase()}/products`); 
+            setConnectionStatus(true); 
+            showToast('Соединение установлено'); 
+        } catch { 
+            setConnectionStatus(false); 
+            showToast('Нет связи с API', 'error'); 
+        }
+    });
+}
 
 // ── NAVIGATION ───────────────────────────────────────────────
 const tabNames = { dashboard:'Дашборд', products:'Товары', warehouse:'Ячейки склада', suppliers:'Поставщики', customers:'Покупатели', sales:'Продажи', orders:'Заказы', promotions:'Акции', 'cash-registers':'Кассы' };
@@ -214,14 +255,50 @@ document.getElementById('assignForm').addEventListener('submit',async e=>{ e.pre
 
 // ── CUSTOMERS ────────────────────────────────────────────────
 let customersData=[];
-async function loadCustomers(){ const b=document.getElementById('customersTbody'); loading(b,6); try{ customersData=await api('/customers')||[]; renderCustomers(customersData); }catch(e){empty(b,6,`Ошибка: ${e.message}`);} }
-function renderCustomers(list){ const b=document.getElementById('customersTbody'); if(!list.length){empty(b,6);return;} b.innerHTML=list.map(c=>`<tr><td><span class="id-badge">${c.id}</span></td><td><strong>${esc(c.firstName)} ${esc(c.lastName)}</strong></td><td>${esc(c.email)}</td><td class="muted-cell">${esc(c.phone||'—')}</td><td class="muted-cell">${fmtDate(c.createdAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="editCustomer(${c.id})">✏</button><button class="btn-icon danger" onclick="deleteCustomer(${c.id})">✕</button></div></td></tr>`).join(''); }
+async function loadCustomers() {
+    const b = document.getElementById('customersTbody');
+    loading(b, 6); try {
+        customersData = await api('/user') || [];
+        renderCustomers(customersData);
+    } catch (e) {
+        empty(b, 6, `Ошибка: ${e.message}`);
+    }
+}
+function renderCustomers(list) {
+    const b = document.getElementById('customersTbody'); if (!list.length) {
+        empty(b, 6); return;
+    } b.innerHTML = list.map(c => `<tr><td><span class="id-badge">${c.Id}</span></td><td><strong>
+    ${esc(c.FirstName)} ${esc(c.LastName)}</strong></td><td>${esc(c.Email)}</td><td class="muted-cell">
+    ${esc(c.PhoneNumber || '—')}</td><td class="muted-cell">
+    ${fmtDate(c.CreatedAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="editCustomer
+    (${c.id})">✏</button><button class="btn-icon danger" onclick="deleteCustomer(${c.Id})">✕</button></div></td></tr>`).join('');
+}
+
 addSearch('customersSearch',renderCustomers,()=>customersData);
 document.getElementById('refreshCustomers').addEventListener('click',loadCustomers);
-document.getElementById('openCustomerModal').addEventListener('click',()=>{ document.getElementById('customerModalTitle').textContent='Новый покупатель'; document.getElementById('customerForm').reset(); document.getElementById('customerId').value=''; openModal('customerModal'); });
-document.getElementById('customerForm').addEventListener('submit',async e=>{ e.preventDefault(); const f=e.target; const id=f.id.value; const dto={firstName:f.firstName.value.trim(),lastName:f.lastName.value.trim(),email:f.email.value.trim(),phone:f.phone.value.trim()||null}; try{ if(id){await api(`/customers/${id}`,{method:'PUT',body:JSON.stringify({id:Number(id),...dto})}); showToast('Покупатель обновлён');}else{await api('/customers',{method:'POST',body:JSON.stringify(dto)}); showToast('Покупатель добавлен');} closeModal('customerModal'); loadCustomers(); }catch(err){showToast(err.message,'error');} });
-async function editCustomer(id){ const c=customersData.find(x=>x.id===id); if(!c)return; const f=document.getElementById('customerForm'); document.getElementById('customerModalTitle').textContent='Редактировать покупателя'; f.id.value=c.id; f.firstName.value=c.firstName; f.lastName.value=c.lastName; f.email.value=c.email; f.phone.value=c.phone||''; openModal('customerModal'); }
-async function deleteCustomer(id){ if(!confirm('Удалить покупателя?'))return; try{await api(`/customers/${id}`,{method:'DELETE'}); showToast('Покупатель удалён'); loadCustomers();}catch(err){showToast(err.message,'error');} }
+document.getElementById('openCustomerModal').addEventListener('click', () =>
+{
+    document.getElementById('customerModalTitle').textContent = 'Новый покупатель';
+    document.getElementById('customerForm').reset(); document.getElementById('customerId').value = '';
+    openModal('customerModal');
+});
+document.getElementById('customerForm').addEventListener('submit', async e => {
+    e.preventDefault(); const f = e.target; const id = f.Id.value; const dto = {
+        firstName: f.firstName.value.trim(), lastName: f.lastName.value.trim(), email: f.email.value.trim(), phone: f.phone.value.trim() || null
+    }; try { if (id) { await api(`/user/${id}`, { method: 'PUT', body: JSON.stringify({ id: Number(id), ...dto }) }); showToast('Покупатель обновлён'); } else { await api('/user', { method: 'POST', body: JSON.stringify(dto) }); showToast('Покупатель добавлен'); } closeModal('customerModal'); loadCustomers(); } catch (err) { showToast(err.message, 'error'); }
+});
+
+async function editCustomer(id) {
+    const c = customersData.find(x => x.Id === id); if (!c) return; const f = document.getElementById('customerForm');
+    document.getElementById('customerModalTitle').textContent = 'Редактировать покупателя';
+    f.Id.value = c.Id; f.FirstName.value = c.FirstName; f.LastName.value = c.LastName;
+    f.Email.value = c.Email; f.PhoneNumber.value = c.PhoneNumber || ''; openModal('customerModal');
+}
+async function deleteCustomer(id) {
+    if (!confirm('Удалить покупателя?')) return; try {
+        await api(`/user/${id}`, { method: 'DELETE' }); showToast('Покупатель удалён'); loadCustomers();
+    } catch (err) { showToast(err.message, 'error'); }
+}
 
 // ── SALES ────────────────────────────────────────────────────
 let salesData=[];
