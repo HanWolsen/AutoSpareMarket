@@ -257,47 +257,104 @@ document.getElementById('assignForm').addEventListener('submit',async e=>{ e.pre
 let customersData=[];
 async function loadCustomers() {
     const b = document.getElementById('customersTbody');
-    loading(b, 6); try {
-        customersData = await api('/user') || [];
+    loading(b, 6); 
+    try {
+        const res = await api('/user');
+        customersData = Array.isArray(res) ? res : [];
         renderCustomers(customersData);
     } catch (e) {
         empty(b, 6, `Ошибка: ${e.message}`);
     }
 }
 function renderCustomers(list) {
-    const b = document.getElementById('customersTbody'); if (!list.length) {
-        empty(b, 6); return;
-    } b.innerHTML = list.map(c => `<tr><td><span class="id-badge">${c.Id}</span></td><td><strong>
-    ${esc(c.FirstName)} ${esc(c.LastName)}</strong></td><td>${esc(c.Email)}</td><td class="muted-cell">
-    ${esc(c.PhoneNumber || '—')}</td><td class="muted-cell">
-    ${fmtDate(c.CreatedAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="editCustomer
-    (${c.id})">✏</button><button class="btn-icon danger" onclick="deleteCustomer(${c.Id})">✕</button></div></td></tr>`).join('');
+    const b = document.getElementById('customersTbody'); 
+    if (!list.length) {
+        empty(b, 6); 
+        return;
+    } 
+    b.innerHTML = list.map(c => `<tr>
+        <td><span class="id-badge">${c.id || c.Id}</span></td>
+        <td><strong>${esc(c.firstName || c.FirstName)} ${esc(c.lastName || c.LastName)}</strong></td>
+        <td>${esc(c.email || c.Email)}</td>
+        <td class="muted-cell">${esc(c.phoneNumber || c.PhoneNumber || '—')}</td>
+        <td class="muted-cell">${c.createdAt ? fmtDate(c.createdAt) : '—'}</td>
+        <td>
+            <div class="row-actions">
+                <button class="btn-icon" onclick="editCustomer(${c.id || c.Id})">✏</button>
+                <button class="btn-icon danger" onclick="deleteCustomer(${c.id || c.Id})">✕</button>
+            </div>
+        </td>
+    </tr>`).join('');
 }
 
-addSearch('customersSearch',renderCustomers,()=>customersData);
-document.getElementById('refreshCustomers').addEventListener('click',loadCustomers);
-document.getElementById('openCustomerModal').addEventListener('click', () =>
-{
+addSearch('customersSearch', renderCustomers, () => customersData);
+document.getElementById('refreshCustomers').addEventListener('click', loadCustomers);
+document.getElementById('openCustomerModal').addEventListener('click', () => {
     document.getElementById('customerModalTitle').textContent = 'Новый покупатель';
-    document.getElementById('customerForm').reset(); document.getElementById('customerId').value = '';
+    document.getElementById('customerForm').reset(); 
+    document.getElementById('customerId').value = '';
     openModal('customerModal');
 });
+
 document.getElementById('customerForm').addEventListener('submit', async e => {
-    e.preventDefault(); const f = e.target; const id = f.Id.value; const dto = {
-        firstName: f.firstName.value.trim(), lastName: f.lastName.value.trim(), email: f.email.value.trim(), phone: f.phone.value.trim() || null
-    }; try { if (id) { await api(`/user/${id}`, { method: 'PUT', body: JSON.stringify({ id: Number(id), ...dto }) }); showToast('Покупатель обновлён'); } else { await api('/user', { method: 'POST', body: JSON.stringify(dto) }); showToast('Покупатель добавлен'); } closeModal('customerModal'); loadCustomers(); } catch (err) { showToast(err.message, 'error'); }
+    e.preventDefault(); 
+    const f = e.target; 
+    
+    // В форме у вас инпуты обычно называются id, firstName, lastName, email, phone (или phoneNumber)
+    const id = f.elements['id'] ? f.elements['id'].value : (f.elements['Id'] ? f.elements['Id'].value : ''); 
+    
+    const dto = {
+        firstName: f.elements['firstName'] ? f.elements['firstName'].value.trim() : '', 
+        lastName: f.elements['lastName'] ? f.elements['lastName'].value.trim() : '', 
+        email: f.elements['email'] ? f.elements['email'].value.trim() : '',
+        // Зависит от того, как вы назвали инпут телефона (phone или phoneNumber) 
+        phoneNumber: f.elements['phone'] ? f.elements['phone'].value.trim() : (f.elements['phoneNumber'] ? f.elements['phoneNumber'].value.trim() : null)
+    }; 
+    
+    try { 
+        if (id) { 
+            await api(`/user/${id}`, { method: 'PUT', body: JSON.stringify({ id: Number(id), ...dto }) }); 
+            showToast('Покупатель обновлён'); 
+        } else { 
+            await api('/user', { method: 'POST', body: JSON.stringify(dto) }); 
+            showToast('Покупатель добавлен'); 
+        } 
+        closeModal('customerModal'); 
+        loadCustomers(); 
+    } catch (err) { 
+        showToast(err.message, 'error'); 
+    }
 });
 
 async function editCustomer(id) {
-    const c = customersData.find(x => x.Id === id); if (!c) return; const f = document.getElementById('customerForm');
+    const c = customersData.find(x => x.id === id || x.Id === id); 
+    if (!c) return; 
+    
+    const f = document.getElementById('customerForm');
     document.getElementById('customerModalTitle').textContent = 'Редактировать покупателя';
-    f.Id.value = c.Id; f.FirstName.value = c.FirstName; f.LastName.value = c.LastName;
-    f.Email.value = c.Email; f.PhoneNumber.value = c.PhoneNumber || ''; openModal('customerModal');
+    
+    if (f.elements['id']) f.elements['id'].value = c.id || c.Id || ''; 
+    else if (f.elements['Id']) f.elements['Id'].value = c.id || c.Id || '';
+    
+    if (f.elements['firstName']) f.elements['firstName'].value = c.firstName || c.FirstName || ''; 
+    if (f.elements['lastName']) f.elements['lastName'].value = c.lastName || c.LastName || '';
+    if (f.elements['email']) f.elements['email'].value = c.email || c.Email || ''; 
+    
+    if (f.elements['phone']) f.elements['phone'].value = c.phoneNumber || c.PhoneNumber || ''; 
+    else if (f.elements['phoneNumber']) f.elements['phoneNumber'].value = c.phoneNumber || c.PhoneNumber || ''; 
+    
+    openModal('customerModal');
 }
+
 async function deleteCustomer(id) {
-    if (!confirm('Удалить покупателя?')) return; try {
-        await api(`/user/${id}`, { method: 'DELETE' }); showToast('Покупатель удалён'); loadCustomers();
-    } catch (err) { showToast(err.message, 'error'); }
+    if (!confirm('Удалить покупателя?')) return; 
+    try {
+        await api(`/user/${id}`, { method: 'DELETE' }); 
+        showToast('Покупатель удалён'); 
+        loadCustomers();
+    } catch (err) { 
+        showToast(err.message, 'error'); 
+    }
 }
 
 // ── SALES ────────────────────────────────────────────────────
