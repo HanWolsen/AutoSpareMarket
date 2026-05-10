@@ -94,50 +94,75 @@ const PRODUCT_IMAGES = {
 
 /* ── API ── */
 async function api(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-    ...options,
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const json = await res.json();
-  return json?.data ?? json;
+    const token = typeof getToken === 'function' ? getToken() : null;
+    const headers = { ...options.headers };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    if (!(options.body instanceof FormData)) {
+        headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+    } else {
+        headers['Accept'] = 'application/json';
+    }
+
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+    const res = await fetch(`${API_BASE}${normalizedPath}`, { ...options, headers });
+    
+    if (res.status === 401) {
+        throw new Error('Сессия истекла или требуется авторизация.');
+    }
+
+    const text = await res.text();
+    let data = null;
+    try { 
+        data = text ? JSON.parse(text) : null; 
+    } catch { 
+        data = text; 
+    }
+
+    if (!res.ok) {
+        const msg = (data && data.message) ? data.message : ((data && data.title) ? data.title : res.statusText);
+        throw new Error(msg || `HTTP ${res.status}`);
+    }
+
+    if (data && typeof data === 'object' && 'data' in data) {
+        return data.data;
+    }
+    
+    return data;
 }
 
 /* ── CART ── */
 function getCart() {
-  try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; }
 }
 function saveCart(cart) { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
 
 function addToCart(product) {
-  if (!isLoggedIn()) {
-    openModal('authModal');
-    showToast('Войдите, чтобы добавить товар в корзину', 'error');
-    return;
-  }
-  const cart = getCart();
-  const idx = cart.findIndex(i => i.id === product.id);
-  if (idx >= 0) {
-    cart[idx].qty = (cart[idx].qty || 1) + 1;
-  } else {
-    cart.push({ id: product.id, name: product.name, description: product.description, price: product.price, qty: 1 });
-  }
-  saveCart(cart);
-  updateCartBadge();
-  showToast(`«${product.name}» добавлен в корзину`, 'success');
-}
+    if (!isLoggedIn()) {
+        openModal('authModal');
+        showToast('Войдите, чтобы добавить товар в корзину', 'error');
+        return;
+    }
+    const cart = getCart();
+    // Обработка данных с учетом того, что свойства могут быть в разных регистрах (id или Id)
+    const pId = product.id || product.Id;
+    const pName = product.name || product.Name;
+    const pDesc = product.description || product.Description;
+    const pPrice = product.price || product.Price || 0;
 
-function updateCartBadge() {
-  const cart = getCart();
-  const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
-  const badge = document.getElementById('cartBadge');
-  if (!badge) return;
-  if (isLoggedIn() && total > 0) {
-    badge.textContent = total;
-    badge.style.display = '';
-  } else {
-    badge.style.display = 'none';
-  }
+    const idx = cart.findIndex(i => i.id === pId);
+    if (idx >= 0) {
+        cart[idx].qty = (cart[idx].qty || 1) + 1;
+    } else {
+        cart.push({ id: pId, name: pName, description: pDesc, price: pPrice, qty: 1 });
+    }
+    saveCart(cart);
+    updateCartBadge();
+    showToast(`«${pName}» добавлен в корзину`, 'success');
 }
 
 /* ── TOAST ── */
@@ -215,54 +240,67 @@ let activePromoIds = new Set();
 
 /* ── RENDER PRODUCTS ── */
 function renderProducts() {
-  const grid = document.getElementById('productsGrid');
-  const emptyMsg = document.getElementById('emptyMsg');
-  if (!grid) return;
+    const grid = document.getElementById('productsGrid');
+    const emptyMsg = document.getElementById('emptyMsg');
+    if (!grid) return;
 
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const page  = filteredProducts.slice(start, start + PAGE_SIZE);
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const page  = filteredProducts.slice(start, start + PAGE_SIZE);
 
-  if (filteredProducts.length === 0) {
-    grid.innerHTML = '';
-    if (emptyMsg) emptyMsg.style.display = '';
-    renderPagination(0);
-    return;
-  }
-  if (emptyMsg) emptyMsg.style.display = 'none';
+    if (filteredProducts.length === 0) {
+        grid.innerHTML = '';
+        if (emptyMsg) emptyMsg.style.display = '';
+        renderPagination(0);
+        return;
+    }
+    if (emptyMsg) emptyMsg.style.display = 'none';
 
-  grid.innerHTML = page.map(p => {
-    const img = PRODUCT_IMAGES[p.id];
-    const imgHtml = img
-      ? `<img src="${img}" alt="${esc(p.name)}" loading="lazy" />`
-      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="opacity:.2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0M4.93 19.07a10 10 0 0 0 14.14 0"/></svg>`;
+    grid.innerHTML = page.map(p => {
+        const pId = p.id || p.Id;
+        const pName = p.name || p.Name;
+        const pDesc = p.description || p.Description;
+        const pPrice = p.price || p.Price;
+        const inStockValue = p.inStock || p.InStock;
 
-    const isPromo = activePromoIds.has(p.id);
-    const stockBadge = p.inStock === false
-      ? `<span class="card-stock out">Нет в наличии</span>`
-      : `<span class="card-stock in">В наличии</span>`;
-    const promoBadge = isPromo ? `<span class="card-promo-badge">Акция</span>` : '';
+        const isOutOfStock = inStockValue === false || inStockValue === 'false' || inStockValue === '0';
+        
+        const img = PRODUCT_IMAGES[pId];
+        const imgHtml = img
+            ? `<img src="${img}" alt="${esc(pName)}" loading="lazy" />`
+            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="opacity:.2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0M4.93 19.07a10 10 0 0 0 14.14 0"/></svg>`;
 
-    const priceLabel = p.price
-      ? `${p.price.toLocaleString('ru-RU')} ₽`
-      : 'Цена по запросу';
+        const isPromo = activePromoIds.has(pId);
+        const stockBadge = isOutOfStock
+            ? `<span class="card-stock out">Нет в наличии</span>`
+            : `<span class="card-stock in">В наличии</span>`;
+        const promoBadge = isPromo ? `<span class="card-promo-badge">Акция</span>` : '';
 
-    return `
-    <div class="product-card" data-id="${p.id}">
-      <a class="product-card-img" href="product.html?id=${p.id}">
-        ${imgHtml}
-        ${promoBadge}
-        ${stockBadge}
-      </a>
-      <div class="product-card-body">
-        <a class="product-card-name" href="product.html?id=${p.id}">${esc(p.name)}</a>
-        <div class="product-card-desc">${esc(p.description || 'Описание не указано')}</div>
-        <div class="product-card-meta">Арт: ${p.id}</div>
-        <a class="btn-price-go" href="product.html?id=${p.id}">${priceLabel}</a>
-      </div>
-    </div>`;
-  }).join('');
+        const priceLabel = pPrice
+            ? `${Number(pPrice).toLocaleString('ru-RU')} ₽`
+            : 'Цена по запросу';
 
-  renderPagination(filteredProducts.length);
+        const safeProductInfo = JSON.stringify({ id: pId, name: pName, description: pDesc, price: pPrice }).replace(/"/g, '&quot;');
+
+        return `
+        <div class="product-card" data-id="${pId}">
+            <a class="product-card-img" href="product.html?id=${pId}">
+                ${imgHtml}
+                ${promoBadge}
+                ${stockBadge}
+            </a>
+            <div class="product-card-body">
+                <a class="product-card-name" href="product.html?id=${pId}">${esc(pName)}</a>
+                <div class="product-card-desc">${esc(pDesc || 'Описание не указано')}</div>
+                <div class="product-card-meta">Арт: ${pId}</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                    <a class="btn-price-go" href="product.html?id=${pId}">${priceLabel}</a>
+                    <button class="btn-icon" style="background:#000;color:#fff;border-radius:4px;padding:8px;" onclick="addToCart(${safeProductInfo})">🛒</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    renderPagination(filteredProducts.length);
 }
 
 function renderPagination(total) {
