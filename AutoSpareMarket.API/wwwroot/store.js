@@ -47,7 +47,7 @@ const CATEGORY_KEYWORDS = {
 
 /* ── TEST DATA ── */
 const TEST_PRODUCTS = [
-  { id: 1,  name: 'Тормозные колодки передние',     description: 'Керамические тормозные колодки для BMW 3-series, Toyota Camry. Высокая эффективность торможения.',        warehouseCellId: 'A-01', price: 2490,  category: 'brakes',     inStock: true },
+  { id: 1,  name: 'Тормозные колодки передние',     description: 'Керамические тормозные колодки для BMW 3-series, Toyota Camry. Высокая эффективность торможения.',        warehou seCellId: 'A-01', price: 2490,  category: 'brakes',     inStock: true },
   { id: 2,  name: 'Масляный фильтр MANN-FILTER',    description: 'Полнопоточный масляный фильтр для ВАЗ 2110–2115, Lada Priora, Kalina. Надёжная очистка масла.',           warehouseCellId: 'B-03', price: 380,   category: 'filters',    inStock: true },
   { id: 3,  name: 'Амортизатор передний SACHS',     description: 'Газомасляный амортизатор для Ford Focus II, Mazda 3 BK. Превосходная управляемость.',                     warehouseCellId: 'C-12', price: 4200,  category: 'suspension', inStock: true },
   { id: 4,  name: 'Свеча зажигания NGK Iridium',    description: 'Иридиевая свеча зажигания. Универсальная для бензиновых двигателей. Увеличенный ресурс.',                 warehouseCellId: 'D-05', price: 890,   category: 'electrics',  inStock: true },
@@ -163,6 +163,19 @@ function addToCart(product) {
     saveCart(cart);
     updateCartBadge();
     showToast(`«${pName}» добавлен в корзину`, 'success');
+}
+
+function updateCartBadge() {
+    const cart = getCart();
+    const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    const badge = document.getElementById('cartBadge');
+    if (!badge) return;
+    if (isLoggedIn() && total > 0) {
+        badge.textContent = total;
+        badge.style.display = '';
+    } else {
+        badge.style.display = 'none';
+    }
 }
 
 /* ── TOAST ── */
