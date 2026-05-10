@@ -47,7 +47,7 @@ const CATEGORY_KEYWORDS = {
 
 /* ── TEST DATA ── */
 const TEST_PRODUCTS = [
-  { id: 1,  name: 'Тормозные колодки передние',     description: 'Керамические тормозные колодки для BMW 3-series, Toyota Camry. Высокая эффективность торможения.',        warehou seCellId: 'A-01', price: 2490,  category: 'brakes',     inStock: true },
+  { id: 1,  name: 'Тормозные колодки передние',     description: 'Керамические тормозные колодки для BMW 3-series, Toyota Camry. Высокая эффективность торможения.',        warehouseCellId: 'A-01', price: 2490,  category: 'brakes',     inStock: true },
   { id: 2,  name: 'Масляный фильтр MANN-FILTER',    description: 'Полнопоточный масляный фильтр для ВАЗ 2110–2115, Lada Priora, Kalina. Надёжная очистка масла.',           warehouseCellId: 'B-03', price: 380,   category: 'filters',    inStock: true },
   { id: 3,  name: 'Амортизатор передний SACHS',     description: 'Газомасляный амортизатор для Ford Focus II, Mazda 3 BK. Превосходная управляемость.',                     warehouseCellId: 'C-12', price: 4200,  category: 'suspension', inStock: true },
   { id: 4,  name: 'Свеча зажигания NGK Iridium',    description: 'Иридиевая свеча зажигания. Универсальная для бензиновых двигателей. Увеличенный ресурс.',                 warehouseCellId: 'D-05', price: 890,   category: 'electrics',  inStock: true },
@@ -303,7 +303,7 @@ function renderProducts() {
             </a>
             <div class="product-card-body">
                 <a class="product-card-name" href="product.html?id=${pId}">${esc(pName)}</a>
-                <div class="product-card-desc">${esc(pDesc || 'Описание не указано')}</div>
+                <div class="product-card-desc">${esc(pDesc || 'Описание не указана')}</div>
                 <div class="product-card-meta">Арт: ${pId}</div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
                     <a class="btn-price-go" href="product.html?id=${pId}">${priceLabel}</a>
@@ -336,49 +336,59 @@ function goPage(n) {
 
 /* ── SORT & FILTER ── */
 function applyFilters() {
-  const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-  const sort = document.getElementById('sortSelect')?.value || 'name';
-  const filterInStock = document.getElementById('filterInStock')?.checked;
-  const filterPromo = document.getElementById('filterPromo')?.checked;
+    const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    const sort = document.getElementById('sortSelect')?.value || 'name';
+    const filterInStock = document.getElementById('filterInStock')?.checked;
+    const filterPromo = document.getElementById('filterPromo')?.checked;
 
-  let list = [...allProducts];
+    let list = [...allProducts];
 
-  // Category filter
-  if (currentCategory) {
-    list = list.filter(p => {
-      const cat = (p.category || '').toLowerCase();
-      if (cat === currentCategory) return true;
-      // Keyword fallback for products without explicit category
-      const keywords = CATEGORY_KEYWORDS[currentCategory] || [];
-      const name = (p.name || '').toLowerCase();
-      return keywords.some(k => name.includes(k));
-    });
-  }
+    // Category filter
+    if (currentCategory) {
+        list = list.filter(p => {
+            const pCat = (p.category || p.Category || '').toLowerCase();
+            if (pCat === currentCategory) return true;
 
-  // Search
-  if (q) {
-    list = list.filter(p => p.name.toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q));
-  }
+            // Keyword fallback for products without explicit category
+            const keywords = CATEGORY_KEYWORDS[currentCategory] || [];
+            const pName = (p.name || p.Name || '').toLowerCase();
+            return keywords.some(k => pName.includes(k));
+        });
+    }
 
-  // In-stock filter
-  if (filterInStock) {
-    list = list.filter(p => p.inStock !== false);
-  }
+    // Search
+    if (q) {
+        list = list.filter(p => {
+            const pName = (p.name || p.Name || '').toLowerCase();
+            const pDesc = (p.description || p.Description || '').toLowerCase();
+            return pName.includes(q) || pDesc.includes(q);
+        });
+    }
 
-  // Promo filter
-  if (filterPromo) {
-    list = list.filter(p => activePromoIds.has(p.id));
-  }
+    // In-stock filter
+    if (filterInStock) {
+        list = list.filter(p => {
+            const inStockValue = p.inStock !== undefined ? p.inStock : p.InStock;
+            // Если inStock === false или это строка 'false' / '0', то считаем, что товара нет в наличии
+            return !(inStockValue === false || inStockValue === 'false' || inStockValue === '0');
+        });
+    }
 
-  // Sort
-  if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-  if (sort === 'price-asc') list.sort((a, b) => (a.price || 0) - (b.price || 0));
-  if (sort === 'price-desc') list.sort((a, b) => (b.price || 0) - (a.price || 0));
-  if (sort === 'date') list.sort((a, b) => new Date(b.dateAdd || 0) - new Date(a.dateAdd || 0));
+    // Promo filter
+    if (filterPromo) {
+        list = list.filter(p => activePromoIds.has(p.id || p.Id));
+    }
 
-  filteredProducts = list;
-  currentPage = 1;
-  renderProducts();
+    // Sort
+    if (sort === 'name') list.sort((a, b) => (a.name || a.Name || '').localeCompare(b.name || b.Name || '', 'ru'));
+    if (sort === 'price-asc') list.sort((a, b) => (a.price || a.Price || 0) - (b.price || b.Price || 0));
+    if (sort === 'price-desc') list.sort((a, b) => (b.price || b.Price || 0) - (a.price || a.Price || 0));
+    // dateAdd может не приходить от C#, оставьте как есть, или замените на CreatedAt/createdAt
+    if (sort === 'date') list.sort((a, b) => new Date(b.dateAdd || b.DateAdd || b.createdAt || b.CreatedAt || 0) - new Date(a.dateAdd || a.DateAdd || a.createdAt || a.CreatedAt || 0));
+
+    filteredProducts = list;
+    currentPage = 1;
+    renderProducts();
 }
 
 /* ── LOAD PRODUCTS ── */
