@@ -232,21 +232,42 @@ async function editProduct(id){ const p=productsData.find(x=>x.id===id); if(!p)r
 async function deleteProduct(id){ if(!confirm('Удалить товар?'))return; try{await api(`/products/${id}`,{method:'DELETE'}); showToast('Товар удалён'); loadProducts();}catch(err){showToast(err.message,'error');} }
 
 // ── WAREHOUSE ────────────────────────────────────────────────
-let warehouseData=[];
+let warehouseData = [];
+
 async function loadWarehouse() {
     const b = document.getElementById('warehouseTbody');
-    loading(b, 3); 
-    try {
-        const res = await api('/warehouse-cells') || [];
-        warehouseData = res.map(x => ({ 
-            id: x.id || x.Id,
-            cellNumber: x.cellNumber || x.CellNumber || '—', 
-            quantity: x.quantity || x.Quantity || 0,
-            product: x.productName || x.ProductName || x.name || x.Name || '—'
-        })); 
+    loading(b, 3);
+    
+    try {    
+        const cellsResponse = await api('/warehouse-cells') || [];
+        
+        const cellsWithProductsPromises = cellsResponse.map(async (cell) => {
+            const cellId = cell.id || cell.Id;
+            let productName = '—';
+            
+            try {
+                const productRes = await api(`/products/get-by-warehousecell/${cellId}`);
+                if (productRes) {
+                    productName = productRes.name || productRes.Name || '—';
+                }
+            } catch (err) {
+                console.warn(`Не удалось загрузить товар для ячейки ${cellId}`, err);
+            }
+            
+            return {
+                id: cellId,
+                cellNumber: cell.cellNumber || cell.CellNumber || '—',
+                quantity: cell.quantity || cell.Quantity || 0,
+                product: productName
+            };
+        });
+
+        warehouseData = await Promise.all(cellsWithProductsPromises);
+        
         renderWarehouse(warehouseData);
-    } catch (e) { 
-        empty(b, 3, `Ошибка: ${e.message}`); 
+        
+    } catch (e) {
+        empty(b, 3, `Ошибка: ${e.message}`);
     }
 }
 
@@ -258,8 +279,10 @@ function renderWarehouse(list) {
         <tr>
             <td><span class="cell-badge">${esc(w.cellNumber)}</span></td>
             <td><strong>${w.quantity}</strong></td>
-            <td>${esc(w.product)}</td>
-            <td><div class="row-actions"><button class="btn-icon danger" onclick="deleteWarehouseCell(${w.id})">✕</button></div></td>
+            <td style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="muted-cell">${esc(w.product)}</span>
+                <div class="row-actions"><button class="btn-icon danger" onclick="deleteWarehouseCell('${esc(w.cellNumber)}')">✕</button></div>
+            </td>
         </tr>
     `).join(''); 
 }
