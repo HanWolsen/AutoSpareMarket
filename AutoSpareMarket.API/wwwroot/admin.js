@@ -233,8 +233,34 @@ async function deleteProduct(id){ if(!confirm('Удалить товар?'))retu
 
 // ── WAREHOUSE ────────────────────────────────────────────────
 let warehouseData=[];
-async function loadWarehouse(){ const b=document.getElementById('warehouseTbody'); loading(b,3); try{ const p=await api('/products')||[]; warehouseData=p.map(x=>({cellId:x.warehouseCellId,product:x.name})); renderWarehouse(warehouseData); }catch(e){empty(b,3,`Ошибка: ${e.message}`);} }
-function renderWarehouse(list){ const b=document.getElementById('warehouseTbody'); if(!list.length){empty(b,3);return;} b.innerHTML=list.map(w=>`<tr><td><span class="cell-badge">${w.cellId??'—'}</span></td><td>—</td><td>${esc(w.product)}</td></tr>`).join(''); }
+async function loadWarehouse() {
+    const b = document.getElementById('warehouseTbody');
+    loading(b, 3); 
+    try {
+        const res = await api('/warehouse-cells') || [];
+        warehouseData = res.map(x => ({ 
+            id: x.id || x.Id,
+            cellNumber: x.cellNumber || x.CellNumber || '—', 
+            quantity: x.quantity || x.Quantity || 0 
+        })); 
+        renderWarehouse(warehouseData);
+    } catch (e) { 
+        empty(b, 3, `Ошибка: ${e.message}`); 
+    }
+}
+
+function renderWarehouse(list) { 
+    const b = document.getElementById('warehouseTbody'); 
+    if(!list.length) { empty(b, 3); return; } 
+    
+    b.innerHTML = list.map(w => `
+        <tr>
+            <td><span class="cell-badge">${esc(w.cellNumber)}</span></td>
+            <td><strong>${w.quantity}</strong></td>
+            <td><div class="row-actions"><button class="btn-icon danger" onclick="deleteWarehouseCell(${w.id})">✕</button></div></td>
+        </tr>
+    `).join(''); 
+}
 addSearch('warehouseSearch',renderWarehouse,()=>warehouseData);
 document.getElementById('refreshWarehouse').addEventListener('click',loadWarehouse);
 document.getElementById('openWarehouseModal').addEventListener('click',()=>{ document.getElementById('warehouseForm').reset(); openModal('warehouseModal'); });
