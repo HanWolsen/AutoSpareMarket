@@ -46,7 +46,7 @@ namespace AutoSpareMarket.API.Controllers
         [HttpGet]
         [Route("get-by-warehousecell/{id:int}")]
         public ActionResult GetByWarehouseCellId(int id)
-       => HandleResponse(_baseService.GetById(id));
+       => HandleResponse(_extendedService.GetProductNameByWareHouseCellId(id));
 
         [HttpPut("{id:int}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
