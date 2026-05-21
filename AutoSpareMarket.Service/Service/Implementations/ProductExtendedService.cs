@@ -33,10 +33,7 @@ namespace AutoSpareMarket.Service.Services
             {
                 var product = _products.GetAll().FirstOrDefault(p => p.WarehouseCellId == warehouseCellId);
                 ObjectValidator<Product>.CheckIsNotNull(product);
-
-                var warehouseCell = _warehouseCells.GetAll().FirstOrDefault(wc => wc.Id == product.WarehouseCellId);
-
-                ObjectValidator<WarehouseCell>.CheckIsNotNull(warehouseCell);       
+    
                 return ResponseFactory<string>.CreateSuccessResponse(product.Name);
             }
             catch (Exception ex)
