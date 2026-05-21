@@ -26,7 +26,6 @@ namespace AutoSpareMarket.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Create([FromBody] SaleCreateDto dto)
             => HandleResponse(_extendedService.CreateSale(dto));
 

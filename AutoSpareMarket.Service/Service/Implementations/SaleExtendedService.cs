@@ -56,7 +56,6 @@ namespace AutoSpareMarket.Service.Services
                 var sale = new Sale
                 {
                     CustomerId = dto.CustomerId,
-                    CashRegisterId = dto.CashRegisterId,
                     PaymentMethod = dto.PaymentMethod,
                     CreatedAt = DateTime.UtcNow
                 };
@@ -75,16 +74,15 @@ namespace AutoSpareMarket.Service.Services
 
                     // Скидка от активной акции
                     var discountPct = GetDiscountPercent(product.Id);
-                    var priceAfterDiscount = item.UnitPrice * (100 - discountPct) / 100m;
+                    var priceAfterDiscount = product.Price * (100 - discountPct) / 100m;
 
                     var saleItem = new SaleItem
                     {
                         SaleId = sale.Id,
                         ProductId = item.ProductId,
-                        SupplierId = item.SupplierId,
                         Quantity = item.Quantity,
                         UnitPrice = priceAfterDiscount,
-                        UnitCost = item.UnitCost
+                        UnitCost = product.Price
                     };
                     _saleItems.Create(saleItem);
 
@@ -120,16 +118,15 @@ namespace AutoSpareMarket.Service.Services
                         throw new InvalidOperationException($"Not enough stock for product {product.Name}");
 
                     var discountPct = GetDiscountPercent(product.Id);
-                    var priceAfterDiscount = item.UnitPrice * (100 - discountPct) / 100m;
+                    var priceAfterDiscount = product.Price * (100 - discountPct) / 100m;
 
                     var saleItem = new SaleItem
                     {
                         SaleId = sale.Id,
                         ProductId = item.ProductId,
-                        SupplierId = item.SupplierId,
                         Quantity = item.Quantity,
                         UnitPrice = priceAfterDiscount,
-                        UnitCost = item.UnitCost
+                        UnitCost = product.Price
                     };
                     _saleItems.Create(saleItem);
 

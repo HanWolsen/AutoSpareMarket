@@ -70,7 +70,7 @@ const TEST_PRODUCTS = [
 ];
 
 const PRODUCT_IMAGES = {
-    1:  'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
+    77:  'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
     2:  'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
     3:  'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
     4:  'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
@@ -307,7 +307,6 @@ function renderProducts() {
                 <div class="product-card-meta">Арт: ${pId}</div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
                     <a class="btn-price-go" href="product.html?id=${pId}">${priceLabel}</a>
-                    <button class="btn-icon" style="background:#000;color:#fff;border-radius:4px;padding:8px;" onclick="addToCart(${safeProductInfo})">🛒</button>
                 </div>
             </div>
         </div>`;
