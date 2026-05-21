@@ -241,7 +241,8 @@ async function loadWarehouse() {
         warehouseData = res.map(x => ({ 
             id: x.id || x.Id,
             cellNumber: x.cellNumber || x.CellNumber || '—', 
-            quantity: x.quantity || x.Quantity || 0 
+            quantity: x.quantity || x.Quantity || 0,
+            product: x.productName || x.ProductName || x.name || x.Name || '—'
         })); 
         renderWarehouse(warehouseData);
     } catch (e) { 
@@ -257,6 +258,7 @@ function renderWarehouse(list) {
         <tr>
             <td><span class="cell-badge">${esc(w.cellNumber)}</span></td>
             <td><strong>${w.quantity}</strong></td>
+            <td>${esc(w.product)}</td>
             <td><div class="row-actions"><button class="btn-icon danger" onclick="deleteWarehouseCell(${w.id})">✕</button></div></td>
         </tr>
     `).join(''); 

@@ -6,5 +6,7 @@ namespace AutoSpareMarket.Service.Interfaces
     public interface IProductExtendedService
     {
         IResponse<SupplierDto> GetSupplierDetails(int productId);
+        IResponse<string> GetProductNameByWareHouseCellId(int warehouseCellId);
+
     }
 }

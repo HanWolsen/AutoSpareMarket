@@ -13,14 +13,36 @@ namespace AutoSpareMarket.Service.Services
         private readonly IBaseRepository<Product> _products;
         private readonly IBaseRepository<SupplierProduct> _supplierProducts;
         private readonly IBaseRepository<Supplier> _suppliers;
+        private readonly IBaseRepository<WarehouseCell> _warehouseCells;
+
 
         public ProductExtendedService(IBaseRepository<Product> products,
                                       IBaseRepository<SupplierProduct> supplierProducts,
-                                      IBaseRepository<Supplier> suppliers)
+                                      IBaseRepository<Supplier> suppliers,
+                                      IBaseRepository<WarehouseCell> warehouseCells)
         {
             _products = products;
             _supplierProducts = supplierProducts;
             _suppliers = suppliers;
+            _warehouseCells = warehouseCells;   
+        }
+
+        public IResponse<string> GetProductNameByWareHouseCellId(int warehouseCellId)
+        {
+            try
+            {
+                var product = _products.GetAll().FirstOrDefault(p => p.WarehouseCellId == warehouseCellId);
+                ObjectValidator<Product>.CheckIsNotNull(product);
+
+                var warehouseCell = _warehouseCells.GetAll().FirstOrDefault(wc => wc.Id == product.WarehouseCellId);
+
+                ObjectValidator<WarehouseCell>.CheckIsNotNull(warehouseCell);       
+                return ResponseFactory<string>.CreateSuccessResponse(product.Name);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory<string>.CreateErrorResponse(ex);
+            }
         }
 
         public IResponse<SupplierDto> GetSupplierDetails(int productId)

@@ -43,6 +43,11 @@ namespace AutoSpareMarket.API.Controllers
         public ActionResult GetById(int id)
             => HandleResponse(_baseService.GetById(id));
 
+        [HttpGet]
+        [Route("get-by-warehousecell/{id:int}")]
+        public ActionResult GetByWarehouseCellId(int id)
+       => HandleResponse(_baseService.GetById(id));
+
         [HttpPut("{id:int}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Update(int id, [FromBody] ProductUpdateDto dto)
