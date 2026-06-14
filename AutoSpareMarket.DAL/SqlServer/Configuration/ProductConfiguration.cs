@@ -27,7 +27,8 @@ namespace AutoSpareMarket.DAL.SqlServer.Configuration
 
             builder.HasOne(p => p.WarehouseCell)
                 .WithMany(wh => wh.Products)
-                .HasForeignKey(p => p.WarehouseCellId);
+                .HasForeignKey(p => p.WarehouseCellId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //builder.HasMany(cr => cr.SaleItems)
             //.WithOne(t => t.Product)

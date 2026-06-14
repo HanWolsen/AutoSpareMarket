@@ -63,8 +63,18 @@ namespace AutoSpareMarket.API.Controllers
         [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult Update(int id, [FromBody] ProductUpdateDto dto)
         {
+            ProductDto productDto = new ProductDto
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Category = dto.Category,
+                DateAdd = DateTime.Now,
+                Price = dto.Price,
+                WarehouseCellId = int.Parse(dto.Cell),
+                Cell = dto.Cell
+            };
             dto.Id = id;
-            return HandleBoolResponse(_baseService.Update(dto));
+            return HandleBoolResponse(_baseService.Update(productDto));
         }
 
         [HttpDelete("{id:int}")]
