@@ -251,7 +251,9 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
         try { 
             if (id) {
                 await api(`/products/${id}`, { method: 'PUT', body: JSON.stringify(dto) }); 
+                deleteProduct(id);
                 showToast('Товар обновлён');
+
             } else {
                 await api('/products', { method: 'POST', body: JSON.stringify(dto) }); 
                 showToast('Товар создан');
@@ -261,7 +263,7 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
         } catch(err) { 
             showToast(err.message, 'error'); 
             console.error("Ошибка при сохранении товара:", err);
-        } 
+        }
     });
 
     async function editProduct(id) { 
