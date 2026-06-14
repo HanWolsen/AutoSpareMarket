@@ -227,8 +227,61 @@ function renderProducts(list) { const b=document.getElementById('productsTbody')
 addSearch('productsSearch',renderProducts,()=>productsData);
 document.getElementById('refreshProducts').addEventListener('click',loadProducts);
 document.getElementById('openProductModal').addEventListener('click',()=>{ document.getElementById('productModalTitle').textContent='Новый товар'; document.getElementById('productForm').reset(); document.getElementById('productId').value=''; openModal('productModal'); });
-document.getElementById('productForm').addEventListener('submit',async e=>{ e.preventDefault(); const f=e.target; const id=f.id.value; const dto={warehouseCellId:Number(f.warehouseCellId.value),name:f.name.value.trim(),description:f.description.value.trim()||null,price:f.price&&f.price.value?Number(f.price.value):null,category:f.category?f.category.value||null:null}; try{ if(id){await api(`/products/${id}`,{method:'PUT',body:JSON.stringify({id:Number(id),...dto})}); showToast('Товар обновлён');}else{await api('/products',{method:'POST',body:JSON.stringify(dto)}); showToast('Товар создан');} closeModal('productModal'); loadProducts(); }catch(err){ showToast(err.message,'error'); } });
-async function editProduct(id){ const p=productsData.find(x=>x.id===id); if(!p)return; const f=document.getElementById('productForm'); document.getElementById('productModalTitle').textContent='Редактировать товар'; f.id.value=p.id; f.warehouseCellId.value=p.warehouseCellId; f.name.value=p.name; f.description.value=p.description||''; if(f.price)f.price.value=p.price||''; if(f.category)f.category.value=p.category||''; openModal('productModal'); }
+    document.getElementById('productForm').addEventListener('submit', async e => { 
+        e.preventDefault(); 
+        const f = e.target; 
+        const id = f.elements['id'] ? f.elements['id'].value : ''; 
+   
+        const cellValue = f.elements['warehouseCellId'] ? f.elements['warehouseCellId'].value : 
+                         (f.elements['cell'] ? f.elements['cell'].value : '');
+
+        const dto = {
+            name: f.elements['name'] ? f.elements['name'].value.trim() : '',
+            description: f.elements['description'] ? f.elements['description'].value.trim() : null,
+            price: f.elements['price'] && f.elements['price'].value ? Number(f.elements['price'].value) : 0,
+            category: f.elements['category'] ? f.elements['category'].value : '',
+            cell: String(cellValue), 
+            inStock: "true" 
+        }; 
+    
+        if (id) {
+            dto.id = Number(id);
+        }
+    
+        try { 
+            if (id) {
+                await api(`/products/${id}`, { method: 'PUT', body: JSON.stringify(dto) }); 
+                showToast('Товар обновлён');
+            } else {
+                await api('/products', { method: 'POST', body: JSON.stringify(dto) }); 
+                showToast('Товар создан');
+            } 
+            closeModal('productModal'); 
+            loadProducts(); 
+        } catch(err) { 
+            showToast(err.message, 'error'); 
+            console.error("Ошибка при сохранении товара:", err);
+        } 
+    });
+
+    async function editProduct(id) { 
+        const p = productsData.find(x => x.id === id || x.Id === id); 
+        if(!p) return; 
+        const f = document.getElementById('productForm'); 
+        document.getElementById('productModalTitle').textContent = 'Редактировать товар'; 
+    
+        if (f.elements['id']) f.elements['id'].value = p.id || p.Id || ''; 
+    
+        if (f.elements['warehouseCellId']) f.elements['warehouseCellId'].value = p.warehouseCellId || p.WarehouseCellId || p.cell || p.Cell || ''; 
+        else if (f.elements['cell']) f.elements['cell'].value = p.warehouseCellId || p.WarehouseCellId || p.cell || p.Cell || ''; 
+    
+        if (f.elements['name']) f.elements['name'].value = p.name || p.Name || ''; 
+        if (f.elements['description']) f.elements['description'].value = p.description || p.Description || ''; 
+        if (f.elements['price']) f.elements['price'].value = p.price || p.Price || ''; 
+        if (f.elements['category']) f.elements['category'].value = p.category || p.Category || ''; 
+    
+        openModal('productModal'); 
+}
 async function deleteProduct(id){ if(!confirm('Удалить товар?'))return; try{await api(`/products/${id}`,{method:'DELETE'}); showToast('Товар удалён'); loadProducts();}catch(err){showToast(err.message,'error');} }
 
 // ── WAREHOUSE ────────────────────────────────────────────────
