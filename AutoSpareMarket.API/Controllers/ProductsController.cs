@@ -26,7 +26,19 @@ namespace AutoSpareMarket.API.Controllers
 
         [HttpPost]
         public ActionResult Create([FromBody] ProductCreateDto dto)
-            => HandleResponse(_baseService.Create(dto));
+        {
+            ProductDto productDto = new ProductDto
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Category = dto.Category,
+                DateAdd = DateTime.Now,
+                Price = dto.Price,
+                WarehouseCellId = int.Parse(dto.Cell),
+                Cell = dto.Cell
+            };
+            return HandleResponse(_baseService.Create(productDto));
+        }
 
         [HttpPost]
         [Route("create-warehousecell")]
