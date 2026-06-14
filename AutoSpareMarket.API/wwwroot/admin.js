@@ -215,7 +215,7 @@ function collectItemRows(containerId, fields) { return Array.from(document.getEl
 
 // ── DASHBOARD ────────────────────────────────────────────────
 async function loadDashboard() {
-    const eps=[['/products','stat-products'],['/suppliers','stat-suppliers'],['/customers','stat-customers'],['/orders','stat-orders'],['/sales','stat-sales'],['/cash-registers','stat-cash']];
+    const eps=[['/products','stat-products'],['/suppliers','stat-suppliers'],['/users','stat-customers'],['/sales','stat-sales']];
     for(const [p,id] of eps) api(p).then(d=>{ document.getElementById(id).textContent=Array.isArray(d)?d.length:'—'; }).catch(()=>{ document.getElementById(id).textContent='—'; });
 }
 
@@ -248,7 +248,7 @@ async function loadWarehouse() {
             try {
                 const productRes = await api(`/products/get-by-warehousecell/${cellId}`);
                 if (productRes) {
-                    productName = productRes.name || productRes.Name || '—';
+                    productName = productRes || '—';
                 }
             } catch (err) {
                 console.warn(`Не удалось загрузить товар для ячейки ${cellId}`, err);

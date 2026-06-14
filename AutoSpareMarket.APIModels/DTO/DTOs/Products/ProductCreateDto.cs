@@ -9,6 +9,5 @@ namespace AutoSpareMarket.APIModels.DTO.DTOs.Products
         public string Cell { get; set; }
         public int Price { get; set; }
         public string Category { get; set; }
-        public string InStock { get; set; }
     }
 }

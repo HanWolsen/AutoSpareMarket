@@ -201,10 +201,8 @@ async function loadDashboard() {
     const endpoints = [
         ['/products', 'stat-products'],
         ['/suppliers', 'stat-suppliers'],
-        ['/customers', 'stat-customers'],
-        ['/orders', 'stat-orders'],
+        ['/users', 'stat-customers'],
         ['/sales', 'stat-sales'],
-        ['/cash-registers', 'stat-cash'],
     ];
     for (const [path, id] of endpoints) {
         api(path).then(data => {
