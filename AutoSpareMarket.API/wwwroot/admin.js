@@ -251,7 +251,7 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
         try { 
             if (id) {
                 await api(`/products/${id}`, { method: 'PUT', body: JSON.stringify(dto) }); 
-                deleteProduct(id);
+                await api(`/products/${id}`, { method: 'DELETE' });
                 showToast('Товар обновлён');
 
             } else {
@@ -284,7 +284,14 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
     
         openModal('productModal'); 
 }
-async function deleteProduct(id){ if(!confirm('Удалить товар?'))return; try{await api(`/products/${id}`,{method:'DELETE'}); showToast('Товар удалён'); loadProducts();}catch(err){showToast(err.message,'error');} }
+async function deleteProduct(id) {
+    if (!confirm('Удалить товар?'))
+        return;
+    try {
+        await api(`/products/${id}`, { method: 'DELETE' });
+        showToast('Товар удалён'); loadProducts();
+    } catch (err) { showToast(err.message, 'error'); }
+}
 
 // ── WAREHOUSE ────────────────────────────────────────────────
 let warehouseData = [];
