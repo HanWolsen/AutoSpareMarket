@@ -272,210 +272,118 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
     });
 
 
-// admin.js
+// admin.js - для браузера
 
-const fs = require('fs');
-const path = require('path');
+// Функция для редактирования изображения
+async function editProductImage(id, imageUrl) {
+    console.log(`✏️ Редактирование изображения для ID: ${id}`);
 
-// Пути к файлам (укажите актуальные пути к вашим файлам)
-const STORE_JS_PATH = path.join(__dirname, 'store.js');
-const PRODUCT_JS_PATH = path.join(__dirname, 'product.js');
-
-/**
- * Вспомогательная функция для чтения и парсинга PRODUCT_IMAGES из файла
- */
-function readProductImagesFromFile(filePath) {
     try {
-        const content = fs.readFileSync(filePath, 'utf8');
+        // Получаем данные из store.js через fetch или глобальные переменные
+        const response = await fetch('/path/to/store.js');
+        let storeContent = await response.text();
 
-        // Ищем строку с PRODUCT_IMAGES = { ... }
-        const regex = /let\s+PRODUCT_IMAGES\s*=\s*({[\s\S]*?});/;
-        const match = content.match(regex);
+        const productResponse = await fetch('/path/to/product.js');
+        let productContent = await productResponse.text();
 
-        if (match && match[1]) {
-            // Парсим объект из строки
-            const objStr = match[1];
-            // Валидируем как JavaScript объект
-            const productImages = eval('(' + objStr + ')');
-            return { content, productImages, matchIndex: match.index };
-        }
+        // Обновляем в store.js
+        const updatedStoreContent = updateProductImagesInContent(storeContent, id, imageUrl);
+        const updatedProductContent = updateProductImagesInContent(productContent, id, imageUrl);
 
-        throw new Error('PRODUCT_IMAGES не найден в файле');
-    } catch (error) {
-        console.error(`Ошибка чтения файла ${filePath}:`, error);
-        return null;
-    }
-}
+        // Сохраняем обратно на сервер
+        await saveFile('/path/to/store.js', updatedStoreContent);
+        await saveFile('/path/to/product.js', updatedProductContent);
 
-/**
- * Вспомогательная функция для записи обновленного PRODUCT_IMAGES в файл
- */
-function writeProductImagesToFile(filePath, originalContent, updatedProductImages, matchIndex) {
-    try {
-        // Форматируем объект в читаемый вид
-        const formattedObject = formatObjectToString(updatedProductImages);
-
-        // Заменяем старый объект новым
-        const regex = /let\s+PRODUCT_IMAGES\s*=\s*({[\s\S]*?});/;
-        const newContent = originalContent.replace(regex, `let PRODUCT_IMAGES = ${formattedObject};`);
-
-        fs.writeFileSync(filePath, newContent, 'utf8');
-        console.log(`✅ Файл ${filePath} успешно обновлен`);
+        console.log(`✅ Изображение для ID ${id} успешно обновлено`);
         return true;
     } catch (error) {
-        console.error(`Ошибка записи файла ${filePath}:`, error);
+        console.error('Ошибка при редактировании:', error);
         return false;
     }
 }
 
-/**
- * Форматирует объект в строку с отступами
- */
-function formatObjectToString(obj) {
-    const entries = Object.entries(obj);
-    const formattedEntries = entries.map(([key, value]) => {
-        return `    ${key}: '${value}'`;
-    });
-
-    return `{\n${formattedEntries.join(',\n')}\n}`;
-}
-
-/**
- * Редактирование изображения товара
- * @param {number|string} id - ID товара
- * @param {string} imageUrl - Новый URL изображения
- */
-async function editProductImage(id, imageUrl) {
-    console.log(`✏️ Редактирование изображения для ID: ${id}`);
-    console.log(`🖼️ Новый URL: ${imageUrl}`);
-
-    // Обрабатываем оба файла: store.js и product.js
-    const filesToUpdate = [
-        { path: STORE_JS_PATH, name: 'store.js' },
-        { path: PRODUCT_JS_PATH, name: 'product.js' }
-    ];
-
-    let successCount = 0;
-
-    for (const file of filesToUpdate) {
-        try {
-            // Проверяем существование файла
-            if (!fs.existsSync(file.path)) {
-                console.warn(`⚠️ Файл ${file.name} не найден по пути: ${file.path}`);
-                continue;
-            }
-
-            // Читаем текущий PRODUCT_IMAGES из файла
-            const fileData = readProductImagesFromFile(file.path);
-
-            if (!fileData) {
-                console.error(`❌ Не удалось прочитать PRODUCT_IMAGES из ${file.name}`);
-                continue;
-            }
-
-            const { content, productImages, matchIndex } = fileData;
-
-            // Проверяем, существует ли указанный ID
-            if (!productImages.hasOwnProperty(id)) {
-                console.warn(`⚠️ В ${file.name} ID ${id} не найден в PRODUCT_IMAGES`);
-                continue;
-            }
-
-            // Сохраняем старый URL для отчета
-            const oldUrl = productImages[id];
-
-            // Обновляем URL для указанного ID
-            productImages[id] = imageUrl;
-
-            // Записываем обновленный объект обратно в файл
-            const success = writeProductImagesToFile(file.path, content, productImages, matchIndex);
-
-            if (success) {
-                successCount++;
-                console.log(`   📝 ${file.name}: ID ${id} обновлен`);
-                console.log(`      Старый URL: ${oldUrl}`);
-                console.log(`      Новый URL: ${imageUrl}`);
-            }
-
-        } catch (error) {
-            console.error(`❌ Ошибка при обработке ${file.name}:`, error.message);
-        }
-    }
-
-    if (successCount === filesToUpdate.length) {
-        console.log(`✅ Изображение для ID ${id} успешно обновлено в обоих файлах`);
-    } else if (successCount > 0) {
-        console.log(`⚠️ Изображение для ID ${id} обновлено только в ${successCount} из ${filesToUpdate.length} файлов`);
-    } else {
-        console.log(`❌ Не удалось обновить изображение для ID ${id}`);
-    }
-
-    return successCount === filesToUpdate.length;
-}
-
+// Функция для добавления изображения
 async function addProductImage(imageUrl) {
-    console.log(`➕ Добавление нового изображения товара`);
-    console.log(`🖼️ URL изображения: ${imageUrl}`);
+    console.log(`➕ Добавление нового изображения`);
 
-    let newId = null;
-    let successCount = 0;
+    try {
+        // Получаем текущие данные
+        const storeResponse = await fetch('/path/to/store.js');
+        let storeContent = await storeResponse.text();
 
-    const filesToUpdate = [
-        { path: STORE_JS_PATH, name: 'store.js' },
-        { path: PRODUCT_JS_PATH, name: 'product.js' }
-    ];
+        const productResponse = await fetch('/path/to/product.js');
+        let productContent = await productResponse.text();
 
-    for (const file of filesToUpdate) {
-        try {
-            if (!fs.existsSync(file.path)) {
-                console.warn(`⚠️ Файл ${file.name} не найден по пути: ${file.path}`);
-                continue;
-            }
+        // Получаем текущий объект PRODUCT_IMAGES
+        const storeImages = extractProductImages(storeContent);
+        const productImages = extractProductImages(productContent);
 
-            const fileData = readProductImagesFromFile(file.path);
+        // Находим максимальный ID
+        const ids = [...Object.keys(storeImages), ...Object.keys(productImages)]
+            .map(Number)
+            .filter(id => !isNaN(id));
+        const newId = Math.max(...ids) + 1;
 
-            if (!fileData) {
-                console.error(`❌ Не удалось прочитать PRODUCT_IMAGES из ${file.name}`);
-                continue;
-            }
+        // Добавляем новое изображение
+        const updatedStoreContent = addProductImageToContent(storeContent, newId, imageUrl);
+        const updatedProductContent = addProductImageToContent(productContent, newId, imageUrl);
 
-            const { content, productImages, matchIndex } = fileData;
+        // Сохраняем
+        await saveFile('/path/to/store.js', updatedStoreContent);
+        await saveFile('/path/to/product.js', updatedProductContent);
 
-            const ids = Object.keys(productImages).map(Number).filter(id => !isNaN(id));
-            const maxId = ids.length > 0 ? Math.max(...ids) : 0;
-            newId = maxId + 1;
-
-            productImages[newId] = imageUrl;
-
-            console.log(`   📝 ${file.name}: Добавлен новый ID ${newId}`);
-
-            const success = writeProductImagesToFile(file.path, content, productImages, matchIndex);
-
-            if (success) {
-                successCount++;
-            }
-
-        } catch (error) {
-            console.error(`❌ Ошибка при обработке ${file.name}:`, error.message);
-        }
-    }
-
-    if (successCount === filesToUpdate.length) {
-        console.log(`✅ Новое изображение успешно добавлено с ID ${newId} в оба файла`);
+        console.log(`✅ Новое изображение добавлено с ID ${newId}`);
         return newId;
-    } else if (successCount > 0) {
-        console.log(`⚠️ Новое изображение добавлено только в ${successCount} из ${filesToUpdate.length} файлов с ID ${newId}`);
-        return newId;
-    } else {
-        console.log(`❌ Не удалось добавить новое изображение`);
+    } catch (error) {
+        console.error('Ошибка при добавлении:', error);
         return null;
     }
 }
 
-module.exports = {
-    editProductImage,
-    addProductImage
-};
+// Вспомогательные функции для браузера
+function updateProductImagesInContent(content, id, imageUrl) {
+    const regex = /(let\s+PRODUCT_IMAGES\s*=\s*\{)([\s\S]*?)(\};?)/;
+    return content.replace(regex, (match, prefix, body, suffix) => {
+        const lines = body.split(',');
+        const updatedLines = lines.map(line => {
+            const matchId = line.match(/(\d+)\s*:/);
+            if (matchId && parseInt(matchId[1]) === parseInt(id)) {
+                return `    ${id}: '${imageUrl}'`;
+            }
+            return line;
+        });
+        return prefix + updatedLines.join(',') + suffix;
+    });
+}
+
+function extractProductImages(content) {
+    const match = content.match(/let\s+PRODUCT_IMAGES\s*=\s*({[\s\S]*?});/);
+    if (match) {
+        return eval('(' + match[1] + ')');
+    }
+    return {};
+}
+
+function addProductImageToContent(content, newId, imageUrl) {
+    const regex = /(let\s+PRODUCT_IMAGES\s*=\s*\{)([\s\S]*?)(\};?)/;
+    return content.replace(regex, (match, prefix, body, suffix) => {
+        const newEntry = `\n    ${newId}: '${imageUrl}'`;
+        return prefix + body + (body.trim() ? ',' : '') + newEntry + '\n' + suffix;
+    });
+}
+
+async function saveFile(filePath, content) {
+    // Отправляем на сервер для сохранения
+    const response = await fetch('/api/save-file', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: filePath, content: content })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to save ${filePath}`);
+    }
+}
 
 async function editProduct(id) { 
     const p = productsData.find(x => x.id === id || x.Id === id); 
