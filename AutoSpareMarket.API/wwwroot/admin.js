@@ -243,9 +243,7 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
             cell: String(cellValue), 
             inStock: "true" 
         }; 
-
-        const url = f.elements['image'] ? f.elements['image'].value.trim() : '';
-
+    
         if (id) {
             dto.id = Number(id);
         }
@@ -253,14 +251,11 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
         try { 
             if (id) {
                 await api(`/products/${id}`, { method: 'PUT', body: JSON.stringify(dto) }); 
-                await editProductImage(id + 1, url)
                 await api(`/products/${id}`, { method: 'DELETE' });
                 showToast('Товар обновлён');
 
-
             } else {
                 await api('/products', { method: 'POST', body: JSON.stringify(dto) }); 
-                await addProductImage(url);
                 showToast('Товар создан');
             } 
             closeModal('productModal'); 
@@ -271,230 +266,23 @@ document.getElementById('openProductModal').addEventListener('click',()=>{ docum
         }
     });
 
-
-// admin.js
-
-const fs = require('fs');
-const path = require('path');
-
-// Пути к файлам (укажите актуальные пути к вашим файлам)
-const STORE_JS_PATH = path.join(__dirname, 'store.js');
-const PRODUCT_JS_PATH = path.join(__dirname, 'product.js');
-
-/**
- * Вспомогательная функция для чтения и парсинга PRODUCT_IMAGES из файла
- */
-function readProductImagesFromFile(filePath) {
-    try {
-        const content = fs.readFileSync(filePath, 'utf8');
-
-        // Ищем строку с PRODUCT_IMAGES = { ... }
-        const regex = /let\s+PRODUCT_IMAGES\s*=\s*({[\s\S]*?});/;
-        const match = content.match(regex);
-
-        if (match && match[1]) {
-            // Парсим объект из строки
-            const objStr = match[1];
-            // Валидируем как JavaScript объект
-            const productImages = eval('(' + objStr + ')');
-            return { content, productImages, matchIndex: match.index };
-        }
-
-        throw new Error('PRODUCT_IMAGES не найден в файле');
-    } catch (error) {
-        console.error(`Ошибка чтения файла ${filePath}:`, error);
-        return null;
-    }
-}
-
-/**
- * Вспомогательная функция для записи обновленного PRODUCT_IMAGES в файл
- */
-function writeProductImagesToFile(filePath, originalContent, updatedProductImages, matchIndex) {
-    try {
-        // Форматируем объект в читаемый вид
-        const formattedObject = formatObjectToString(updatedProductImages);
-
-        // Заменяем старый объект новым
-        const regex = /let\s+PRODUCT_IMAGES\s*=\s*({[\s\S]*?});/;
-        const newContent = originalContent.replace(regex, `let PRODUCT_IMAGES = ${formattedObject};`);
-
-        fs.writeFileSync(filePath, newContent, 'utf8');
-        console.log(`✅ Файл ${filePath} успешно обновлен`);
-        return true;
-    } catch (error) {
-        console.error(`Ошибка записи файла ${filePath}:`, error);
-        return false;
-    }
-}
-
-/**
- * Форматирует объект в строку с отступами
- */
-function formatObjectToString(obj) {
-    const entries = Object.entries(obj);
-    const formattedEntries = entries.map(([key, value]) => {
-        return `    ${key}: '${value}'`;
-    });
-
-    return `{\n${formattedEntries.join(',\n')}\n}`;
-}
-
-/**
- * Редактирование изображения товара
- * @param {number|string} id - ID товара
- * @param {string} imageUrl - Новый URL изображения
- */
-async function editProductImage(id, imageUrl) {
-    console.log(`✏️ Редактирование изображения для ID: ${id}`);
-    console.log(`🖼️ Новый URL: ${imageUrl}`);
-
-    // Обрабатываем оба файла: store.js и product.js
-    const filesToUpdate = [
-        { path: STORE_JS_PATH, name: 'store.js' },
-        { path: PRODUCT_JS_PATH, name: 'product.js' }
-    ];
-
-    let successCount = 0;
-
-    for (const file of filesToUpdate) {
-        try {
-            // Проверяем существование файла
-            if (!fs.existsSync(file.path)) {
-                console.warn(`⚠️ Файл ${file.name} не найден по пути: ${file.path}`);
-                continue;
-            }
-
-            // Читаем текущий PRODUCT_IMAGES из файла
-            const fileData = readProductImagesFromFile(file.path);
-
-            if (!fileData) {
-                console.error(`❌ Не удалось прочитать PRODUCT_IMAGES из ${file.name}`);
-                continue;
-            }
-
-            const { content, productImages, matchIndex } = fileData;
-
-            // Проверяем, существует ли указанный ID
-            if (!productImages.hasOwnProperty(id)) {
-                console.warn(`⚠️ В ${file.name} ID ${id} не найден в PRODUCT_IMAGES`);
-                continue;
-            }
-
-            // Сохраняем старый URL для отчета
-            const oldUrl = productImages[id];
-
-            // Обновляем URL для указанного ID
-            productImages[id] = imageUrl;
-
-            // Записываем обновленный объект обратно в файл
-            const success = writeProductImagesToFile(file.path, content, productImages, matchIndex);
-
-            if (success) {
-                successCount++;
-                console.log(`   📝 ${file.name}: ID ${id} обновлен`);
-                console.log(`      Старый URL: ${oldUrl}`);
-                console.log(`      Новый URL: ${imageUrl}`);
-            }
-
-        } catch (error) {
-            console.error(`❌ Ошибка при обработке ${file.name}:`, error.message);
-        }
-    }
-
-    if (successCount === filesToUpdate.length) {
-        console.log(`✅ Изображение для ID ${id} успешно обновлено в обоих файлах`);
-    } else if (successCount > 0) {
-        console.log(`⚠️ Изображение для ID ${id} обновлено только в ${successCount} из ${filesToUpdate.length} файлов`);
-    } else {
-        console.log(`❌ Не удалось обновить изображение для ID ${id}`);
-    }
-
-    return successCount === filesToUpdate.length;
-}
-
-async function addProductImage(imageUrl) {
-    console.log(`➕ Добавление нового изображения товара`);
-    console.log(`🖼️ URL изображения: ${imageUrl}`);
-
-    let newId = null;
-    let successCount = 0;
-
-    const filesToUpdate = [
-        { path: STORE_JS_PATH, name: 'store.js' },
-        { path: PRODUCT_JS_PATH, name: 'product.js' }
-    ];
-
-    for (const file of filesToUpdate) {
-        try {
-            if (!fs.existsSync(file.path)) {
-                console.warn(`⚠️ Файл ${file.name} не найден по пути: ${file.path}`);
-                continue;
-            }
-
-            const fileData = readProductImagesFromFile(file.path);
-
-            if (!fileData) {
-                console.error(`❌ Не удалось прочитать PRODUCT_IMAGES из ${file.name}`);
-                continue;
-            }
-
-            const { content, productImages, matchIndex } = fileData;
-
-            const ids = Object.keys(productImages).map(Number).filter(id => !isNaN(id));
-            const maxId = ids.length > 0 ? Math.max(...ids) : 0;
-            newId = maxId + 1;
-
-            productImages[newId] = imageUrl;
-
-            console.log(`   📝 ${file.name}: Добавлен новый ID ${newId}`);
-
-            const success = writeProductImagesToFile(file.path, content, productImages, matchIndex);
-
-            if (success) {
-                successCount++;
-            }
-
-        } catch (error) {
-            console.error(`❌ Ошибка при обработке ${file.name}:`, error.message);
-        }
-    }
-
-    if (successCount === filesToUpdate.length) {
-        console.log(`✅ Новое изображение успешно добавлено с ID ${newId} в оба файла`);
-        return newId;
-    } else if (successCount > 0) {
-        console.log(`⚠️ Новое изображение добавлено только в ${successCount} из ${filesToUpdate.length} файлов с ID ${newId}`);
-        return newId;
-    } else {
-        console.log(`❌ Не удалось добавить новое изображение`);
-        return null;
-    }
-}
-
-module.exports = {
-    editProductImage,
-    addProductImage
-};
-
-async function editProduct(id) { 
-    const p = productsData.find(x => x.id === id || x.Id === id); 
-    if(!p) return; 
-    const f = document.getElementById('productForm'); 
-    document.getElementById('productModalTitle').textContent = 'Редактировать товар'; 
+    async function editProduct(id) { 
+        const p = productsData.find(x => x.id === id || x.Id === id); 
+        if(!p) return; 
+        const f = document.getElementById('productForm'); 
+        document.getElementById('productModalTitle').textContent = 'Редактировать товар'; 
     
-    if (f.elements['id']) f.elements['id'].value = p.id || p.Id || ''; 
+        if (f.elements['id']) f.elements['id'].value = p.id || p.Id || ''; 
     
-    if (f.elements['warehouseCellId']) f.elements['warehouseCellId'].value = p.warehouseCellId || p.WarehouseCellId || p.cell || p.Cell || ''; 
-    else if (f.elements['cell']) f.elements['cell'].value = p.warehouseCellId || p.WarehouseCellId || p.cell || p.Cell || ''; 
+        if (f.elements['warehouseCellId']) f.elements['warehouseCellId'].value = p.warehouseCellId || p.WarehouseCellId || p.cell || p.Cell || ''; 
+        else if (f.elements['cell']) f.elements['cell'].value = p.warehouseCellId || p.WarehouseCellId || p.cell || p.Cell || ''; 
     
-    if (f.elements['name']) f.elements['name'].value = p.name || p.Name || ''; 
-    if (f.elements['description']) f.elements['description'].value = p.description || p.Description || ''; 
-    if (f.elements['price']) f.elements['price'].value = p.price || p.Price || ''; 
-    if (f.elements['category']) f.elements['category'].value = p.category || p.Category || ''; 
-    if (f.elements['image']) f.elements['image'].value = p.image || p.Image || ''; 
-
-    openModal('productModal'); 
+        if (f.elements['name']) f.elements['name'].value = p.name || p.Name || ''; 
+        if (f.elements['description']) f.elements['description'].value = p.description || p.Description || ''; 
+        if (f.elements['price']) f.elements['price'].value = p.price || p.Price || ''; 
+        if (f.elements['category']) f.elements['category'].value = p.category || p.Category || ''; 
+    
+        openModal('productModal'); 
 }
 async function deleteProduct(id) {
     if (!confirm('Удалить товар?'))

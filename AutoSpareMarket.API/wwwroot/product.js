@@ -10,49 +10,12 @@ const TEST_PRODUCTS_P = {
   5: { id: 5, name: 'Воздушный фильтр BOSCH', description: 'Воздушный фильтр для Hyundai Solaris, Kia Rio III. Изготовлен из целлюлозы с полиэстером. Обеспечивает оптимальный воздухообмен двигателя.', warehouseCellId: 'E-07', price: 650 },
 };
 
-let PRODUCT_IMAGES = {
-    77: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
-    78: 'https://example.com/images/brake-pads-trw-2.jpg',
-    79: 'https://example.com/images/brake-disc-brembo.jpg',
-    80: 'https://example.com/images/brake-fluid-dot4.jpg',
-    81: 'https://example.com/images/brake-booster-ate.jpg',
-    82: 'https://example.com/images/shock-absorber-kyb.jpg',
-    83: 'https://example.com/images/silentblock-lemforder.jpg',
-    84: 'https://example.com/images/ball-joint-lemforder.jpg',
-    85: 'https://example.com/images/spring-eibach.jpg',
-    86: 'https://example.com/images/spring-eibach-2.jpg',
-    87: 'https://example.com/images/timing-belt-gates.jpg',
-    88: 'https://example.com/images/engine-mount-febi.jpg',
-    89: 'https://example.com/images/head-gasket-victor.jpg',
-    90: 'https://example.com/images/timing-chain-iwis.jpg',
-    91: 'https://example.com/images/oil-filter-mann.jpg',
-    92: 'https://example.com/images/air-filter-mann.jpg',
-    93: 'https://example.com/images/cabin-filter-mann.jpg',
-    94: 'https://example.com/images/starter-bosch.jpg',
-    95: 'https://example.com/images/alternator-valeo.jpg',
-    96: 'https://example.com/images/spark-plug-ngk.jpg',
-    97: 'https://example.com/images/spark-plug-ngk-2.jpg',
-    98: 'https://example.com/images/shell-oil-5w40.jpg',
-    99: 'https://example.com/images/mobil1-0w40.jpg',
-    100: 'https://example.com/images/castrol-syntrans.jpg',
-    101: 'https://example.com/images/zf-lifeguard.jpg',
-    102: 'https://example.com/images/castrol-brake-fluid.jpg',
-    103: 'https://example.com/images/antifreeze-g12plus.jpg',
-    104: 'https://example.com/images/antifreeze-g11.jpg',
-    105: 'https://example.com/images/michelin-pilot-sport.jpg',
-    106: 'https://example.com/images/michelin-pilot-sport-2.jpg',
-    107: 'https://example.com/images/nokian-hakkapeliitta.jpg',
-    108: 'https://example.com/images/goodyear-vector.jpg',
-    109: 'https://example.com/images/alloy-wheel-replica.jpg',
-    110: 'https://example.com/images/forged-wheel-kk.jpg',
-    111: 'https://example.com/images/inner-tube-13.jpg',
-    112: 'https://example.com/images/tire-repair-kit.jpg',
-    113: 'https://example.com/images/tire-valve-caps.jpg',
-    114: 'https://example.com/images/windshield-fluid.jpg',
-    115: 'https://example.com/images/injector-cleaner.jpg',
-    116: 'https://example.com/images/socket-set-force.jpg',
-    117: 'https://example.com/images/hydraulic-jack.jpg',
-    118: 'https://example.com/images/car-vacuum.jpg',
+const PRODUCT_IMAGES_P = {
+    1: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
+    2: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
+    3: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
+    4: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
+    5: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
 };
 
 async function apiP(path) {
@@ -101,7 +64,7 @@ async function loadProduct(id) {
 
     const imgEl = document.querySelector('.product-img-main img');
     const imgFallback = document.querySelector('.product-img-main .img-placeholder');
-    const imgUrl = PRODUCT_IMAGES[product.id];
+    const imgUrl = PRODUCT_IMAGES_P[product.id];
     if (imgEl && imgUrl) {
       imgEl.src = imgUrl;
       imgEl.alt = name;

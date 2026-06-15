@@ -69,8 +69,8 @@ const TEST_PRODUCTS = [
   { id: 20, name: 'Тормозной диск передний BREMBO', description: 'Вентилируемый тормозной диск для Volkswagen, Audi, Skoda. Диаметр 280 мм.',                               warehouseCellId: 'A-07', price: 3800,  category: 'brakes',     inStock: true },
 ];
 
-let PRODUCT_IMAGES = {
-    77: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+const PRODUCT_IMAGES = {
+    77: 'https://example.com/images/brake-pads-trw.jpg',
     78: 'https://example.com/images/brake-pads-trw-2.jpg',
     79: 'https://example.com/images/brake-disc-brembo.jpg',
     80: 'https://example.com/images/brake-fluid-dot4.jpg',
