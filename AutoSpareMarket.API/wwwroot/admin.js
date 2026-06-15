@@ -496,8 +496,79 @@ document.getElementById('addSaleItem').addEventListener('click',addSaleItemRow);
 function addSaleItemRow(){ const c=document.getElementById('saleItems'); const r=document.createElement('div'); r.className='item-row'; r.innerHTML=`<div class="item-row-fields"><label>Товар ID<input name="productId" type="number" min="1" required placeholder="1"></label><label>Поставщик ID<input name="supplierId" type="number" min="1" required placeholder="1"></label><label>Кол-во<input name="quantity" type="number" min="1" value="1" required></label><label>Цена<input name="unitPrice" type="number" min="0" step="0.01" required placeholder="0.00"></label><label>Себест.<input name="unitCost" type="number" min="0" step="0.01" required placeholder="0.00"></label></div><button type="button" class="btn-icon danger remove-row">✕</button>`; r.querySelector('.remove-row').addEventListener('click',()=>r.remove()); c.appendChild(r); }
 document.getElementById('saleForm').addEventListener('submit',async e=>{ e.preventDefault(); const f=e.target; try{ await api('/sales',{method:'POST',body:JSON.stringify({customerId:Number(f.customerId.value),cashRegisterId:Number(f.cashRegisterId.value),paymentMethod:f.paymentMethod.value,items:collectItemRows('saleItems',['productId','supplierId','quantity','unitPrice','unitCost'])})}); showToast('Продажа создана'); closeModal('saleModal'); loadSales(); }catch(err){showToast(err.message,'error');} });
 document.getElementById('transactionForm').addEventListener('submit',async e=>{ e.preventDefault(); const f=e.target; const sid=Number(f.saleId.value); try{ await api(`/sales/${sid}/transactions`,{method:'POST',body:JSON.stringify({cashRegisterId:Number(f.cashRegisterId.value),amount:Number(f.amount.value),type:f.type.value,note:f.note.value.trim()||null})}); showToast('Транзакция добавлена'); closeModal('transactionModal'); loadSales(); }catch(err){showToast(err.message,'error');} });
-async function viewSale(id){ try{ const s=await api(`/sales/${id}`); const txns=await api(`/sales/${id}/transactions`).catch(()=>[]); document.getElementById('saleDetailTitle').textContent=`Продажа #${id}`; document.getElementById('saleDetailBody').innerHTML=`<div class="detail-grid"><div class="detail-item"><span>ID</span><strong>${s.id}</strong></div><div class="detail-item"><span>Покупатель</span><strong>${s.customerId??'—'}</strong></div><div class="detail-item"><span>Касса</span><strong>${s.cashRegisterId??'—'}</strong></div><div class="detail-item"><span>Оплата</span><strong>${esc(s.paymentMethod||'—')}</strong></div><div class="detail-item"><span>Сумма</span><strong>${fmtMoney(s.totalAmount)}</strong></div><div class="detail-item"><span>Дата</span><strong>${fmtDate(s.createdAt)}</strong></div></div><h4>Позиции</h4><table class="data-table"><thead><tr><th>Товар</th><th>Поставщик</th><th>Кол-во</th><th>Цена</th><th>Себест.</th></tr></thead><tbody>${(s.items||[]).map(i=>`<tr><td>${i.productId}</td><td>${i.supplierId}</td><td>${i.quantity}</td><td>${fmtMoney(i.unitPrice)}</td><td>${fmtMoney(i.unitCost)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-row">Нет позиций</td></tr>'}</tbody></table><h4>Транзакции</h4><table class="data-table"><thead><tr><th>ID</th><th>Касса</th><th>Сумма</th><th>Тип</th><th>Комментарий</th></tr></thead><tbody>${(Array.isArray(txns)?txns:[]).map(t=>`<tr><td>${t.id}</td><td>${t.cashRegisterId}</td><td>${fmtMoney(t.amount)}</td><td>${t.type}</td><td>${esc(t.note||'—')}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-row">Нет транзакций</td></tr>'}</tbody></table>`; openModal('saleDetailModal'); }catch(err){showToast(err.message,'error');} }
-async function deleteSale(id){ if(!confirm('Удалить продажу?'))return; try{await api(`/sales/${id}`,{method:'DELETE'}); showToast('Продажа удалена'); loadSales();}catch(err){showToast(err.message,'error');} }
+async function viewSale(id) {
+    try {
+        const s = await api(`/sales/${id}`);
+        const txns = await api(`/sales/${id}/transactions`).catch(() => []);
+
+        document.getElementById('saleDetailTitle').textContent = `Продажа #${id}`;
+
+        console.log('Sale data:', s);
+        console.log('Items:', s.items || s.saleItems || s.products);
+
+        const items = s.items || s.saleItems || s.products || s.details || [];
+
+        document.getElementById('saleDetailBody').innerHTML = `
+            <div class="detail-grid">
+                <div class="detail-item"><span>ID</span><strong>${s.id}</strong></div>
+                <div class="detail-item"><span>Покупатель</span><strong>${s.customerId ?? '—'}</strong></div>
+                <div class="detail-item"><span>Касса</span><strong>${s.cashRegisterId ?? '—'}</strong></div>
+                <div class="detail-item"><span>Оплата</span><strong>${esc(s.paymentMethod || '—')}</strong></div>
+                <div class="detail-item"><span>Сумма</span><strong>${fmtMoney(s.totalAmount)}</strong></div>
+                <div class="detail-item"><span>Дата</span><strong>${fmtDate(s.createdAt)}</strong></div>
+            </div>
+            
+            <h4>Позиции</h4>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Товар</th><th>Поставщик</th><th>Кол-во</th><th>Цена</th><th>Себест.</th></tr>
+                </thead>
+                <tbody>
+                    ${items.map(i => {
+            // Определяем, где лежат названия
+            const productName = i.productName || i.product?.name || i.productId;
+            const supplierName = i.supplierName || i.supplier?.name || i.supplierId;
+            const quantity = i.quantity;
+            const unitPrice = i.unitPrice || i.price;
+            const unitCost = i.unitCost || i.cost;
+
+            return `
+                            <tr>
+                                <td>${esc(productName)}</td>
+                                <td>${esc(supplierName)}</td>
+                                <td>${quantity}</td>
+                                <td>${fmtMoney(unitPrice)}</td>
+                                <td>${fmtMoney(unitCost)}</td>
+                            </table>
+                        `;
+        }).join('') || '<tr><td colspan="5" class="empty-row">Нет позиций</td></tr>'}
+                </tbody>
+            </table>
+            
+            <h4>Транзакции</h4>
+            <table class="data-table">
+                <thead>
+                    <tr><th>ID</th><th>Касса</th><th>Сумма</th><th>Тип</th><th>Комментарий</th></tr>
+                </thead>
+                <tbody>
+                    ${(Array.isArray(txns) ? txns : []).map(t => `
+                        <tr>
+                            <td>${t.id}</td>
+                            <td>${t.cashRegisterId ?? '—'}</td>
+                            <td>${fmtMoney(t.amount)}</td>
+                            <td>${t.type}</td>
+                            <td>${esc(t.note || '—')}</td>
+                        </tr>
+                    `).join('') || '<tr><td colspan="5" class="empty-row">Нет транзакций</td></tr>'}
+                </tbody>
+            </table>
+        `;
+
+        openModal('saleDetailModal');
+    } catch (err) {
+        showToast(err.message, 'error');
+    }
+} async function deleteSale(id){ if(!confirm('Удалить продажу?'))return; try{await api(`/sales/${id}`,{method:'DELETE'}); showToast('Продажа удалена'); loadSales();}catch(err){showToast(err.message,'error');} }
 
 // ── ORDERS ───────────────────────────────────────────────────
 let ordersData=[];
