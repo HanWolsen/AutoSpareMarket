@@ -208,14 +208,43 @@
             <section class="tab-pane" id="tab-sales">
                 <div class="page-header"><div><h1>Продажи</h1><p class="page-desc">История продаж, позиции и кассовые транзакции.</p></div><button class="btn" id="openSaleModal">+ Новая продажа</button></div>
                 <div class="table-toolbar"><input type="search" class="search-input" id="salesSearch" placeholder="Поиск по ID..."><button class="btn ghost" id="refreshSales">Обновить</button><button class="btn secondary" id="openTransactionModal">+ Транзакция</button></div>
-                <div class="table-wrap"><table class="data-table"><thead><tr><th>ID</th><th>Покупатель ID</th><th>Касса ID</th><th>Способ оплаты</th><th>Сумма</th><th>Позиций</th><th>Дата</th><th>Действия</th></tr></thead><tbody id="salesTbody"><tr><td colspan="8" class="empty-row">Загрузка...</td></tr></tbody></table></div>
+                <div class="table-wrap"><table class="data-table"><thead><tr><th>ID</th><th>Покупатель ID</th><th>Способ оплаты</th><th>Сумма</th><th>Позиций</th><th>Дата</th><th>Действия</th></tr></thead><tbody id="salesTbody"><tr><td colspan="8" class="empty-row">Загрузка...</td></tr></tbody></table></div>
             </section>
 
             <!-- ORDERS -->
             <section class="tab-pane" id="tab-orders">
-                <div class="page-header"><div><h1>Заказы поставщикам</h1><p class="page-desc">Закупочные заявки на пополнение склада.</p></div><button class="btn" id="openOrderModal">+ Новый заказ</button></div>
-                <div class="table-toolbar"><input type="search" class="search-input" id="ordersSearch" placeholder="Поиск по ID или статусу..."><button class="btn ghost" id="refreshOrders">Обновить</button></div>
-                <div class="table-wrap"><table class="data-table"><thead><tr><th>ID</th><th>Поставщик ID</th><th>Менеджер ID</th><th>Статус</th><th>Сумма</th><th>Позиций</th><th>Создан</th><th>Действия</th></tr></thead><tbody id="ordersTbody"><tr><td colspan="8" class="empty-row">Загрузка...</td></tr></tbody></table></div>
+                <div class="page-header">
+                    <div>
+                        <h1>Заказы поставщикам</h1>
+                        <p class="page-desc">Закупочные заявки на пополнение склада.</p>    
+                    </div>
+                    <button class="btn" id="openOrderModal">+ Новый заказ</button>
+                </div>
+                <div class="table-toolbar">
+                    <input type="search" class="search-input" id="ordersSearch" placeholder="Поиск по ID или статусу...">
+                    <button class="btn ghost" id="refreshOrders">Обновить</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Поставщик ID</th>
+                                <th>Менеджер ID</th>
+                                <th>Статус</th>
+                                <th>Сумма</th>
+                                <th>Позиций</th>
+                                <th>Создан</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTbody">
+                            <tr>
+                            <td colspan="8" class="empty-row">Загрузка...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <!-- PROMOTIONS -->

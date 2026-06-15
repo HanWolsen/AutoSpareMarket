@@ -472,8 +472,22 @@ async function deleteCustomer(id) {
 
 // ── SALES ────────────────────────────────────────────────────
 let salesData=[];
-async function loadSales(){ const b=document.getElementById('salesTbody'); loading(b,8); try{ salesData=await api('/sales')||[]; renderSales(salesData); }catch(e){empty(b,8,`Ошибка: ${e.message}`);} }
-function renderSales(list){ const b=document.getElementById('salesTbody'); if(!list.length){empty(b,8);return;} b.innerHTML=list.map(s=>`<tr><td><span class="id-badge">${s.id}</span></td><td>${s.customerId??'—'}</td><td>${s.cashRegisterId??'—'}</td><td>${esc(s.paymentMethod||'—')}</td><td><strong>${fmtMoney(s.totalAmount)}</strong></td><td>${s.items?s.items.length:'—'}</td><td class="muted-cell">${fmtDate(s.createdAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="viewSale(${s.id})">👁</button><button class="btn-icon danger" onclick="deleteSale(${s.id})">✕</button></div></td></tr>`).join(''); }
+async function loadSales() {
+    const b = document.getElementById('salesTbody');
+    loading(b, 7);
+    try
+    {
+        salesData = await api('/sales') || []; renderSales(salesData);
+    } catch (e) { empty(b, 7, `Ошибка: ${e.message}`); }
+}
+function renderSales(list)
+{
+    const b = document.getElementById('salesTbody');
+    if (!list.length)
+    {
+        empty(b, 8); return;
+    } b.innerHTML = list.map(s => `<tr><td><span class="id-badge">${s.id}</span></td><td>${s.customerId ?? '—'}</td> <td>${esc(s.paymentMethod || '—')}</td><td><strong>${fmtMoney(s.totalAmount)}</strong></td><td>${s.items ? s.items.length : '—'}</td><td class="muted-cell">${fmtDate(s.createdAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="viewSale(${s.id})">👁</button><button class="btn-icon danger" onclick="deleteSale(${s.id})">✕</button></div></td></tr>`).join('');
+}
 addSearch('salesSearch',renderSales,()=>salesData);
 document.getElementById('refreshSales').addEventListener('click',loadSales);
 document.getElementById('openSaleModal').addEventListener('click',()=>{ document.getElementById('saleForm').reset(); document.getElementById('saleItems').innerHTML=''; addSaleItemRow(); openModal('saleModal'); });
@@ -487,8 +501,29 @@ async function deleteSale(id){ if(!confirm('Удалить продажу?'))ret
 
 // ── ORDERS ───────────────────────────────────────────────────
 let ordersData=[];
-async function loadOrders(){ const b=document.getElementById('ordersTbody'); loading(b,8); try{ ordersData=await api('/orders')||[]; renderOrders(ordersData); }catch(e){empty(b,8,`Ошибка: ${e.message}`);} }
-function renderOrders(list){ const b=document.getElementById('ordersTbody'); if(!list.length){empty(b,8);return;} b.innerHTML=list.map(o=>`<tr><td><span class="id-badge">${o.id}</span></td><td>${o.supplierId??'—'}</td><td>${o.managerId??'—'}</td><td><span class="badge ${orderStatusClass(o.status)}">${orderStatusLabel(o.status)}</span></td><td><strong>${fmtMoney(o.totalAmount)}</strong></td><td>${o.items?o.items.length:'—'}</td><td class="muted-cell">${fmtDate(o.createdAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="viewOrder(${o.id})">👁</button><button class="btn-icon danger" onclick="deleteOrder(${o.id})">✕</button></div></td></tr>`).join(''); }
+async function loadOrders() {
+    const b = document.getElementById('ordersTbody');
+    loading(b, 8);
+    try {
+        ordersData = await api('/orders') || [];
+        renderOrders(ordersData);
+    } catch (e) { empty(b, 8, `Ошибка: ${e.message}`); }
+}
+function renderOrders(list) {
+    const b = document.getElementById('ordersTbody');
+    if (!list.length)
+    {
+        empty(b, 8); return;
+    } b.innerHTML = list.map(o => `<tr><td><span class="id-badge">
+    ${o.id}</span></td><td>
+    ${o.supplierId ?? '—'}</td><td>
+    ${o.managerId ?? '—'}</td><td><span class="badge 
+    ${orderStatusClass(o.status)}">
+    ${orderStatusLabel(o.status)}</span></td><td><strong>
+    ${fmtMoney(o.totalAmount)}</strong></td><td>
+    ${o.items ? o.items.length : '—'}</td><td class="muted-cell">
+    ${fmtDate(o.createdAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="viewOrder(${o.id})">👁</button><button class="btn-icon danger" onclick="deleteOrder(${o.id})">✕</button></div></td></tr>`).join('');
+}
 addSearch('ordersSearch',renderOrders,()=>ordersData);
 document.getElementById('refreshOrders').addEventListener('click',loadOrders);
 document.getElementById('openOrderModal').addEventListener('click',()=>{ document.getElementById('orderForm').reset(); document.getElementById('orderItems').innerHTML=''; addOrderItemRow(); openModal('orderModal'); });
