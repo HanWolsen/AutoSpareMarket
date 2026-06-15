@@ -11,11 +11,48 @@ const TEST_PRODUCTS_P = {
 };
 
 const PRODUCT_IMAGES_P = {
-    1: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
-    2: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
-    3: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
-    4: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
-    5: 'https://th.bing.com/th/id/R.edb0d29a0a375034a804aae930a3f7ca?rik=OW1kOjuP6wjHfQ&riu=http%3a%2f%2fautoservis62.ru%2fwp-content%2fuploads%2fsites%2f10%2f2020%2f11%2fzapchacty2-min.jpeg&ehk=1kA8akrfVrWTGEtscdk96AjIN%2f2OArTIkp%2b4v7Xi3ss%3d&risl=&pid=ImgRaw&r=0',
+    77: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    78: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    79: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    80: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    81: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    82: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    83: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    84: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    85: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    86: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    87: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    88: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    89: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    90: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    91: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    92: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    93: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    94: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    95: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    96: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    97: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    98: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    99: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    100: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    101: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    102: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    103: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    104: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    105: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    106: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    107: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    108: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    109: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    110: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    111: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    112: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    113: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    114: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    115: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    116: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    117: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
+    118: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw-grNwSL6z8Pca9xZ04xgcTebZJGN3NLiQ&s',
 };
 
 async function apiP(path) {
@@ -62,9 +99,12 @@ async function loadProduct(id) {
       priceEl.textContent = product.price ? `${product.price.toLocaleString('ru-RU')} ₽` : 'По запросу';
     }
 
-    const imgEl = document.querySelector('.product-img-main img');
-    const imgFallback = document.querySelector('.product-img-main .img-placeholder');
-    const imgUrl = PRODUCT_IMAGES_P[product.id];
+      const imgEl = document.querySelector('.product-img-main img');
+      console.log(imgEl);
+      const imgFallback = document.querySelector('.product-img-main .img-placeholder');
+      console.log(imgFallback);
+      const imgUrl = PRODUCT_IMAGES_P[product.id];
+      console.log(imgUrl);
     if (imgEl && imgUrl) {
       imgEl.src = imgUrl;
       imgEl.alt = name;
