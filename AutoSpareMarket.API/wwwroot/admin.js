@@ -503,14 +503,12 @@ async function viewSale(id) {
 
         document.getElementById('saleDetailTitle').textContent = `Продажа #${id}`;
 
-        console.log('Sale data:', s);
-        console.log('Items:', s.items || s.saleItems || s.products);
-
-        const items = s.items || s.saleItems || s.products || s.details || [];
+        // Получаем позиции (могут быть null, undefined или массив)
+        const items = s.saleItems || s.items || [];
 
         document.getElementById('saleDetailBody').innerHTML = `
             <div class="detail-grid">
-                <div class="detail-item"><span>ID</span><strong>${s.id}</strong></div>
+                <div class="detail-item"><span>ID</span><strong>${s.id || '—'}</strong></div>
                 <div class="detail-item"><span>Покупатель</span><strong>${s.customerId ?? '—'}</strong></div>
                 <div class="detail-item"><span>Касса</span><strong>${s.cashRegisterId ?? '—'}</strong></div>
                 <div class="detail-item"><span>Оплата</span><strong>${esc(s.paymentMethod || '—')}</strong></div>
@@ -524,24 +522,15 @@ async function viewSale(id) {
                     <tr><th>Товар</th><th>Поставщик</th><th>Кол-во</th><th>Цена</th><th>Себест.</th></tr>
                 </thead>
                 <tbody>
-                    ${items.map(i => {
-            // Определяем, где лежат названия
-            const productName = i.productName || i.product?.name || i.productId;
-            const supplierName = i.supplierName || i.supplier?.name || i.supplierId;
-            const quantity = i.quantity;
-            const unitPrice = i.unitPrice || i.price;
-            const unitCost = i.unitCost || i.cost;
-
-            return `
-                            <tr>
-                                <td>${esc(productName)}</td>
-                                <td>${esc(supplierName)}</td>
-                                <td>${quantity}</td>
-                                <td>${fmtMoney(unitPrice)}</td>
-                                <td>${fmtMoney(unitCost)}</td>
-                            </table>
-                        `;
-        }).join('') || '<tr><td colspan="5" class="empty-row">Нет позиций</td></tr>'}
+                    ${items.length > 0 ? items.map(i => `
+                        <tr>
+                            <td>${i.productId || i.product?.id || '—'}</td>
+                            <td>${i.supplierId || i.supplier?.id || '—'}</td>
+                            <td>${i.quantity || 0}</td>
+                            <td>${fmtMoney(i.unitPrice || i.price || 0)}</td>
+                            <td>${fmtMoney(i.unitCost || i.cost || 0)}</td>
+                        </tr>
+                    `).join('') : '<tr><td colspan="5" class="empty-row">Нет позиций</td></tr>'}
                 </tbody>
             </table>
             
@@ -551,15 +540,15 @@ async function viewSale(id) {
                     <tr><th>ID</th><th>Касса</th><th>Сумма</th><th>Тип</th><th>Комментарий</th></tr>
                 </thead>
                 <tbody>
-                    ${(Array.isArray(txns) ? txns : []).map(t => `
+                    ${Array.isArray(txns) && txns.length > 0 ? txns.map(t => `
                         <tr>
-                            <td>${t.id}</td>
+                            <td>${t.id || '—'}</td>
                             <td>${t.cashRegisterId ?? '—'}</td>
-                            <td>${fmtMoney(t.amount)}</td>
-                            <td>${t.type}</td>
+                            <td>${fmtMoney(t.amount || 0)}</td>
+                            <td>${t.type || '—'}</td>
                             <td>${esc(t.note || '—')}</td>
                         </tr>
-                    `).join('') || '<tr><td colspan="5" class="empty-row">Нет транзакций</td></tr>'}
+                    `).join('') : '<tr><td colspan="5" class="empty-row">Нет транзакций</td></tr>'}
                 </tbody>
             </table>
         `;
@@ -568,6 +557,7 @@ async function viewSale(id) {
     } catch (err) {
         showToast(err.message, 'error');
     }
+}
 } async function deleteSale(id){ if(!confirm('Удалить продажу?'))return; try{await api(`/sales/${id}`,{method:'DELETE'}); showToast('Продажа удалена'); loadSales();}catch(err){showToast(err.message,'error');} }
 
 // ── ORDERS ───────────────────────────────────────────────────
