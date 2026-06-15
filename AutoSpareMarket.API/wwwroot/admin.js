@@ -486,7 +486,7 @@ function renderSales(list)
     if (!list.length)
     {
         empty(b, 8); return;
-    } b.innerHTML = list.map(s => `<tr><td><span class="id-badge">${s.id}</span></td><td>${s.customerId ?? '—'}</td> <td>${esc(s.paymentMethod || '—')}</td><td><strong>${fmtMoney(s.totalAmount)}</strong></td><td class="muted-cell">${fmtDate(s.createdAt)}</td><td><div class="row-actions"><button class="btn-icon" onclick="viewSale(${s.id})">👁</button><button class="btn-icon danger" onclick="deleteSale(${s.id})">✕</button></div></td></tr>`).join('');
+    } b.innerHTML = list.map(s => `<tr><td><span class="id-badge">${s.id}</span></td><td>${s.customerId ?? '—'}</td> <td>${esc(s.paymentMethod || '—')}</td><td><strong>${fmtMoney(s.totalAmount)}</strong></td><td class="muted-cell">${fmtDate(s.createdAt)}</td><td><div class="row-actions"><button class="btn-icon danger" onclick="deleteSale(${s.id})">✕</button></div></td></tr>`).join('');
 }
 addSearch('salesSearch',renderSales,()=>salesData);
 document.getElementById('refreshSales').addEventListener('click',loadSales);
